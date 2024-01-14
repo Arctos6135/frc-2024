@@ -13,7 +13,7 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
     private final CANSparkMax leftMaster = new CANSparkMax(CANBus.LEFT_MASTER, MotorType.kBrushless);
     private final CANSparkMax rightFollower = new CANSparkMax(CANBus.RIGHT_FOLLOWER, MotorType.kBrushless);
     private final CANSparkMax leftFollower = new CANSparkMax(CANBus.LEFT_FOLLOWER, MotorType.kBrushless);
-    
+
     private final RelativeEncoder rightEncoder;
     private final RelativeEncoder leftEncoder;
     

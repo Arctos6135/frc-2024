@@ -30,6 +30,7 @@ public class Drivetrain extends SubsystemBase {
     private static double rotP = 0.00001;
     private static double rotI = 0.0;
     private static double rotD = 0.0;
+
     
     public Drivetrain() {
         this.rightFollower.follow(this.rightMaster);
@@ -48,7 +49,11 @@ public class Drivetrain extends SubsystemBase {
 
         this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
         this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
+    }
 
+    public void arcadeDrive(double translation, double rotation) {
+        leftMaster.set(translation + rotation);
+        rightMaster.set(translation - rotation);
     }
 }
 

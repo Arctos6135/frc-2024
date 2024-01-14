@@ -11,7 +11,7 @@ public class DriveForward extends Command {
     private final double speed;
     private final double distance;
 
-    public DriveForwardEncoded(Drivetrain drivetrain, double speed, double distance) {
+    public DriveForward(Drivetrain drivetrain, double speed, double distance) {
         this.speed = Math.copySign(Math.abs(speed), distance);
         this.drivetrain = drivetrain;
         this.distance = Math.max(0, Math.abs(distance) - 14); // as long as the robot reaches full speed, it fairly consistently overshoots by ~14 inches

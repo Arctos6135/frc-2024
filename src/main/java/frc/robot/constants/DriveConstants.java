@@ -8,4 +8,5 @@ public class DriveConstants {
     public static double WHEEL_DIAMETER = 6.0; 
     public static double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
     public static double POSITION_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO;
+    public static double CONTROLLER_DEADZONE = 0.15;
 }

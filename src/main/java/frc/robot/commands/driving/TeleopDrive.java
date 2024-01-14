@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Dampener;
+import frc.robot.constants.DriveConstants;
 
 public class TeleopDrive extends Command {
     private final Drivetrain drivetrain;

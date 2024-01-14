@@ -1,7 +1,5 @@
 package frc.robot.commands.driving;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
@@ -10,7 +8,9 @@ public class DriveForward extends Command {
 
     private final double speed;
     private final double distance;
+    private double initialDistance;
 
+    // TODO: use PID instead of a Band Bang controller
     public DriveForward(Drivetrain drivetrain, double speed, double distance) {
         this.speed = Math.copySign(Math.abs(speed), distance);
         this.drivetrain = drivetrain;
@@ -21,8 +21,7 @@ public class DriveForward extends Command {
 
     @Override
     public void initialize() {
-        drivetrain.resetEncoders();
-        drivetrain.setIdleMode(IdleMode.kBrake);
+        initialDistance = drivetrain.getDistance();
     }
 
     @Override
@@ -32,7 +31,7 @@ public class DriveForward extends Command {
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(drivetrain.getPosition()) > this.distance) {
+        if (Math.abs(drivetrain.getDistance() - initialDistance) > this.distance) {
             System.out.printf("finished driving %f meters\n", this.distance);
             return true;
         } else {
@@ -42,7 +41,6 @@ public class DriveForward extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("terminating command");
         drivetrain.arcadeDrive(0, 0);
     }
 }

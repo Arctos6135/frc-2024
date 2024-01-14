@@ -21,4 +21,8 @@ public class Drivetrain extends SubsystemBase {
     public void arcadeDrive(double translation, double rotation) {
         io.setVoltages(12 * (translation + rotation), 12 * (translation - rotation));
     }
+
+    public double getDistance() {
+        return (inputs.leftPosition + inputs.rightPosition) / 2;
+    }
 }

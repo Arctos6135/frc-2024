@@ -2,6 +2,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
@@ -16,6 +19,8 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
     private final RelativeEncoder rightEncoder;
     private final RelativeEncoder leftEncoder;
+
+    private final ADIS16470_IMU gyro = new ADIS16470_IMU();
     
     public DrivetrainIOSparkMax() {
         this.rightFollower.follow(this.rightMaster);
@@ -31,11 +36,25 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
         this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
         this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
+
+
     }
 
     @Override
     public void setVoltages(double left, double right) {
         leftMaster.set(left);
         rightMaster.set(right);
+    }
+
+    @Override
+    public void updateInputs(Inputs inputs) {
+        inputs.leftPosition = leftEncoder.getPosition();
+        inputs.rightPosition = rightEncoder.getPosition();
+
+        inputs.leftVelocity = leftEncoder.getVelocity();
+        inputs.rightVelocity = rightEncoder.getVelocity();
+
+        inputs.yaw = gyro.getAngle(gyro.getYawAxis());
+        inputs.yawRate = gyro.getRate(gyro.getYawAxis());
     }
 }

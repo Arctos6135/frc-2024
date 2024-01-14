@@ -2,12 +2,13 @@ package frc.robot.commands.driving;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Dampener;
 import frc.robot.constants.DriveConstants;
 
-public class TeleopDrive {
+public class TeleopDrive extends Command {
     private final Drivetrain drivetrain;
 
     private final XboxController controller;
@@ -27,9 +28,9 @@ public class TeleopDrive {
         this.X_AXIS = leftRightAxis;
         this.Y_AXIS = fwdRevAxis;
 
-        this.xDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 6);
-        this.yDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 4);
-        
+        this.xDampener = new Dampener(0.5);
+        this.yDampener = new Dampener(0.5);
+
         addRequirements(drivetrain);
     }
 
@@ -41,17 +42,11 @@ public class TeleopDrive {
     @Override
     public void execute() {
         double y = controller.getRawAxis(XboxController.Axis.kLeftY.value);
-        double y1 = -yDampener.dampen(y) * (precisionDrive ? DriveConstants.precisionFwdRev : 1.0);
+        double y1 = -yDampener.dampen(y) * (precisionDrive ? DriveConstants.PRECISION_FWD_REV : 1.0);
         double x = controller.getRawAxis(XboxController.Axis.kRightX.value);
-        double x1 = xDampener.dampen(x) * (precisionDrive ? DriveConstants.precisionTurn : 1.0);
+        double x1 = xDampener.dampen(x) * (precisionDrive ? DriveConstants.PRECISION_TURN : 1.0);
 
-        SmartDashboard.putNumber("drive controller x", x1);
-        SmartDashboard.putNumber("drive controller y", y1);
-        
-        double precisionFwdFactor = precisionDrive ? DriveConstants.precisionFwdRev : 1;
-        double precisionTurnFactor = precisionDrive ? DriveConstants.precisionTurn : 1;
-
-        drivetrain.arcadeDrive(y1 * 0.85 * precisionFwdFactor, x1 * 0.25 * precisionTurnFactor);
+        drivetrain.arcadeDrive(y1 * 0.85, x1 * 0.25);
     }
 
     public static boolean isPrecisionDrive() {
@@ -63,8 +58,8 @@ public class TeleopDrive {
     }
 
     public static Command togglePrecisionDrive() {
-        precisionDrive = !precisionDrive;
-        return null;
+        return new InstantCommand(() -> {
+            precisionDrive = !precisionDrive;
+        });
     }
-
 }

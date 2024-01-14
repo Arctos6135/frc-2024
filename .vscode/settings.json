@@ -25,5 +25,14 @@
       }
     },
   ],
-  "java.test.defaultConfig": "WPIlibUnitTests"
+  "java.test.defaultConfig": "WPIlibUnitTests",
+
+  "java.configuration.runtimes": [
+    
+    {
+      "name": "JavaSE-17",
+      "path": "/Users/Ben/wpilib/2024/jdk"
+    }
+  ],
+  "java.jdt.ls.java.home": "/Users/Ben/wpilib/2024/jdk"
 }

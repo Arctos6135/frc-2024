@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Dampener;
+import frc.robot.constants.DriveConstants;
 
 public class TeleopDrive {
     private final Drivetrain drivetrain;
@@ -28,7 +29,7 @@ public class TeleopDrive {
 
         this.xDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 6);
         this.yDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 4);
-
+        
         addRequirements(drivetrain);
     }
 

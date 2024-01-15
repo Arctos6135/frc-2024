@@ -1,6 +1,9 @@
 package frc.robot.constants;
 
 public class DriveConstants {
+    public static int DRIVER_CONTROLLER = 0;
+    public static int OPERATOR_CONTROLLER = 1;
+
     public static double PRECISION_FWD_REV = 0.6;
     public static double PRECISION_TURN = 0.7;
 

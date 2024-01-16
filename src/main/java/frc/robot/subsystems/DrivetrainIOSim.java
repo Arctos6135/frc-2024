@@ -26,4 +26,9 @@ public class DrivetrainIOSim extends DrivetrainIO {
         inputs.yawRate = (inputs.yaw - previousHeading) / 0.02;
         previousHeading = inputs.yaw;
     }
+
+    @Override
+    public void setVoltages(double left, double right) {
+        drive.setInputs(left, right);
+    }
 }

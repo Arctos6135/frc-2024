@@ -11,7 +11,7 @@ public class DrivetrainIO {
      * This class represents all the sensor data (either real or simulated) of the drivetrain. Units are in meters, radians, and seconds.
      */
     @AutoLog
-    public static class Inputs {
+    public static class DrivetrainInputs {
         public double leftPosition;
         public double rightPosition;
 
@@ -26,7 +26,7 @@ public class DrivetrainIO {
      * Update the sensor data either using actual sensors or simulated values.
      * @param inputs the sensor data
      */
-    public void updateInputs(Inputs inputs) {}
+    public void updateInputs(DrivetrainInputs inputs) {}
 
     /**
      * Set the voltages of the left and right sides of the drivetrain.

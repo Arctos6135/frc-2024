@@ -2,15 +2,15 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public class IntakeIo {
-    
-    public class Inputs {
+public class IntakeIO {
+    @AutoLog
+    public class IntakeInputs {
         public double encoderPos;
 
         public double current; // assuming no resistance if their is conversion is needed
     }
 
-    public void updateInputs(Inputs inputs) {}
+    public void updateInputs(IntakeInputs inputs) {}
 
     public void setVoltage(int voltage) {}
 }

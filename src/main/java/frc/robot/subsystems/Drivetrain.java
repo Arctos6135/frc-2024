@@ -14,7 +14,7 @@ public class Drivetrain extends SubsystemBase {
     // The kind of drivetrain we are controlling: either simulation or real.
     private final DrivetrainIO io;
     // The current sensor readings for our drivetrain. This is actually a `DrivetrainIO.Inputs`, but the annotation on the class generated this lovely version for us that logs itself nicely.
-    private final InputsAutoLogged inputs = new InputsAutoLogged();
+    private final DrivetrainInputsAutoLogged inputs = new DrivetrainInputsAutoLogged();
 
     /**
      * Construct a new drivetrain.

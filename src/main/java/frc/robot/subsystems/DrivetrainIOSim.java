@@ -18,7 +18,7 @@ public class DrivetrainIOSim extends DrivetrainIO {
     private double previousHeading = 0;
 
     @Override
-    public void updateInputs(Inputs inputs) {
+    public void updateInputs(DrivetrainInputs inputs) {
         drive.update(0.02);
 
         inputs.leftPosition = drive.getLeftPositionMeters();

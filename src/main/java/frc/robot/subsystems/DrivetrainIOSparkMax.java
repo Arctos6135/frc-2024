@@ -51,7 +51,7 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
     }
 
     @Override
-    public void updateInputs(Inputs inputs) {
+    public void updateInputs(DrivetrainInputs inputs) {
         inputs.leftPosition = leftEncoder.getPosition();
         inputs.rightPosition = rightEncoder.getPosition();
 

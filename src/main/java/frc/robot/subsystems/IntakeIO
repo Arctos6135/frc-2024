@@ -5,12 +5,8 @@ import org.littletonrobotics.junction.AutoLog;
 public class IntakeIo {
     
     public class Inputs {
-        // public double topEncoderPos;
-        // public double botEncoderPos;
         public double encoderPos;
 
-        // public double topCurrent;
-        // public double botCurrent;
         public double current; // assuming no resistance if their is conversion is needed
     }
 

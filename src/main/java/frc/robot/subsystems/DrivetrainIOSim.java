@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 
+/**
+ * This class simulates a drivetrain.
+ */
 public class DrivetrainIOSim extends DrivetrainIO {
     private final DifferentialDrivetrainSim drive = DifferentialDrivetrainSim.createKitbotSim(
         KitbotMotor.kDoubleNEOPerSide, KitbotGearing.k8p45, KitbotWheelSize.kSixInch, null

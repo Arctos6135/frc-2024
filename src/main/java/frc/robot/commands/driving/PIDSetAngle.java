@@ -1,11 +1,12 @@
+package frc.robot.commands.driving;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
-
-package frc.robot.commands.driving;
+import frc.robot.util.TunableNumber;
 
 /**
  * NOTES:
@@ -29,10 +30,13 @@ package frc.robot.commands.driving;
 public class PIDSetAngle extends Command {
     private final Drivetrain drivetrain;
 
-    private final PIDController rotationController;
+    private final TunableNumber kP = new TunableNumber("PIDSetAngle kP", 0);
+    private final TunableNumber kI = new TunableNumber("PIDSetAngle kI", 0);
+    private final TunableNumber kD = new TunableNumber("PIDSetAngle kD", 0);
 
-    private double startingAngle;
-    private double setpointAngle;
+    private final PIDController rotationController = new PIDController(0, 0, 0);
+
+    private final double setpointAngle;
 
     /**
      * @param speed The speed at which the motor  
@@ -41,16 +45,9 @@ public class PIDSetAngle extends Command {
      */
     public PIDSetAngle(Drivetrain drivetrain, double setpointAngle) {
         this.drivetrain = drivetrain;
-        this.rotationController = drivetrain.getRotationController();
-
         this.setpointAngle = setpointAngle;
 
         addRequirements(drivetrain);
-    }
-
-    @Override
-    public void initialize() {
-        drivetrain.setIdleMode(IdleMode.kBrake);
     }
 
     @Override

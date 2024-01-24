@@ -29,6 +29,10 @@ public class Drivetrain extends SubsystemBase {
         return (inputs.leftPosition + inputs.rightPosition) / 2;
     }
 
+    public double getYaw() {
+        return inputs.yaw;
+    }
+
     // The drivetrain needs 4m of clearance in front of and behind it when running this command.
     public Command characterize() {
         return new FeedforwardCharacterization(new Config(

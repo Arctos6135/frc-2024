@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
@@ -28,6 +30,8 @@ public class DrivetrainIOSim extends DrivetrainIO {
         inputs.yaw = drive.getHeading().getRadians();
         inputs.yawRate = (inputs.yaw - previousHeading) / 0.02;
         previousHeading = inputs.yaw;
+
+        Logger.recordOutput("Drivetrain Sim Pose", drive.getPose());
     }
 
     @Override

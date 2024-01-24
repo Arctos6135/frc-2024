@@ -15,7 +15,7 @@ public class TeleopDrive extends Command {
     private Dampener xDampener;
     private Dampener yDampener;
 
-    private static boolean precisionDrive = false;
+    private boolean precisionDrive = false;
 
     public TeleopDrive(Drivetrain drivetrain, XboxController driverController) {
         this.drivetrain = drivetrain;
@@ -37,17 +37,7 @@ public class TeleopDrive extends Command {
         drivetrain.arcadeDrive(y1 * 0.85, x1 * 0.25);
     }
 
-    public static boolean isPrecisionDrive() {
-        return precisionDrive;
-    }
-
-    public static void setPrecisionDrive(boolean precisionDrive) {
-        TeleopDrive.precisionDrive = precisionDrive;
-    }
-
-    public static Command togglePrecisionDrive() {
-        return new InstantCommand(() -> {
-            precisionDrive = !precisionDrive;
-        });
+    public void setPrecisionDrive(boolean precise) {
+        precisionDrive = precise;
     }
 }

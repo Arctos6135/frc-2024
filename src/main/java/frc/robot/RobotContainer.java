@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.DriveConstants;
@@ -17,9 +19,15 @@ import frc.robot.subsystems.DrivetrainIOSim;
 import frc.robot.subsystems.DrivetrainIOSparkMax;
 
 public class RobotContainer {
+  // Xbox controllers
   private final XboxController driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER);
   private final XboxController operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER);
-  public final Drivetrain drivetrain;
+
+  // Subsystems
+  private final Drivetrain drivetrain;
+
+  // Commands
+  private final TeleopDrive teleopDrive;
 
   public RobotContainer() {
     configureBindings();
@@ -32,10 +40,16 @@ public class RobotContainer {
       this.drivetrain = new Drivetrain(new DrivetrainIO());
     }
 
-    drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    teleopDrive = new TeleopDrive(drivetrain, driverController);
+    drivetrain.setDefaultCommand(teleopDrive);
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    new Trigger(() -> driverController.getRightBumper())
+      .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
+      .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
+
+  }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");

@@ -1,7 +1,5 @@
 package frc.robot.commands.driving;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
@@ -52,6 +50,7 @@ public class PIDSetAngle extends Command {
 
     @Override
     public void execute() {
+        rotationController.setPID(kP.get(), kI.get(), kD.get());
         // Get the rotation speed at which we should be rotating
         double pidRotation = rotationController.calculate(
             drivetrain.getYaw(), // Current Rotation

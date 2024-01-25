@@ -1,11 +1,11 @@
+package frc.robot.commands.driving;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
-
-package frc.robot.commands.driving;
 
 /**
  * NOTES:

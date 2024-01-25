@@ -21,12 +21,15 @@ public class Intake extends SubsystemBase {
         Logger.processInputs("Intake", inputs);
     }
 
-    public double getPosition() {
-        return inputs.encoderPos;
+    public double getTopPosition() {
+        return inputs.topPosition;
     }
 
-    public void setVoltage(int voltage) {
-        io.setVoltage(voltage);
+    public double getBottomPosition() {
+        return inputs.bottomPosition;
     }
 
+    public void setVoltage(double topVoltage, double bottomVoltage) {
+        io.setVoltage(topVoltage, bottomVoltage);
+    }
 }

@@ -2,14 +2,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.constants.CANBus;
-import frc.robot.constants.DriveConstants;
 import frc.robot.constants.ArmConstants;
 
 public class ArmIOSparkMax extends ArmIO {

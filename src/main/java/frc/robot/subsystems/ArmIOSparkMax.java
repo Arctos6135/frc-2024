@@ -16,11 +16,11 @@ public class ArmIOSparkMax extends ArmIO {
     private final RelativeEncoder armEncoder;
 
     public ArmIOSparkMax() {
-        this.armMotor.setIdleMode(IdleMode.kBrake);
+        armMotor.setIdleMode(IdleMode.kBrake);
         
-        this.armEncoder = this.armMotor.getEncoder();
+        armEncoder = armMotor.getEncoder();
 
-        this.armEncoder.setPositionConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
+        armEncoder.setPositionConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
     }
 
     @Override

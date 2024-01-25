@@ -29,16 +29,16 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
     private final ADIS16470_IMU gyro = new ADIS16470_IMU();
     
     public DrivetrainIOSparkMax() {
-        this.rightFollower.follow(this.rightMaster);
-        this.leftFollower.follow(this.leftMaster);
+        rightFollower.follow(rightMaster);
+        leftFollower.follow(leftMaster);
 
-        this.rightMaster.setInverted(true);
+        rightMaster.setInverted(true);
 
-        this.leftMaster.setIdleMode(IdleMode.kBrake);
-        this.rightMaster.setIdleMode(IdleMode.kBrake);
+        leftMaster.setIdleMode(IdleMode.kBrake);
+        rightMaster.setIdleMode(IdleMode.kBrake);
 
-        this.rightEncoder = this.rightMaster.getEncoder();
-        this.leftEncoder = this.leftMaster.getEncoder();
+        rightEncoder = rightMaster.getEncoder();
+        leftEncoder = leftMaster.getEncoder();
 
         this.rightEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
         this.leftEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);

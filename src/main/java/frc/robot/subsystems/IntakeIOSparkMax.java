@@ -17,16 +17,16 @@ public class IntakeIOSparkMax extends IntakeIO{
     private final RelativeEncoder bottomEncoder;
 
     public IntakeIOSparkMax() {
-        this.top.setInverted(true);
+        top.setInverted(true);
 
-        this.top.setIdleMode(IdleMode.kBrake);
-        this.bottom.setIdleMode(IdleMode.kBrake);
+        top.setIdleMode(IdleMode.kBrake);
+        bottom.setIdleMode(IdleMode.kBrake);
 
-        this.topEncoder = this.top.getEncoder();
-        this.bottomEncoder = this.bottom.getEncoder();
+        topEncoder = top.getEncoder();
+        bottomEncoder = bottom.getEncoder();
 
-        this.topEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
-        this.bottomEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
+        topEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
+        bottomEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
     }
 
     

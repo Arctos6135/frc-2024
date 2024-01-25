@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.FeedforwardCharacterization;
@@ -24,12 +26,22 @@ public class Drivetrain extends SubsystemBase {
         this.io = io;
     }
 
+    /**
+     * Construct a new odometry object.
+     */
+    DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromRadians(inputs.yaw), inputs.leftPosition, inputs.rightPosition);
+
     @Override
     public void periodic() {
         // This tells our drivetrain-like-thing (either real or simulated) to update our class with all the sensor data.
         io.updateInputs(inputs);
         // Log all the sensor data.
         Logger.processInputs("Drivetrain", inputs);
+        // Get the rotation of the robot from the gyro.
+        var gyroAngle = Rotation2d.fromRadians(inputs.yaw);
+        // Update the odometry.
+        var pose = odometry.update(gyroAngle, inputs.leftPosition, inputs.rightPosition);
+        Logger.recordOutput("Odometry", pose);
     }
 
     /**

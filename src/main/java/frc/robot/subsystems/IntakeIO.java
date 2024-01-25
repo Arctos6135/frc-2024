@@ -8,11 +8,11 @@ public class IntakeIO {
         public double topPosition;
         public double bottomPosition;
 
-        public double topcurrent; // assuming no resistance if their is conversion is needed
+        public double topCurrent; // assuming no resistance if their is conversion is needed
         public double bottomCurrent;
     }
 
     public void updateInputs(IntakeInputs inputs) {}
 
-    public void setVoltage(double topVoltage, double bottomVoltage) {}
+    public void setVoltages(double topVoltage, double bottomVoltage) {}
 }

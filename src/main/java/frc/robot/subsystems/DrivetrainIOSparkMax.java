@@ -11,15 +11,21 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.constants.CANBus;
 import frc.robot.constants.DriveConstants;
 
+/**
+ * This class contains the very low level hardware details for the real robot's drivetrain.
+ */
 public class DrivetrainIOSparkMax extends DrivetrainIO {
-    private final CANSparkMax rightMaster = new CANSparkMax(CANBus.RIGHT_MASTER, MotorType.kBrushless);
-    private final CANSparkMax leftMaster = new CANSparkMax(CANBus.LEFT_MASTER, MotorType.kBrushless);
-    private final CANSparkMax rightFollower = new CANSparkMax(CANBus.RIGHT_FOLLOWER, MotorType.kBrushless);
-    private final CANSparkMax leftFollower = new CANSparkMax(CANBus.LEFT_FOLLOWER, MotorType.kBrushless);
+    // Motor controllers that drive the robot.
+    private final CANSparkMax rightMaster = new CANSparkMax(CANBus.DRIVE_RIGHT_MASTER, MotorType.kBrushless);
+    private final CANSparkMax leftMaster = new CANSparkMax(CANBus.DRIVE_LEFT_MASTER, MotorType.kBrushless);
+    private final CANSparkMax rightFollower = new CANSparkMax(CANBus.DRIVE_RIGHT_FOLLOWER, MotorType.kBrushless);
+    private final CANSparkMax leftFollower = new CANSparkMax(CANBus.DRIVE_LEFT_FOLLOWER, MotorType.kBrushless);
 
+    // Encoders to know what positions the wheels are at.
     private final RelativeEncoder rightEncoder;
     private final RelativeEncoder leftEncoder;
 
+    // Gyro.
     private final ADIS16470_IMU gyro = new ADIS16470_IMU();
     
     public DrivetrainIOSparkMax() {
@@ -34,10 +40,8 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         this.rightEncoder = this.rightMaster.getEncoder();
         this.leftEncoder = this.leftMaster.getEncoder();
 
-        this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
-        this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
-
-
+        this.rightEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
+        this.leftEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
     }
 
     @Override
-    public void updateInputs(Inputs inputs) {
+    public void updateInputs(DrivetrainInputs inputs) {
         inputs.leftPosition = leftEncoder.getPosition();
         inputs.rightPosition = rightEncoder.getPosition();
 

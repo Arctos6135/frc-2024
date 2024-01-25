@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -25,6 +26,7 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new WPILOGWriter());
       Logger.addDataReceiver(new NT4Publisher());
     } else if (isSimulation()) {
+      Logger.addDataReceiver(new WPILOGWriter());
       Logger.addDataReceiver(new NT4Publisher());
     } else {
       setUseTiming(false);
@@ -33,6 +35,8 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
     }
     Logger.start();
+
+    DriverStation.silenceJoystickConnectionWarning(true);
   
     m_robotContainer = new RobotContainer();
   }

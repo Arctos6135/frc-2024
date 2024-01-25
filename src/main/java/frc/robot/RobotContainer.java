@@ -5,24 +5,50 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.constants.DriveConstants;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainIO;
+import frc.robot.subsystems.DrivetrainIOSim;
+import frc.robot.subsystems.DrivetrainIOSparkMax;
 
 public class RobotContainer {
-  private final XboxController driverController = new XboxController(DriveConstants.DRIVER_CONTROLLER);
-  private final XboxController operatorController = new XboxController(DriveConstants.OPERATOR_CONTROLLER);
-  public final Drivetrain drivetrain;
-  public final DrivetrainIO drivetrainIO = new DrivetrainIO();
+  // Xbox controllers
+  private final XboxController driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER);
+  private final XboxController operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER);
+
+  // Subsystems
+  private final Drivetrain drivetrain;
+
+  // Commands
+  private final TeleopDrive teleopDrive;
 
   public RobotContainer() {
-    this.drivetrain = new Drivetrain(drivetrainIO);
     configureBindings();
+
+    if (RobotBase.isReal()) {
+      this.drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
+    } else if (RobotBase.isSimulation()) {
+      this.drivetrain = new Drivetrain(new DrivetrainIOSim());
+    } else {
+      this.drivetrain = new Drivetrain(new DrivetrainIO());
+    }
+
+    teleopDrive = new TeleopDrive(drivetrain, driverController);
+    drivetrain.setDefaultCommand(teleopDrive);
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    new Trigger(() -> driverController.getRightBumper())
+      .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
+      .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
+
+  }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");

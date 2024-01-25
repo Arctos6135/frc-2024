@@ -8,4 +8,5 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     public static double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
     public static double ENCODER_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO;
     public static double CONTROLLER_DEADZONE = 0.15;
+    public static int MEDIAN_FILTER_SIZE = 14;
 }

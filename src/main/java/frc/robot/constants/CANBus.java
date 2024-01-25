@@ -8,6 +8,4 @@ public class CANBus {
 
     public static final int INTAKE_TOP_MASTER = 5;
     public static final int INTAKE_BOTTOM_MASTER = 6;
-    public static final int INTAKE_TOP_FOLLOWER = 7;
-    public static final int INTAKE_BOTTOM_FOLLOWER = 8;
 }

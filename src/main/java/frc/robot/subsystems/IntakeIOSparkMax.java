@@ -9,25 +9,40 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.constants.CANBus;
+import frc.robot.constants.IntakeConstants;
+import frc.robot.subsystems.IntakeIO.IntakeInputs;
 
-public class IntakeIOSparkMax {
-    private final CANSparkMax topMaster = new CANSparkMax(CANBus.INTAKE_TOP_MASTER, MotorType.kBrushless);
-    private final CANSparkMax bottomMaster = new CANSparkMax(CANBus.INTAKE_BOTTOM_MASTER, MotorType.kBrushless);
-    private final CANSparkMax topFollower = new CANSparkMax(CANBus.INTAKE_TOP_FOLLOWER, MotorType.kBrushless);
-    private final CANSparkMax bottomFollower = new CANSparkMax(CANBus.INTAKE_BOTTOM_FOLLOWER, MotorType.kBrushless);
+public class IntakeIOSparkMax extends IntakeIO{
+    private final CANSparkMax top = new CANSparkMax(CANBus.INTAKE_TOP_MASTER, MotorType.kBrushless);
+    private final CANSparkMax bottom = new CANSparkMax(CANBus.INTAKE_BOTTOM_MASTER, MotorType.kBrushless);
 
     private final RelativeEncoder topEncoder;
     private final RelativeEncoder bottomEncoder;
 
-    private final ADIS16470_IMU gyro = new ADIS16470_IMU();
-
     public IntakeIOSparkMax() {
-        this.topFollower.follow(this.topMaster);
-        this.bottomFollower.follow(this.bottomMaster);
+        this.top.setInverted(true);
 
-        this.topMaster.setInverted(true);
+        this.top.setIdleMode(IdleMode.kBrake);
+        this.bottom.setIdleMode(IdleMode.kBrake);
 
-        this.topMaster.setIdleMode(IdleMode.kBrake);
-        this.bottomMaster.setIdleMode(IdleMode.kBrake);
+        this.topEncoder = this.top.getEncoder();
+        this.bottomEncoder = this.bottom.getEncoder();
+
+        this.topEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
+        this.bottomEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
+    }
+
+    
+    public void setVoltages(double topVoltage, double bottomVoltage) {
+        top.set(topVoltage);
+        bottom.set(bottomVoltage);
+    }
+
+    public void updateInputs(IntakeInputs inputs) {
+        inputs.topPosition = topEncoder.getPosition();
+        inputs.bottomPosition = bottomEncoder.getPosition();
+
+        inputs.topCurrent = top.getOutputCurrent();
+        inputs.bottomCurrent = bottom.getOutputCurrent();
     }
 }

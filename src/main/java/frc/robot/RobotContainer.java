@@ -12,11 +12,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.IntakePiece;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainIO;
 import frc.robot.subsystems.DrivetrainIOSim;
 import frc.robot.subsystems.DrivetrainIOSparkMax;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeIO;
+import frc.robot.subsystems.IntakeIOSparkMax;;
 
 public class RobotContainer {
     // Xbox controllers
@@ -25,6 +29,7 @@ public class RobotContainer {
 
     // Subsystems
     private final Drivetrain drivetrain;
+    private final Intake intake;
 
     // Commands
     private final TeleopDrive teleopDrive;
@@ -34,10 +39,14 @@ public class RobotContainer {
 
         if (RobotBase.isReal()) {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
+            intake = new Intake(new IntakeIOSparkMax());
         } else if (RobotBase.isSimulation()) {
             drivetrain = new Drivetrain(new DrivetrainIOSim());
+            // Will be changed to IntakeIOSim when it is programmed.
+            intake = new Intake(new IntakeIOSparkMax());
         } else {
             drivetrain = new Drivetrain(new DrivetrainIO());
+            intake = new Intake(new IntakeIO());
         }
 
         teleopDrive = new TeleopDrive(drivetrain, driverController);
@@ -57,6 +66,8 @@ public class RobotContainer {
         new Trigger(() -> driverController.getPOV() == 225).onTrue(new PIDSetAngle(drivetrain, (5 * Math.PI) / 4));
         new Trigger(() -> driverController.getPOV() == 270).onTrue(new PIDSetAngle(drivetrain, (3 * Math.PI) / 2));
         new Trigger(() -> driverController.getPOV() == 315).onTrue(new PIDSetAngle(drivetrain, (7 * Math.PI) / 4));
+
+        new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
     }
 
     public Command getAutonomousCommand() {

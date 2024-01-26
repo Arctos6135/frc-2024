@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.TunableNumber;
+import frc.robot.util.MathUtils;
 
 /**
  * NOTES:
@@ -58,7 +59,7 @@ public class PIDSetAngle extends Command {
         );
 
         // Clamp the speed
-        pidRotation = Math.min(0.5, Math.max(pidRotation, -0.5));
+        pidRotation = MathUtils.clamp(pidRotation, -0.5, 0.5);
 
         drivetrain.arcadeDrive(0, pidRotation);
     }

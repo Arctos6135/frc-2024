@@ -10,47 +10,67 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.IntakePiece;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainIO;
 import frc.robot.subsystems.DrivetrainIOSim;
 import frc.robot.subsystems.DrivetrainIOSparkMax;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeIO;
+import frc.robot.subsystems.IntakeIOSparkMax;;
 
 public class RobotContainer {
-  // Xbox controllers
-  private final XboxController driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER);
-  private final XboxController operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER);
+    // Xbox controllers
+    private final XboxController driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER);
+    private final XboxController operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER);
 
-  // Subsystems
-  private final Drivetrain drivetrain;
+    // Subsystems
+    private final Drivetrain drivetrain;
+    private final Intake intake;
 
-  // Commands
-  private final TeleopDrive teleopDrive;
+    // Commands
+    private final TeleopDrive teleopDrive;
 
-  public RobotContainer() {
-    configureBindings();
+    public RobotContainer() {
+        configureBindings();
 
-    if (RobotBase.isReal()) {
-      this.drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
-    } else if (RobotBase.isSimulation()) {
-      this.drivetrain = new Drivetrain(new DrivetrainIOSim());
-    } else {
-      this.drivetrain = new Drivetrain(new DrivetrainIO());
+        if (RobotBase.isReal()) {
+            drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
+            intake = new Intake(new IntakeIOSparkMax());
+        } else if (RobotBase.isSimulation()) {
+            drivetrain = new Drivetrain(new DrivetrainIOSim());
+            // Will be changed to IntakeIOSim when it is programmed.
+            intake = new Intake(new IntakeIOSparkMax());
+        } else {
+            drivetrain = new Drivetrain(new DrivetrainIO());
+            intake = new Intake(new IntakeIO());
+        }
+
+        teleopDrive = new TeleopDrive(drivetrain, driverController);
+        drivetrain.setDefaultCommand(teleopDrive);
     }
 
-    teleopDrive = new TeleopDrive(drivetrain, driverController);
-    drivetrain.setDefaultCommand(teleopDrive);
-  }
+    private void configureBindings() {
+        new Trigger(() -> driverController.getRightBumper())
+            .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
+            .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
-  private void configureBindings() {
-    new Trigger(() -> driverController.getRightBumper())
-      .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
-      .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
+        new Trigger(() -> driverController.getPOV() == 0).onTrue(new PIDSetAngle(drivetrain, 0));
+        new Trigger(() -> driverController.getPOV() == 45).onTrue(new PIDSetAngle(drivetrain, Math.PI / 4));
+        new Trigger(() -> driverController.getPOV() == 90).onTrue(new PIDSetAngle(drivetrain, Math.PI / 2));
+        new Trigger(() -> driverController.getPOV() == 135).onTrue(new PIDSetAngle(drivetrain, (3 * Math.PI) / 4));
+        new Trigger(() -> driverController.getPOV() == 180).onTrue(new PIDSetAngle(drivetrain, Math.PI));
+        new Trigger(() -> driverController.getPOV() == 225).onTrue(new PIDSetAngle(drivetrain, (5 * Math.PI) / 4));
+        new Trigger(() -> driverController.getPOV() == 270).onTrue(new PIDSetAngle(drivetrain, (3 * Math.PI) / 2));
+        new Trigger(() -> driverController.getPOV() == 315).onTrue(new PIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
-  }
+        new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
+    }
 
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
-  }
+    public Command getAutonomousCommand() {
+        return Commands.print("No autonomous command configured");
+    }
 }

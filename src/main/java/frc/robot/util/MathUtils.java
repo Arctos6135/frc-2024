@@ -5,7 +5,7 @@ package frc.robot.util;
  */
 public class MathUtils {
     /**
-     * Makes number at most max, and at least min.
+     * Return number if within the range of min and max, else round to either min or max.
      * @param number
      * @param min
      * @param max
@@ -17,10 +17,10 @@ public class MathUtils {
 
 
     /**
-     * Return True if the difference between num1 and num2 is negligible.
+     * Return true if the difference between num1 and num2 is negligible.
      * @param num1
      * @param num2
-     * @return
+     * @return true or false
      */
     public static Boolean closeEnough(double num1, double num2) {
         // Value to which the the difference is negligible.

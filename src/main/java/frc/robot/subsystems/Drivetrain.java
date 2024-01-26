@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.FeedforwardCharacterization;
@@ -15,6 +16,11 @@ public class Drivetrain extends SubsystemBase {
     private final DrivetrainIO io;
     // The current sensor readings for our drivetrain. This is actually a `DrivetrainIO.Inputs`, but the annotation on the class generated this lovely version for us that logs itself nicely.
     private final DrivetrainInputsAutoLogged inputs = new DrivetrainInputsAutoLogged();
+
+    // PIDControllers that control the drivetrain motor voltage output
+    private final PIDController leftController = new PIDController(0.0, 0.0, 0.0);
+    private final PIDController rightController = new PIDController(0.0, 0.0, 0.0);
+
 
     /**
      * Construct a new drivetrain.

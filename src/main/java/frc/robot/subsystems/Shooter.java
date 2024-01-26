@@ -27,8 +27,8 @@ public class Shooter extends SubsystemBase {
         medianCurrent = filter.calculate(inputs.rightCurrent);
     }
 
-    public void setVoltages(double rightVoltage, double leftVoltage) {
-        io.setVoltages(rightVoltage, leftVoltage);
+    public void setVoltages(double leftVoltage, double rightVoltage) {
+        io.setVoltages(leftVoltage, rightVoltage);
     }
     public double getFilteredCurrent() {
         return medianCurrent;

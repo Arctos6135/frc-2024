@@ -7,6 +7,9 @@ public class ShooterIO {
     public static class ShooterInputs {
         public double rightCurrent; // assuming no resistance if there is conversion needed
         public double leftCurrent;
+
+        public double leftVelocity;
+        public double rightVelocity;
     }
 
     public void updateInputs(ShooterInputs inputs) {}

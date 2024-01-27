@@ -35,8 +35,6 @@ public class RobotContainer {
     private final TeleopDrive teleopDrive;
 
     public RobotContainer() {
-        configureBindings();
-
         if (RobotBase.isReal()) {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
             intake = new Intake(new IntakeIOSparkMax());
@@ -51,6 +49,9 @@ public class RobotContainer {
 
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
+
+                configureBindings();
+
     }
 
     private void configureBindings() {

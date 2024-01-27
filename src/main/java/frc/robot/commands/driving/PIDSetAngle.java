@@ -2,7 +2,7 @@ package frc.robot.commands.driving;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.DriveConstants;
+import frc.robot.constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.TunableNumber;
 import frc.robot.util.MathUtils;
@@ -66,7 +66,7 @@ public class PIDSetAngle extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(drivetrain.getYaw() - setpointAngle) < DriveConstants.ROTATION_TOLERANCE;
+        return Math.abs(drivetrain.getYaw() - setpointAngle) < DrivetrainConstants.ROTATION_TOLERANCE;
     }
 
     @Override

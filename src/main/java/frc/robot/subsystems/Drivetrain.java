@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.FeedforwardCharacterization;
@@ -23,6 +24,18 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController leftController = new PIDController(0.0, 0.0, 0.0);
     private final PIDController rightController = new PIDController(0.0, 0.0, 0.0);
 
+    // Simple feedforward controllers that determine how the drivetrain should behave
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 0.0, 0.0);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 0.0, 0.0);
+
+
+    // The target speed of the drivetrain. In m/s
+    private double targetVelocityLeft = 0; 
+    private double targetVelocityRight = 0;
+
+    // The previous velocity of the drivetrain. Gets updated each loop. Used for feedforward. In m/s
+    private double previousVelocityLeft = 0;
+    private double previousVelocityRight = 0;
 
     /**
      * Construct a new drivetrain.
@@ -48,6 +61,24 @@ public class Drivetrain extends SubsystemBase {
         // Update the odometry.
         var pose = odometry.update(gyroAngle, inputs.leftPosition, inputs.rightPosition);
         Logger.recordOutput("Odometry", pose);
+
+        double leftVelocity = inputs.leftVelocity;
+        double rightVelocity = inputs.rightVelocity;
+
+        double leftFeedforwardEffort = leftForward.calculate(targetVelocityLeft, (leftVelocity - previousVelocityLeft) / 0.02);
+        double leftFeedbackEffort = leftController.calculate(leftVelocity, targetVelocityLeft);
+
+        double left = leftFeedforwardEffort + leftFeedbackEffort;
+
+        double rightFeedforwardEffort = rightForward.calculate(targetVelocityRight, (rightVelocity - previousVelocityRight) / 0.02);
+        double rightFeedbackEffort = rightController.calculate(rightVelocity, targetVelocityRight);
+
+        double right = rightFeedforwardEffort + rightFeedbackEffort;
+
+        io.setVoltages(left, right);
+        
+        previousVelocityLeft = leftVelocity;
+        previousVelocityRight = rightVelocity;
     }
 
     /**
@@ -57,6 +88,15 @@ public class Drivetrain extends SubsystemBase {
      */
     public void arcadeDrive(double translation, double rotation) {
         io.setVoltages(12 * (translation + rotation), 12 * (translation - rotation));
+    }
+
+    /**
+     * Set the target speed of the drivetrain.
+     * @param speed the target speed in meters/sec
+     */
+    public void setSpeed(double speedLeft, double speedRight) {
+        this.targetVelocityLeft = speedLeft;
+        this.targetVelocityRight = speedRight;
     }
 
     /**

@@ -7,7 +7,7 @@ public class IntakeIO {
     public static class IntakeInputs {
         public double position;
 
-        public double current; // assuming no resistance if their is conversion is needed
+        public double current;
     }
 
     public void updateInputs(IntakeInputs inputs) {}

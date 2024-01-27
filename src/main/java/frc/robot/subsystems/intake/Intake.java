@@ -4,7 +4,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
-import frc.robot.subsystems.intake.IntakeInputsAutoLogged;
 
 
 public class Intake extends SubsystemBase {

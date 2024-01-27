@@ -21,7 +21,7 @@ public class IntakePiece extends Command {
 
     @Override
     public void execute() {
-        intake.setVoltages(IntakeConstants.TOP_VOLTAGE, IntakeConstants.BOTTOM_VOLTAGE);
+        intake.setVoltage(IntakeConstants.VOLTAGE);
     }
 
     @Override
@@ -35,6 +35,6 @@ public class IntakePiece extends Command {
 
     @Override
     public void end(boolean disrupted) {
-        intake.setVoltages(0, 0);
+        intake.setVoltage(0);
     }
 }

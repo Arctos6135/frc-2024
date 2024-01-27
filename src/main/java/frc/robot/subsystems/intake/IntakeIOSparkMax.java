@@ -10,36 +10,28 @@ import frc.robot.constants.CANBus;
 import frc.robot.constants.IntakeConstants;
 
 public class IntakeIOSparkMax extends IntakeIO{
-    private final CANSparkMax top = new CANSparkMax(CANBus.INTAKE_TOP_MASTER, MotorType.kBrushless);
-    private final CANSparkMax bottom = new CANSparkMax(CANBus.INTAKE_BOTTOM_MASTER, MotorType.kBrushless);
+    private final CANSparkMax motor = new CANSparkMax(CANBus.INTAKE_TOP_MASTER, MotorType.kBrushless);
 
     private final RelativeEncoder topEncoder;
-    private final RelativeEncoder bottomEncoder;
 
     public IntakeIOSparkMax() {
-        top.setInverted(true);
+        motor.setInverted(true);
 
-        top.setIdleMode(IdleMode.kBrake);
-        bottom.setIdleMode(IdleMode.kBrake);
+        motor.setIdleMode(IdleMode.kBrake);
 
-        topEncoder = top.getEncoder();
-        bottomEncoder = bottom.getEncoder();
+        topEncoder = motor.getEncoder();
 
         topEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
-        bottomEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
     }
 
     
-    public void setVoltages(double topVoltage, double bottomVoltage) {
-        top.set(topVoltage);
-        bottom.set(bottomVoltage);
+    public void setVoltage(double voltage) {
+        motor.set(voltage);
     }
 
     public void updateInputs(IntakeInputs inputs) {
         inputs.topPosition = topEncoder.getPosition();
-        inputs.bottomPosition = bottomEncoder.getPosition();
 
-        inputs.topCurrent = top.getOutputCurrent();
-        inputs.bottomCurrent = bottom.getOutputCurrent();
+        inputs.topCurrent = motor.getOutputCurrent();
     }
 }

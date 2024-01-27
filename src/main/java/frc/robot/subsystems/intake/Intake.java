@@ -37,8 +37,8 @@ public class Intake extends SubsystemBase {
         return inputs.bottomPosition;
     }
 
-    public void setVoltages(double topVoltage, double bottomVoltage) {
-        io.setVoltages(topVoltage, bottomVoltage);
+    public void setVoltage(double voltage) {
+        io.setVoltage(voltage);
     }
     public double getFilteredCurrent() {
         return medianCurrent;

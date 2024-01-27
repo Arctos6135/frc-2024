@@ -14,5 +14,5 @@ public class IntakeIO {
 
     public void updateInputs(IntakeInputs inputs) {}
 
-    public void setVoltages(double topVoltage, double bottomVoltage) {}
+    public void setVoltage(double voltage) {}
 }

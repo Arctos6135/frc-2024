@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.FeedforwardCharacterization;
 import frc.robot.commands.FeedforwardCharacterization.Config;
-import frc.robot.subsystems.drivetrain.DrivetrainIO;
 
 /**
  * A subsystem that controls the drivey bit of the robot.
@@ -96,6 +95,9 @@ public class Drivetrain extends SubsystemBase {
      * @param speed the target speed in meters/sec
      */
     public void setSpeed(double speedLeft, double speedRight) {
+        Logger.recordOutput("Drivetrain Target Left Velocity", speedLeft);
+        Logger.recordOutput("Drivetrain Target Right Velocity", speedRight);
+
         previousTargetVelocityLeft = targetVelocityLeft;
         previousTargetVelocityRight = targetVelocityRight;
 

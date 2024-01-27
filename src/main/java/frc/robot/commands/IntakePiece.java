@@ -4,6 +4,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.intake.Intake;
 
+
+/**
+ * Allow robot to intake notes. 
+ * 
+ * This command uses the current spikes of the motor to 
+ * determine when a note has been successfull intaken.
+ */
 public class IntakePiece extends Command {
     private final Intake intake;
 

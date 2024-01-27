@@ -12,16 +12,16 @@ import frc.robot.constants.IntakeConstants;
 public class IntakeIOSparkMax extends IntakeIO{
     private final CANSparkMax motor = new CANSparkMax(CANBus.INTAKE_TOP_MASTER, MotorType.kBrushless);
 
-    private final RelativeEncoder topEncoder;
+    private final RelativeEncoder encoder;
 
     public IntakeIOSparkMax() {
         motor.setInverted(true);
 
         motor.setIdleMode(IdleMode.kBrake);
 
-        topEncoder = motor.getEncoder();
+        encoder = motor.getEncoder();
 
-        topEncoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
+        encoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
     }
 
     
@@ -30,8 +30,8 @@ public class IntakeIOSparkMax extends IntakeIO{
     }
 
     public void updateInputs(IntakeInputs inputs) {
-        inputs.topPosition = topEncoder.getPosition();
+        inputs.position = encoder.getPosition();
 
-        inputs.topCurrent = motor.getOutputCurrent();
+        inputs.current = motor.getOutputCurrent();
     }
 }

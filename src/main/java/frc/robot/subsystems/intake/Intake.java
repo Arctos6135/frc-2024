@@ -26,15 +26,11 @@ public class Intake extends SubsystemBase {
         // Log all the sensor data.
         Logger.processInputs("Intake", inputs);
 
-        medianCurrent = filter.calculate(inputs.topCurrent);
+        medianCurrent = filter.calculate(inputs.current);
     }
 
     public double getTopPosition() {
-        return inputs.topPosition;
-    }
-
-    public double getBottomPosition() {
-        return inputs.bottomPosition;
+        return inputs.position;
     }
 
     public void setVoltage(double voltage) {

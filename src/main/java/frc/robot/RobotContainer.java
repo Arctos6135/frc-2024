@@ -41,7 +41,7 @@ public class RobotContainer {
         } else if (RobotBase.isSimulation()) {
             drivetrain = new Drivetrain(new DrivetrainIOSim());
             // Will be changed to IntakeIOSim when it is programmed.
-            intake = new Intake(new IntakeIOSparkMax());
+            intake = new Intake(new IntakeIO());
         } else {
             drivetrain = new Drivetrain(new DrivetrainIO());
             intake = new Intake(new IntakeIO());
@@ -72,6 +72,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return drivetrain.characterize();
     }
 }

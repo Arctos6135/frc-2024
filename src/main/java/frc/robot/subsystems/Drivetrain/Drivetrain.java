@@ -26,8 +26,8 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController rightController = new PIDController(0.0, 0.0, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 0.0, 0.0);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 0.0, 0.0);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.2, 0.26);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.2, 0.26);
 
 
     // The target speed of the drivetrain. In m/s
@@ -120,14 +120,17 @@ public class Drivetrain extends SubsystemBase {
     // The drivetrain needs 4m of clearance in front of and behind it when running this command.
     public Command characterize() {
         return new FeedforwardCharacterization(new Config(
-            voltage -> io.setVoltages(voltage, voltage),
+            voltage -> {
+                Logger.recordOutput("Feedforward Voltage", voltage);
+                io.setVoltages(voltage, voltage);
+            },
             this::getDistance,
             () -> (inputs.leftVelocity + inputs.rightVelocity) / 2, 
             6, 
-            12, 
+            4, 
             2, 
             4, 
             "Drivetrain"
-        ));
+        ), this);
     }
 }

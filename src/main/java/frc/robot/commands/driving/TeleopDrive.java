@@ -3,7 +3,7 @@ package frc.robot.commands.driving;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DriveConstants;
-import frc.robot.subsystems.Drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Dampener;
 
 public class TeleopDrive extends Command {
@@ -30,7 +30,10 @@ public class TeleopDrive extends Command {
         double x = controller.getRawAxis(XboxController.Axis.kRightX.value);
         double x1 = xDampener.dampen(x) * (precisionDrive ? DriveConstants.PRECISION_TURN : 1.0);
 
-        drivetrain.arcadeDrive(y1 * 0.85, x1 * 0.25);
+        y1 *= DriveConstants.MAX_TELEOP_SPEED;
+        x1 *= DriveConstants.MAX_TELEOP_SPEED * 0.3;
+
+        drivetrain.setSpeed(y1 + x1, y1 - x1);
     }
 
     public void setPrecisionDrive(boolean precise) {

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Drivetrain;
+package frc.robot.subsystems.drivetrain;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.FeedforwardCharacterization;
 import frc.robot.commands.FeedforwardCharacterization.Config;
-import frc.robot.subsystems.Drivetrain.Drivetrain.DrivetrainIO;
+import frc.robot.subsystems.drivetrain.DrivetrainIO;
 
 /**
  * A subsystem that controls the drivey bit of the robot.

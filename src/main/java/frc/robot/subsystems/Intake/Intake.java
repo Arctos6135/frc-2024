@@ -1,10 +1,10 @@
-package frc.robot.subsystems.Intake;
+package frc.robot.subsystems.intake;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
-import frc.robot.subsystems.IntakeInputsAutoLogged;
+import frc.robot.subsystems.intake.IntakeInputsAutoLogged;
 
 
 public class Intake extends SubsystemBase {

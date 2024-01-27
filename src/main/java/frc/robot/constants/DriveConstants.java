@@ -17,4 +17,6 @@ public class DriveConstants {
 
     // Needs to be tuned :)
     public static final double ROTATION_TOLERANCE = 0.5;
+
+    public static final double MAX_TELEOP_SPEED = 3.0;
 }

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Drivetrain;
+package frc.robot.subsystems.drivetrain;
 
 import org.littletonrobotics.junction.AutoLog;
 

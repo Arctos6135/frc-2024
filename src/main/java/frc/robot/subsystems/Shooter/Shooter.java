@@ -1,10 +1,10 @@
-package frc.robot.subsystems.Shooter;
+package frc.robot.subsystems.shooter;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
-import frc.robot.subsystems.ShooterInputsAutoLogged;
+import frc.robot.subsystems.shooter.ShooterInputsAutoLogged;
 
 public class Shooter extends SubsystemBase {
     private final ShooterIO io;

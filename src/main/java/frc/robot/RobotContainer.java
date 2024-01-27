@@ -50,8 +50,7 @@ public class RobotContainer {
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
-                configureBindings();
-
+        configureBindings();
     }
 
     private void configureBindings() {
@@ -69,6 +68,8 @@ public class RobotContainer {
         new Trigger(() -> driverController.getPOV() == 315).onTrue(new PIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
         new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
+
+        // TODO Configure shooter launch button :)
     }
 
     public Command getAutonomousCommand() {

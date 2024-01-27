@@ -34,14 +34,4 @@ public class DrivetrainIO {
      * @param right the voltage of the right side in the range [-12, 12]
      */
     public void setVoltages(double left, double right) {}
-
-    /**
-     * Return the left encoder position in meters.
-     */
-    public double getLeftPosition() { return 0; }
-
-    /**
-     * Return the right encoder position in meters.
-     */
-    public double getRightPosition() { return 0; }
 }

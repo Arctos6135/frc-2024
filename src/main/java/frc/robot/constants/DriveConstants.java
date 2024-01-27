@@ -14,4 +14,7 @@ public class DriveConstants {
     public static double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
     public static double ENCODER_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO;
     public static double CONTROLLER_DEADZONE = 0.15;
+
+    // Needs to be tuned :)
+    public static final double ROTATION_TOLERANCE = 0.5;
 }

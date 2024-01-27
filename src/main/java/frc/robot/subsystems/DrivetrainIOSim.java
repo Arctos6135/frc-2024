@@ -38,14 +38,4 @@ public class DrivetrainIOSim extends DrivetrainIO {
     public void setVoltages(double left, double right) {
         drive.setInputs(left, right);
     }
-
-    @Override
-    public double getLeftPosition() {
-        return drive.getLeftPositionMeters();
-    }
-
-    @Override
-    public double getRightPosition() {
-        return drive.getRightPositionMeters();
-    }
 }

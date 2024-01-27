@@ -61,16 +61,4 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         inputs.yaw = gyro.getAngle(gyro.getYawAxis());
         inputs.yawRate = gyro.getRate(gyro.getYawAxis());
     }
-
-    // TODO Ensure that this returns the position in meters (not sure if it does yet)
-    @Override
-    public double getLeftPosition() {
-        return leftEncoder.getPosition();
-    }
-
-    // TODO Ensure that this returns the position in meters (not sure if it does yet)
-    @Override
-    public double getRightPosition() {
-        return rightEncoder.getPosition();
-    }
 }

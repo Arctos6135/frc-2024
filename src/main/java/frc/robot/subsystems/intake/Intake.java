@@ -26,6 +26,8 @@ public class Intake extends SubsystemBase {
         Logger.processInputs("Intake", inputs);
 
         medianCurrent = filter.calculate(inputs.current);
+
+        Logger.recordOutput("Intake Filtered Current", medianCurrent);
     }
 
     public double getTopPosition() {
@@ -33,6 +35,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setVoltage(double voltage) {
+        Logger.recordOutput("Intake Voltage", voltage);
         io.setVoltage(voltage);
     }
     public double getFilteredCurrent() {

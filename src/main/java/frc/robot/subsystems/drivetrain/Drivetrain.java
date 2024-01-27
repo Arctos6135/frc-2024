@@ -97,7 +97,7 @@ public class Drivetrain extends SubsystemBase {
         DifferentialDriveWheelSpeeds speeds = kinematics.toWheelSpeeds(new ChassisSpeeds(throttle, 0, turn));
         setSpeed(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
     }
-
+    
     /**
      * Set the target speed of the drivetrain.
      * @param speedLeft the target speed of the left side in m/s
@@ -115,6 +115,9 @@ public class Drivetrain extends SubsystemBase {
 
         leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
         rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
+
+        Logger.recordOutput("Drivetrain Target Left Acceleration", leftAcceleration);
+        Logger.recordOutput("Drivetrain Target Right Acceleration", rightAcceleration);
     }
 
     /**

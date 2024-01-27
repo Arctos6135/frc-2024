@@ -25,13 +25,16 @@ public class Shooter extends SubsystemBase {
         Logger.processInputs("Shooter", inputs);
 
         medianCurrent = filter.calculate(inputs.rightCurrent);
+        Logger.recordOutput("Shooter Filtered Current", medianCurrent);
     }
 
     public void setVoltages(double leftVoltage, double rightVoltage) {
+        Logger.recordOutput("Shooter Left Voltage", leftVoltage);
+        Logger.recordOutput("Shooter Right Voltage", rightVoltage);
         io.setVoltages(leftVoltage, rightVoltage);
     }
+
     public double getFilteredCurrent() {
         return medianCurrent;
     }
-
 }

@@ -14,13 +14,13 @@ import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.IntakePiece;
 import frc.robot.constants.ControllerConstants;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.DrivetrainIO;
-import frc.robot.subsystems.DrivetrainIOSim;
-import frc.robot.subsystems.DrivetrainIOSparkMax;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.IntakeIO;
-import frc.robot.subsystems.IntakeIOSparkMax;;
+import frc.robot.subsystems.Drivetrain.Drivetrain;
+import frc.robot.subsystems.Drivetrain.Drivetrain.DrivetrainIO;
+import frc.robot.subsystems.Drivetrain.Drivetrain.DrivetrainIOSim;
+import frc.robot.subsystems.Drivetrain.Drivetrain.DrivetrainIOSparkMax;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOSparkMax;;
 
 public class RobotContainer {
     // Xbox controllers

@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Drivetrain;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.FeedforwardCharacterization;
 import frc.robot.commands.FeedforwardCharacterization.Config;
+import frc.robot.subsystems.Drivetrain.Drivetrain.DrivetrainIO;
 
 /**
  * A subsystem that controls the drivey bit of the robot.
@@ -34,8 +35,11 @@ public class Drivetrain extends SubsystemBase {
     private double targetVelocityRight = 0;
 
     // The previous velocity of the drivetrain. Gets updated each loop. Used for feedforward. In m/s
-    private double previousVelocityLeft = 0;
-    private double previousVelocityRight = 0;
+    private double previousTargetVelocityLeft = 0;
+    private double previousTargetVelocityRight = 0;
+
+    private double leftAcceleration = 0;
+    private double rightAcceleration = 0;
 
     /**
      * Construct a new drivetrain.
@@ -65,20 +69,17 @@ public class Drivetrain extends SubsystemBase {
         double leftVelocity = inputs.leftVelocity;
         double rightVelocity = inputs.rightVelocity;
 
-        double leftFeedforwardEffort = leftForward.calculate(targetVelocityLeft, (leftVelocity - previousVelocityLeft) / 0.02);
+        double leftFeedforwardEffort = leftForward.calculate(targetVelocityLeft, leftAcceleration);
         double leftFeedbackEffort = leftController.calculate(leftVelocity, targetVelocityLeft);
 
         double left = leftFeedforwardEffort + leftFeedbackEffort;
 
-        double rightFeedforwardEffort = rightForward.calculate(targetVelocityRight, (rightVelocity - previousVelocityRight) / 0.02);
+        double rightFeedforwardEffort = rightForward.calculate(targetVelocityRight, rightAcceleration);
         double rightFeedbackEffort = rightController.calculate(rightVelocity, targetVelocityRight);
 
         double right = rightFeedforwardEffort + rightFeedbackEffort;
 
         io.setVoltages(left, right);
-        
-        previousVelocityLeft = leftVelocity;
-        previousVelocityRight = rightVelocity;
     }
 
     /**
@@ -95,8 +96,14 @@ public class Drivetrain extends SubsystemBase {
      * @param speed the target speed in meters/sec
      */
     public void setSpeed(double speedLeft, double speedRight) {
-        this.targetVelocityLeft = speedLeft;
-        this.targetVelocityRight = speedRight;
+        previousTargetVelocityLeft = targetVelocityLeft;
+        previousTargetVelocityRight = targetVelocityRight;
+
+        targetVelocityLeft = speedLeft;
+        targetVelocityRight = speedRight;
+
+        leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
+        rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
     }
 
     /**

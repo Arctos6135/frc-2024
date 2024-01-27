@@ -3,7 +3,7 @@ package frc.robot.commands.driving;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DriveConstants;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain.Drivetrain;
 import frc.robot.util.Dampener;
 
 public class TeleopDrive extends Command {

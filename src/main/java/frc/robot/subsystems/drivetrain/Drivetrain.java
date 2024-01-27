@@ -3,7 +3,11 @@ package frc.robot.subsystems.drivetrain;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +44,14 @@ public class Drivetrain extends SubsystemBase {
     private double leftAcceleration = 0;
     private double rightAcceleration = 0;
 
+
+    /**
+     * Construct a new odometry object.
+     */
+    private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromRadians(inputs.yaw), inputs.leftPosition, inputs.rightPosition);
+
+    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(21.83));
+
     /**
      * Construct a new drivetrain.
      * @param io the kind of drivetrain we are controlling: either simulation or real
@@ -47,11 +59,6 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
     }
-
-    /**
-     * Construct a new odometry object.
-     */
-    DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromRadians(inputs.yaw), inputs.leftPosition, inputs.rightPosition);
 
     @Override
     public void periodic() {
@@ -82,17 +89,19 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Make the robot drive with the given translational power and rotational power.
-     * @param translation the forward-backwards power in the range [-1, 1]
-     * @param rotation the left-right turning power in the range [-1, 1]
+     * Set the target speed of the drivetrain.
+     * @param throttle the forward speed of the drivetrain in m/s
+     * @param turn the rotational speed of the drivetrain in rad/s
      */
-    public void arcadeDrive(double translation, double rotation) {
-        io.setVoltages(12 * (translation + rotation), 12 * (translation - rotation));
+    public void arcadeDrive(double throttle, double turn) {
+        DifferentialDriveWheelSpeeds speeds = kinematics.toWheelSpeeds(new ChassisSpeeds(throttle, 0, turn));
+        setSpeed(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
     }
 
     /**
      * Set the target speed of the drivetrain.
-     * @param speed the target speed in meters/sec
+     * @param speedLeft the target speed of the left side in m/s
+     * @param speedRight the target speed of the right side in m/s
      */
     public void setSpeed(double speedLeft, double speedRight) {
         Logger.recordOutput("Drivetrain Target Left Velocity", speedLeft);

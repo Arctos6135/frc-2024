@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -73,6 +76,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return drivetrain.characterize();
+        return new PathPlannerAuto("Test Auto");
     }
 }

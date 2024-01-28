@@ -16,6 +16,9 @@ public class ArmIOSparkMax extends ArmIO {
     private final RelativeEncoder armEncoder;
 
     public ArmIOSparkMax() {
+        // Sets current limit to prevent brownouts.
+        armMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+
         armMotor.setIdleMode(IdleMode.kBrake);
         
         armEncoder = armMotor.getEncoder();

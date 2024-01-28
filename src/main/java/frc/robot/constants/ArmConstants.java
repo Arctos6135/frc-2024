@@ -6,4 +6,7 @@ public class ArmConstants {
     
     // Undecided while design figures out what to do.
     public static double ENCODER_CONVERSION_FACTOR = 2 * Math.PI * GEARBOX_RATIO;
+
+    // Current limit for arm motor.
+    public static final int CURRENT_LIMIT = 15;
 }

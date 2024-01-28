@@ -2,10 +2,14 @@ package frc.robot.subsystems.drivetrain;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.controller.PIDController;
@@ -58,6 +62,18 @@ public class Drivetrain extends SubsystemBase {
      */
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
+
+        AutoBuilder.configureRamsete(
+            () -> odometry.getPoseMeters(), 
+            (pose) -> {
+                odometry.resetPosition(Rotation2d.fromRadians(inputs.yaw), new DifferentialDriveWheelPositions(inputs.leftPosition, inputs.rightPosition), pose);
+            }, 
+            () -> new ChassisSpeeds((inputs.leftVelocity + inputs.rightVelocity) / 2, 0, inputs.yawRate), 
+            speeds -> arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond), 
+            new ReplanningConfig(), 
+            () -> false, 
+            this
+        );
     }
 
     @Override
@@ -97,7 +113,7 @@ public class Drivetrain extends SubsystemBase {
         DifferentialDriveWheelSpeeds speeds = kinematics.toWheelSpeeds(new ChassisSpeeds(throttle, 0, turn));
         setSpeed(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
     }
-    
+
     /**
      * Set the target speed of the drivetrain.
      * @param speedLeft the target speed of the left side in m/s

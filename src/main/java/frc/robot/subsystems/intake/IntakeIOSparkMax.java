@@ -15,12 +15,16 @@ public class IntakeIOSparkMax extends IntakeIO{
     private final RelativeEncoder encoder;
 
     public IntakeIOSparkMax() {
+        // Sets current limits.
+        motor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
+
         motor.setInverted(true);
 
         motor.setIdleMode(IdleMode.kBrake);
 
         encoder = motor.getEncoder();
 
+        // meters of belt
         encoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
     }
 

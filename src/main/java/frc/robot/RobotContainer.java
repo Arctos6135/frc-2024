@@ -17,13 +17,19 @@ import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.IntakePiece;
 import frc.robot.constants.ControllerConstants;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOSparkMax;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
 import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
-import frc.robot.subsystems.intake.IntakeIOSparkMax;;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;;
 
 public class RobotContainer {
     // Xbox controllers
@@ -33,6 +39,8 @@ public class RobotContainer {
     // Subsystems
     private final Drivetrain drivetrain;
     private final Intake intake;
+    private final Arm arm;
+    private final Shooter shooter;
 
     // Commands
     private final TeleopDrive teleopDrive;
@@ -41,13 +49,21 @@ public class RobotContainer {
         if (RobotBase.isReal()) {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
             intake = new Intake(new IntakeIOSparkMax());
+            arm = new Arm(new ArmIOSparkMax());
+            shooter = new Shooter(new ShooterIOSparkMax());
         } else if (RobotBase.isSimulation()) {
             drivetrain = new Drivetrain(new DrivetrainIOSim());
             // Will be changed to IntakeIOSim when it is programmed.
             intake = new Intake(new IntakeIO());
+            // Will be changed to ArmIOSim when it is programmed.
+            arm = new Arm(new ArmIO());
+            // Will be changed to ShooterIOSim when it is programmed.
+            shooter = new Shooter(new ShooterIO());
         } else {
             drivetrain = new Drivetrain(new DrivetrainIO());
             intake = new Intake(new IntakeIO());
+            arm = new Arm(new ArmIO());
+            shooter = new Shooter(new ShooterIO());
         }
 
         teleopDrive = new TeleopDrive(drivetrain, driverController);

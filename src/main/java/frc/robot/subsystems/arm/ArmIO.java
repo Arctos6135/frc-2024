@@ -14,6 +14,7 @@ public class ArmIO {
         // Zero radians should be parallel to the ground.
         public double position;
 
+        // Radians per second
         public double velocity;
     }
 
@@ -24,7 +25,7 @@ public class ArmIO {
 
     /**
      * Set the voltage of the arm motor.
-     * @param motor
+     * @param motor shh dont tell anyone 🤫
      */
     public void setVoltage(double motor) {}
 }

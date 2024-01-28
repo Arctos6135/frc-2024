@@ -46,12 +46,15 @@ public class RobotContainer {
     private final TeleopDrive teleopDrive;
 
     public RobotContainer() {
+        // Creates a real robot.
         if (RobotBase.isReal()) {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
-        } else if (RobotBase.isSimulation()) {
+        }
+        // Creates a simulated robot.
+        else if (RobotBase.isSimulation()) {
             drivetrain = new Drivetrain(new DrivetrainIOSim());
             // Will be changed to IntakeIOSim when it is programmed.
             intake = new Intake(new IntakeIO());
@@ -59,7 +62,9 @@ public class RobotContainer {
             arm = new Arm(new ArmIO());
             // Will be changed to ShooterIOSim when it is programmed.
             shooter = new Shooter(new ShooterIO());
-        } else {
+        } 
+        // Creates a replay robot.
+        else {
             drivetrain = new Drivetrain(new DrivetrainIO());
             intake = new Intake(new IntakeIO());
             arm = new Arm(new ArmIO());
@@ -73,10 +78,12 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        // Binds precision drive toggling to driver's right bumper.
         new Trigger(() -> driverController.getRightBumper())
             .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
             .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
+        // Binds drivetrain turning to driver's controller.
         new Trigger(() -> driverController.getPOV() == 0).onTrue(new PIDSetAngle(drivetrain, 0));
         new Trigger(() -> driverController.getPOV() == 45).onTrue(new PIDSetAngle(drivetrain, Math.PI / 4));
         new Trigger(() -> driverController.getPOV() == 90).onTrue(new PIDSetAngle(drivetrain, Math.PI / 2));

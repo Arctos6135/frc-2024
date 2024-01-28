@@ -26,6 +26,7 @@ public class MathUtils {
         // Value to which the the difference is negligible.
         double distance = 0.01;
 
+        // Return if the difference is less than distance.
         return Math.abs(num1 - num2) <= distance;
     }
 }

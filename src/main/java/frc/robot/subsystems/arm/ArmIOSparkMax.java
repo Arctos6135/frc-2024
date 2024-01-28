@@ -36,7 +36,6 @@ public class ArmIOSparkMax extends ArmIO {
     @Override
     public void updateInputs(ArmInputs inputs) {
         inputs.position = armEncoder.getPosition();
-
         inputs.velocity = armEncoder.getVelocity();
     }
 }

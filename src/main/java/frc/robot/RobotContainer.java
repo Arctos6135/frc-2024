@@ -74,7 +74,7 @@ public class RobotContainer {
             .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
             .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
-        // Binds drivetrain turning to driver's controller.
+        // Binds macros for orienting robot turning to driver's dpad.
         new Trigger(() -> driverController.getPOV() == 0).onTrue(new PIDSetAngle(drivetrain, 0));
         new Trigger(() -> driverController.getPOV() == 45).onTrue(new PIDSetAngle(drivetrain, Math.PI / 4));
         new Trigger(() -> driverController.getPOV() == 90).onTrue(new PIDSetAngle(drivetrain, Math.PI / 2));

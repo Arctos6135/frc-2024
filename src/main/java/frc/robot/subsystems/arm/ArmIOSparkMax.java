@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
@@ -26,6 +27,12 @@ public class ArmIOSparkMax extends ArmIO {
         armEncoder.setPositionConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
         armEncoder.setVelocityConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
         armEncoder.setPosition(ArmConstants.STARTING_POSITION);
+
+        // sets up soft limits
+        armMotor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
+        armMotor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
+        armMotor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
+        armMotor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
     }
 
     @Override

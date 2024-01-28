@@ -21,6 +21,7 @@ public class IntakeIOSparkMax extends IntakeIO{
 
         encoder = motor.getEncoder();
 
+        // meters of belt
         encoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
     }
 

@@ -34,7 +34,6 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setRPS(double rps) {
-
         double feedforwardOutput = feedforward.calculate(rps);
         Logger.recordOutput("Shooter Target Velocity", rps);
 

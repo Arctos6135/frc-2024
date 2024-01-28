@@ -4,7 +4,7 @@ import edu.wpi.first.math.util.Units;
 
 public class ShooterConstants {
     // these numbers are copied from drive constants and are temporary
-    public static final double GEARBOX_RATIO = 1 / 8.45;
+    public static final double GEARBOX_RATIO = 1;
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(6);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
     public static final double ENCODER_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO;

@@ -21,8 +21,6 @@ public class ArmPID extends Command {
     private final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
     private final PIDController controller = new PIDController(0, 0, 0);
 
-    private double targetAngle;
-
     private State targetState;
 
     /**
@@ -35,15 +33,9 @@ public class ArmPID extends Command {
      */
     public ArmPID(Arm arm, double targetAngle) {
         this.arm = arm;
-        this.targetAngle = targetAngle;
+        this.targetState = new State(targetAngle, 0);
 
         addRequirements(arm);
-    }
-
-    @Override
-    public void initialize() {
-        // TODO since the state also takes an velocity, should arm subsystem have a velocity getter too?
-        this.targetState = new State(targetAngle, arm.getArmVelocity());
     }
 
     @Override

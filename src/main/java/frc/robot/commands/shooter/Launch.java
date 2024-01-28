@@ -8,17 +8,26 @@ import frc.robot.subsystems.shooter.Shooter;
  * Allow robot to start shooting. Does not have a built-in isFinished condition.
  */
 public class Launch extends Command {
-    Shooter shooter;
+    private final Shooter shooter;
 
-    public Launch(Shooter shooter) {
+    // Rotations per second
+    private double speed;
+
+    /**
+     * Call the launch command.
+     * @param shooter the shooter subsystem
+     * @param speed the speed at which the wheels should rotate at. In rotations per second.
+     */
+    public Launch(Shooter shooter, double speed) {
         this.shooter = shooter;
+        this.speed = speed;
 
         addRequirements(shooter);
     }
 
     @Override
     public void execute() {
-        shooter.setRPS(ShooterConstants.ROTATIONS_PER_SECOND);
+        shooter.setRPS(speed);
     }
 
     @Override

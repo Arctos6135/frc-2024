@@ -24,6 +24,8 @@ public class ArmIOSparkMax extends ArmIO {
         armEncoder = armMotor.getEncoder();
 
         armEncoder.setPositionConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
+        armEncoder.setVelocityConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
+        armEncoder.setPosition(ArmConstants.STARTING_POSITION);
     }
 
     @Override

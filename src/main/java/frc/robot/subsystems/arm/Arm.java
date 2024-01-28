@@ -26,6 +26,10 @@ public class Arm extends SubsystemBase {
         return inputs.position;
     }
 
+    public double getArmVelocity() {
+        return inputs.velocity;
+    }
+
     public void setVoltage(double voltage) {
         Logger.recordOutput("Arm Voltage", voltage);
         io.setVoltage(voltage);

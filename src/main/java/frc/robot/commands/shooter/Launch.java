@@ -18,7 +18,7 @@ public class Launch extends Command {
 
     @Override
     public void execute() {
-        shooter.setVoltages(ShooterConstants.LEFT_VOLTAGE, ShooterConstants.RIGHT_VOLTAGE);
+        shooter.setRPS(ShooterConstants.ROTATIONS_PER_SECOND);
     }
 
     @Override
@@ -28,6 +28,6 @@ public class Launch extends Command {
 
     @Override
     public void end(boolean disrupted) {
-        shooter.setVoltages(0, 0);
+        shooter.stop();
     }
 }

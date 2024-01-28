@@ -18,7 +18,7 @@ public class IntakeIOSparkMax extends IntakeIO{
         // Sets current limits.
         motor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
 
-        motor.setInverted(true);
+        motor.setInverted(true); // should this still be inverted
 
         motor.setIdleMode(IdleMode.kBrake);
 

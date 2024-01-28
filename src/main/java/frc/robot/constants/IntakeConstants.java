@@ -15,4 +15,9 @@ public class IntakeConstants { // these numbers are copied from drive constants 
 
     // Current limit of the intake motor.
     public static int CURRENT_LIMIT = 20;
+
+    // Constants for Feed Command
+    public static double DISTANCE_TOLERANCE = 0.3;
+    public static double STANDARD_RESISTANCE = 0.5;
+    public static double STANDARD_CURRENT_ERROR;
 }

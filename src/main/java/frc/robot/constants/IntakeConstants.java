@@ -12,4 +12,7 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     public static double VOLTAGE = 12;
 
     public static double MAX_CURRENT = 14;
+
+    // Current limit of the intake motor.
+    public static int CURRENT_LIMIT = 20;
 }

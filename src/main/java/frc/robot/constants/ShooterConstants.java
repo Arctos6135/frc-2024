@@ -13,6 +13,9 @@ public class ShooterConstants {
     // This is a placeholder, need to be tuned.
     public static final double ROTATIONS_PER_SECOND = 20;
 
+    // Limits current through motor to limit brownouts.
+    public static final int CURRENT_LIMIT = 40;
+
     // These constants need to be tuned.
     // Static gain in volts (volts needed to make the flywheel barely move).
     public static final double kS = 0.0;

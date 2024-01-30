@@ -24,4 +24,6 @@ public class ShooterConstants {
     public static final double kV = 0.0;
     // Acceleration gain in volts/ rotations per second^2.
     public static final double kA = 0.0;
+
+    
 }

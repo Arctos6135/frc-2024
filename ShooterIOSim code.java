@@ -12,6 +12,7 @@ public class FlywheelSim extends ShooterIO {
     public static final shooter.update(0.02);
     private final Flywheel shooter = new FlywheelSim(DCMotor.getNEO(1), ShooterConstants.GEARBOX_RATIO, MOMENT_OF_INERTIA);
 
+    /* The purpose of this code is to simulate the shooting mechanism on the robot, taking into account the motors, motion update, and inputs of voltage */
     FlywheelSim(DCMotor gearbox, double gearing, double jKgMetersSquared, Matrix<N1,N1> measurementStdDevs){
         public void updateInputs(FlywheelSim inputs){
             shooter.update(0.02);
@@ -21,9 +22,13 @@ public class FlywheelSim extends ShooterIO {
     }
 
 
+    private NEO_motorOne;
+    private NEO_motorTwo;
+
+    
     @Override
     public void setVoltages(double left, double right) {
-        drive.setInputs(left, right);
+        shooter.setInputs(left, right);
     }
 
 

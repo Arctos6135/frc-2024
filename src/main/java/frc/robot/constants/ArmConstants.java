@@ -19,6 +19,9 @@ public class ArmConstants {
     // TODO implement and tune the following :)
     public static final float MAX_POSITION = 90; // Soft stop for max (farthest from floor) position
     public static final float MIN_POSITION = 90; // Soft stop for min (closest to floor) position
+    
+    public static final double SPEAKER_SCORING_POSITION = Units.degreesToRadians(-55);
+    public static final double AMP_SCORING_POSITION = Units.degreesToRadians(-55);
 
     // Current limit for arm motor.
     public static final int CURRENT_LIMIT = 15;

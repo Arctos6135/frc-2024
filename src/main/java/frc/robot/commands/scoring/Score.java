@@ -10,9 +10,23 @@ import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.shooter.Launch;
 
+
 public class Score {
-    public static Command scoreSpeaker(Arm arm, Shooter shooter, Intake intake) {
-        // Issue #32 references a "stow angle" which was not found, SPEAKER_SCORING_POSITION created as a fix
-        return new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION).andThen(new Launch(shooter, ShooterConstants.AMP_RPS)).andThen(new Feed(intake));
+    public static Command scoreSpeaker(Arm arm, Shooter shooter, Intake intake) {        
+        return new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION).until(() -> checkPosition(arm, ArmConstants.SPEAKER_SCORING_POSITION)).andThen(new Launch(shooter, ShooterConstants.AMP_RPS)).andThen(new Feed(intake));
+    }
+
+    public static boolean checkPosition(Arm arm, double targetPosition) {
+        // adjust error value
+        double error = 0.1;
+
+        // check if the arm position is in the range:
+        // [targetPosition - error, targetPosition + error]
+        if (arm.getArmPosition() >= targetPosition - error) {
+            if (arm.getArmPosition() <= targetPosition + error) {
+                return true;
+            }
+        }
+        return false;
     }
 }

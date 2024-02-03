@@ -34,8 +34,8 @@ public class ShooterIOSparkMax extends ShooterIO {
     }
     
     public void setVoltages(double leftVoltage, double rightVoltage) {
-        left.set(leftVoltage);
-        right.set(rightVoltage);
+        left.setVoltage(leftVoltage);
+        right.setVoltage(rightVoltage);
     }
 
     public void updateInputs(ShooterInputs inputs) {

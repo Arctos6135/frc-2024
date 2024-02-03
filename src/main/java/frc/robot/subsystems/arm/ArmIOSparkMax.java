@@ -37,7 +37,7 @@ public class ArmIOSparkMax extends ArmIO {
 
     @Override
     public void setVoltage(double voltage) {
-        armMotor.set(voltage);
+        armMotor.setVoltage(voltage);
     }
 
     @Override

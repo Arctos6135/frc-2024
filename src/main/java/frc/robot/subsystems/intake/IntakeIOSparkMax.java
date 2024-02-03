@@ -30,7 +30,7 @@ public class IntakeIOSparkMax extends IntakeIO{
 
     
     public void setVoltage(double voltage) {
-        motor.set(voltage);
+        motor.setVoltage(voltage);
     }
 
     public void updateInputs(IntakeInputs inputs) {

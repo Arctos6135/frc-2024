@@ -16,8 +16,6 @@ public class Feed extends Command {
 
     private final PIDController distanceController = new PIDController(0, 0, 0);
 
-    // SET_POINT_DISTANCE is now a constant in IntakeConstants.java
-
     public Feed(Intake intake, double setPointDistance) {
         this.intake = intake;
         this.setPointDistance = setPointDistance;

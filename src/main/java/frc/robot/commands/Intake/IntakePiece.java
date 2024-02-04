@@ -22,9 +22,7 @@ public class IntakePiece extends Command {
     }
 
     @Override
-    public void initialize() {
-
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {
@@ -33,7 +31,7 @@ public class IntakePiece extends Command {
 
     @Override
     public boolean isFinished() {
-        return intake.getFilteredCurrent() >= IntakeConstants.MAX_CURRENT;
+        return intake.getFilteredCurrent() >= IntakeConstants.MAX_EMPTY_CURRENT;
     }
 
     @Override

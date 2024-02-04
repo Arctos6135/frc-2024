@@ -14,21 +14,19 @@ public class CurrentFeed extends Command{
     
     @Override
     public void initialize() {
-
+        intake.setVoltage(IntakeConstants.FEED_VOLTAGE);
     }
 
     @Override
-    public void execute() {
-        intake.setVoltage(IntakeConstants.VOLTAGE);
-    }
+    public void execute() {}
 
     @Override
     public boolean isFinished() {
     
         return (
-            intake.getFilteredCurrent() >= (IntakeConstants.VOLTAGE / IntakeConstants.STANDARD_RESISTANCE) - IntakeConstants.STANDARD_CURRENT_ERROR 
+            intake.getFilteredCurrent() >= IntakeConstants.EMPTY_CURRENT - IntakeConstants.STANDARD_CURRENT_ERROR 
             &&
-            intake.getFilteredCurrent() <= (IntakeConstants.VOLTAGE / IntakeConstants.STANDARD_RESISTANCE) + IntakeConstants.STANDARD_CURRENT_ERROR
+            intake.getFilteredCurrent() <= IntakeConstants.EMPTY_CURRENT + IntakeConstants.STANDARD_CURRENT_ERROR
         );
     }
 

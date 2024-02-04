@@ -46,4 +46,8 @@ public class Shooter extends SubsystemBase {
     public void stop() {
         setVoltages(0, 0);
     }
+
+    public double getVelocity() {
+        return (inputs.leftVelocity + inputs.rightVelocity) / 2;
+    }
 }

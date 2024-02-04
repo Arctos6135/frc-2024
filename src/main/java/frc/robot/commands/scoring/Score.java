@@ -8,14 +8,19 @@ import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.commands.Intake.Feed;
+import frc.robot.commands.Intake.CurrentFeed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.shooter.Launch;
 
 
 public class Score {
     public static Command scoreSpeaker(Arm arm, Shooter shooter, Intake intake) {        
-        return new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION).raceWith(new WaitUntilCommand(() -> checkPosition(arm, ArmConstants.SPEAKER_SCORING_POSITION)).andThen(new Feed(intake)).andThen(new Launch(shooter, ShooterConstants.SPEAKER_RPS)));
+        return new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION)
+            .raceWith(new WaitUntilCommand(() -> 
+                checkPosition(arm, ArmConstants.SPEAKER_SCORING_POSITION))
+                    .andThen(new CurrentFeed(intake))
+                    .andThen(new Launch(shooter, ShooterConstants.SPEAKER_RPS)))
+        ;
     }
 
     public static boolean checkPosition(Arm arm, double targetPosition) {

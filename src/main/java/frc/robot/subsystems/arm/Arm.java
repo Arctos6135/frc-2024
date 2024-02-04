@@ -5,9 +5,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ArmConstants;
-
+import frc.robot.commands.FeedforwardCharacterization;
+import frc.robot.commands.FeedforwardCharacterization.Config;
 
 public class Arm extends SubsystemBase {
     private final ArmIO io;
@@ -51,5 +53,20 @@ public class Arm extends SubsystemBase {
     public void setVoltage(double voltage) {
         Logger.recordOutput("Arm Voltage", voltage);
         io.setVoltage(voltage);
+    }
+
+
+    // If this works then some parameters should be changed
+    public Command characterize() {
+        return new FeedforwardCharacterization(new Config(
+            this::setVoltage,
+            this::getArmPosition,
+            this::getArmVelocity,
+            6, // Change
+            4, // Change
+            2, // Change
+            0.5, // Change 
+            "Arm"
+        ), this);
     }
 }

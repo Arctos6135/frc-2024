@@ -14,25 +14,10 @@ import frc.robot.commands.shooter.Launch;
 
 public class Score {
     public static Command scoreSpeaker(Arm arm, Shooter shooter, Intake intake) {        
-        return new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION)
-            .raceWith(new WaitUntilCommand(() -> 
-                checkPosition(arm, ArmConstants.SPEAKER_SCORING_POSITION))
-                    .andThen(new CurrentFeed(intake))
-                    .andThen(new Launch(shooter, ShooterConstants.SPEAKER_RPS)))
-        ;
-    }
-
-    public static boolean checkPosition(Arm arm, double targetPosition) {
-        // adjust error value
-        double error = 0.1;
-
-        // check if the arm position is in the range:
-        // [targetPosition - error, targetPosition + error]
-        if (arm.getArmPosition() >= targetPosition - error) {
-            if (arm.getArmPosition() <= targetPosition + error) {
-                return true;
-            }
-        }
-        return false;
+        return Commands.backgroundTask(
+            new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION), 
+            Commands.backgroundTask(new Launch(shooter, ShooterConstants.SPEAKER_RPS), new CurrentFeed(intake), () -> shooter.getVelocity() >= ShooterConstants.SPEAKER_RPS), 
+            () -> arm.getArmPosition() >= ArmConstants.SPEAKER_SCORING_POSITION
+        );
     }
 }

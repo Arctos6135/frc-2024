@@ -14,10 +14,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+// import frc.robot.commands.FeedForwardCharacterization.State;
 
 // Slowly ramps up to full speed forward, decelerates down to 0, then drives backwards at full speed.
 // The drivetrain should never go more than `config.maxDistance` meters ahead or behind where it started.
 public class FeedforwardCharacterization extends Command {
+    
     private class Data {
         private final ArrayList<Double> voltages = new ArrayList<>();
         private final ArrayList<Double> velocities = new ArrayList<>();
@@ -54,6 +56,7 @@ public class FeedforwardCharacterization extends Command {
 
         }
     }
+
     public record Config(
         DoubleConsumer voltage, 
         DoubleSupplier position, 
@@ -66,19 +69,13 @@ public class FeedforwardCharacterization extends Command {
         String name
     ) {}
 
-    private enum State {
-        RampingUp,
-        RampingDown,
-        HoldingNegative
-    }
-
     private final Config config;
     private final Data data = new Data();
-    private State state = State.RampingUp;
+    private boolean rampingUp = true;
     // seconds
     private double startTime;
     private double currentVoltage = 0;
-    private double prevVelocity = 0;
+    private double previousVelocity = 0;
     private double startDistance;
 
     public FeedforwardCharacterization(Config config, Subsystem... requirements) {
@@ -97,23 +94,17 @@ public class FeedforwardCharacterization extends Command {
     @Override
     public void execute() {
         double velocity = config.velocity.getAsDouble();
-        double acceleration = (velocity - prevVelocity) / 0.02;
-        prevVelocity = velocity;
+        double acceleration = (velocity - previousVelocity) / 0.02;
+        previousVelocity = velocity;
         data.accept(currentVoltage, velocity, acceleration);
         Logger.recordOutput("Feedforward Current Voltage", currentVoltage);
         Logger.recordOutput("Feedforward Velocity", velocity);
         Logger.recordOutput("Feedforward Acceleration", acceleration);
 
-        if (state == State.RampingUp) {
+        if (rampingUp) {
             currentVoltage += config.rampRate * 0.02;
             if (currentVoltage >= config.maxVoltage) {
-                state = State.RampingDown;
-            }
-        } else if (state == State.RampingDown) {
-            currentVoltage -= config.rampRate * 0.02;
-            if (currentVoltage <= 0) {
-                startTime = Timer.getFPGATimestamp();
-                state = State.HoldingNegative;
+                rampingUp = false;
             }
         } else {
             currentVoltage = -config.maxVoltage;
@@ -125,10 +116,11 @@ public class FeedforwardCharacterization extends Command {
     public boolean isFinished() {
         double elapsed = Timer.getFPGATimestamp() - startTime;
         double distance = Math.abs(startDistance - config.position.getAsDouble());
-        boolean doneHolding = (elapsed >= config.holdTime) && (state == State.HoldingNegative);
+        boolean doneHolding = (elapsed >= config.holdTime) && (!rampingUp);
         boolean tooFar = distance >= config.maxDistance;
+        boolean tooFarBack = config.position.getAsDouble() <= startDistance;
 
-        return doneHolding || tooFar;
+        return doneHolding || tooFar || tooFarBack;
     }
 
     @Override

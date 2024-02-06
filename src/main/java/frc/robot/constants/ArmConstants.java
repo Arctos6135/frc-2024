@@ -4,12 +4,12 @@ import edu.wpi.first.math.util.Units;
 
 public class ArmConstants {
     // TODO Incredible Zero GEARBOX_RATIO
-    public static final double GEARBOX_RATIO = 0;
+    public static final double GEARBOX_RATIO = 1;
 
     // The arm length in meters.
-    public static final double ARM_LENGTH = 0;
+    public static final double ARM_LENGTH = 1;
     // In kg
-    public static final double ARM_WEIGHT = 0;
+    public static final double ARM_WEIGHT = 1;
     
     // Undecided while design figures out what to do.
     public static final double ENCODER_CONVERSION_FACTOR = 2 * Math.PI * GEARBOX_RATIO;

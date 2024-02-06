@@ -18,8 +18,8 @@ public class ArmPID extends Command {
 
     // TODO caluclate the proper values for each of these!!
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(0, 0));
-    private final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
-    private final PIDController controller = new PIDController(0, 0, 0);
+    private final ArmFeedforward feedforward = new ArmFeedforward(1, 1, 1, 1);
+    private final PIDController controller = new PIDController(1, 1, 1);
 
     private State targetState;
 

@@ -91,6 +91,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Test Auto");
+        return drivetrain.characterize();
     }
 }

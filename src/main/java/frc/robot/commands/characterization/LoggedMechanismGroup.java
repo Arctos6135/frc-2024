@@ -22,7 +22,7 @@ public class LoggedMechanismGroup {
         this.mechanisms = mechanismList;
     }
 
-    public void update(double voltage) {
+    public void setVoltage(double voltage) {
         leastDistance = Double.MAX_VALUE;
         greatestDistance = 0;
         for (LoggedMechanism loggedMechanism : mechanisms) {

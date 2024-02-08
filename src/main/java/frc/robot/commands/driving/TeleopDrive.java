@@ -31,7 +31,7 @@ public class TeleopDrive extends Command {
         double x1 = xDampener.dampen(x) * (precisionDrive ? DriveConstants.PRECISION_TURN : 1.0);
 
         y1 *= DriveConstants.MAX_TELEOP_SPEED;
-        x1 *= DriveConstants.MAX_TELEOP_SPEED * 0.3;
+        x1 *= DriveConstants.MAX_TURN_SPEED_FACTOR;
 
         drivetrain.setSpeed(y1 + x1, y1 - x1);
     }

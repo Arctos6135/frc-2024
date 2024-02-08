@@ -5,6 +5,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
@@ -40,6 +42,7 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         leftFollower.follow(leftMaster);
 
         rightMaster.setInverted(true);
+        leftMaster.setInverted(false);
 
         leftMaster.setIdleMode(IdleMode.kBrake);
         rightMaster.setIdleMode(IdleMode.kBrake);
@@ -47,14 +50,26 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         rightEncoder = rightMaster.getEncoder();
         leftEncoder = leftMaster.getEncoder();
 
+        Logger.recordOutput("Encoder conversion", DriveConstants.ENCODER_CONVERSION_FACTOR);
+        this.rightEncoder.setVelocityConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR / 60);
+        this.leftEncoder.setVelocityConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR / 60);
+
         this.rightEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
         this.leftEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
-    }
+
+        leftEncoder.setPosition(0);
+        rightEncoder.setPosition(0);
+    }   
+    
+
 
     @Override
     public void setVoltages(double left, double right) {
-        leftMaster.set(left);
-        rightMaster.set(right);
+        Logger.recordOutput("Left Voltage", left);        
+        Logger.recordOutput("Right Voltage", right);
+
+        leftMaster.setVoltage(left);
+        rightMaster.setVoltage(right);
     }
 
     @Override

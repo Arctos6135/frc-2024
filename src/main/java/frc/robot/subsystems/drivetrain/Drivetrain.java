@@ -154,13 +154,13 @@ public class Drivetrain extends SubsystemBase {
                 Logger.recordOutput("Feedforward Voltage", voltage);
                 io.setVoltages(voltage, voltage);
             },
-            this::getDistance,
-            () -> (inputs.leftVelocity + inputs.rightVelocity) / 2, 
-            6, 
-            4, 
-            2, 
-            4, 
-            "Drivetrain"
+            () -> inputs.rightPosition,
+            () -> (inputs.rightVelocity + inputs.rightVelocity) / 2, 
+            3, 
+            5, 
+            5, 
+            3, 
+            "RightDrivetrain"
         ), this);
     }
 }

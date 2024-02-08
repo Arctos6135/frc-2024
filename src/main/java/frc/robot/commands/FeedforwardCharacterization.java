@@ -35,7 +35,8 @@ public class FeedforwardCharacterization extends Command {
             try {
                 File outputFile;
                 if (LoggedRobot.isReal()) {
-                    outputFile = new File("/media/sda1/" + name + "Feedforward.csv");
+                    outputFile = new File("/home/lvuser/" + name + "Feedforward.csv");
+                    System.out.println(outputFile);
                 } else if (LoggedRobot.isSimulation()) {
                     outputFile = new File("./" + name + "Feedforward.csv");
                 } else {
@@ -50,8 +51,10 @@ public class FeedforwardCharacterization extends Command {
                     out.newLine();
                 }
                 out.close();
+                System.out.println("Wrote");
             } catch (Exception e) {
                 DriverStation.reportError("Failed to create file to write feedforward data", e.getStackTrace());
+                System.out.println(e.getMessage());
             }
 
         }
@@ -89,10 +92,12 @@ public class FeedforwardCharacterization extends Command {
     @Override
     public void initialize() {
         startDistance = config.position.getAsDouble();
+        startTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public void execute() {
+        Logger.recordOutput("Running characterization", true);
         double velocity = config.velocity.getAsDouble();
         double acceleration = (velocity - previousVelocity) / 0.02;
         previousVelocity = velocity;
@@ -118,13 +123,20 @@ public class FeedforwardCharacterization extends Command {
         double distance = Math.abs(startDistance - config.position.getAsDouble());
         boolean doneHolding = (elapsed >= config.holdTime) && (!rampingUp);
         boolean tooFar = distance >= config.maxDistance;
-        boolean tooFarBack = config.position.getAsDouble() <= startDistance;
+        boolean tooFarBack = config.position.getAsDouble() <= (startDistance - 0.01);
+
+        Logger.recordOutput("Done HOlding", doneHolding);
+        Logger.recordOutput("Too Far", tooFar);
+        Logger.recordOutput("Too Back", tooFarBack);
+        Logger.recordOutput("Start distance", startDistance);
 
         return doneHolding || tooFar || tooFarBack;
     }
 
     @Override
     public void end(boolean interrupted) {
+        Logger.recordOutput("Running characterization", false);
+
         System.out.printf("ending with position %s\n", config.position.getAsDouble());
 
         config.voltage.accept(0);

@@ -41,9 +41,9 @@ public class RobotContainer {
         // Creates a real robot.
         if (RobotBase.isReal()) {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
-            intake = new Intake(new IntakeIOSparkMax());
-            arm = new Arm(new ArmIOSparkMax());
-            shooter = new Shooter(new ShooterIOSparkMax());
+            intake = new Intake(new IntakeIO());
+            arm = new Arm(new ArmIO());
+            shooter = new Shooter(new ShooterIO());
         }
         // Creates a simulated robot.
         else if (RobotBase.isSimulation()) {

@@ -157,7 +157,6 @@ public class Drivetrain extends SubsystemBase {
                 io.setVoltages(voltage, voltage);
             },
             () -> {
-                io.updateInputs(inputs);
                 return new SensorData(inputs.rightPosition, inputs.rightVelocity);
             },
             3, 

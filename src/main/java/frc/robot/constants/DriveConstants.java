@@ -24,4 +24,6 @@ public class DriveConstants {
 
     // Current limits for drivetrain motors.
     public static final int CURRENT_LIMIT = 30;
+    public static final double POSITION_CONVERSION_FACTOR = ENCODER_CONVERSION_FACTOR;
+    public static final double VELOCITY_CONVERSION_FACTOR = ENCODER_CONVERSION_FACTOR / 60;
 }

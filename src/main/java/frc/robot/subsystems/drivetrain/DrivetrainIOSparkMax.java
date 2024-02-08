@@ -50,18 +50,15 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         rightEncoder = rightMaster.getEncoder();
         leftEncoder = leftMaster.getEncoder();
 
-        Logger.recordOutput("Encoder conversion", DriveConstants.ENCODER_CONVERSION_FACTOR);
-        this.rightEncoder.setVelocityConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR / 60);
-        this.leftEncoder.setVelocityConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR / 60);
+        this.rightEncoder.setVelocityConversionFactor(DriveConstants.VELOCITY_CONVERSION_FACTOR);
+        this.leftEncoder.setVelocityConversionFactor(DriveConstants.VELOCITY_CONVERSION_FACTOR);
 
-        this.rightEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
-        this.leftEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
+        this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
+        this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
 
         leftEncoder.setPosition(0);
         rightEncoder.setPosition(0);
     }   
-    
-
 
     @Override
     public void setVoltages(double left, double right) {

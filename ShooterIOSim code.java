@@ -39,6 +39,6 @@ public class FlywheelSim extends ShooterIO {
     System.out.println("Voltages have been set!", io.setVoltages(leftVoltage, rightVoltage));
     }
 
-
+    Logger.recordOutput()
 
 }

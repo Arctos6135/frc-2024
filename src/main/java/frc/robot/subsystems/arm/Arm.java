@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ArmConstants;
 import frc.robot.commands.FeedforwardCharacterization;
 import frc.robot.commands.FeedforwardCharacterization.Config;
+import frc.robot.commands.FeedforwardCharacterization.SensorData;
 
 public class Arm extends SubsystemBase {
     private final ArmIO io;
@@ -60,8 +61,9 @@ public class Arm extends SubsystemBase {
     public Command characterize() {
         return new FeedforwardCharacterization(new Config(
             this::setVoltage,
-            this::getArmPosition,
-            this::getArmVelocity,
+            () -> {
+                return new SensorData(getArmPosition(), getArmVelocity());
+            },
             6, // Change
             4, // Change
             2, // Change

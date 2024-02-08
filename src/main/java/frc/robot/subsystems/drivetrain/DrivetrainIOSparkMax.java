@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
@@ -46,6 +47,9 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
         leftMaster.setIdleMode(IdleMode.kBrake);
         rightMaster.setIdleMode(IdleMode.kBrake);
+
+        leftMaster.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
+        rightMaster.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
 
         rightEncoder = rightMaster.getEncoder();
         leftEncoder = leftMaster.getEncoder();

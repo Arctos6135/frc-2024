@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -62,14 +63,18 @@ public class FeedforwardCharacterization extends Command {
 
     public record Config(
         DoubleConsumer voltage, 
-        DoubleSupplier position, 
-        DoubleSupplier velocity,
+        Supplier<SensorData> sensors,
         // volts per second
         double rampRate,
         double maxVoltage,
         double holdTime,
         double maxDistance,
         String name
+    ) {}
+
+    public record SensorData(
+        double position,
+        double velocity
     ) {}
 
     private final Config config;
@@ -91,14 +96,14 @@ public class FeedforwardCharacterization extends Command {
 
     @Override
     public void initialize() {
-        startDistance = config.position.getAsDouble();
+        startDistance = config.sensors.get().position;
         startTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public void execute() {
         Logger.recordOutput("Running characterization", true);
-        double velocity = config.velocity.getAsDouble();
+        double velocity = config.sensors.get().velocity;
         double acceleration = (velocity - previousVelocity) / 0.02;
         previousVelocity = velocity;
         data.accept(currentVoltage, velocity, acceleration);
@@ -120,12 +125,12 @@ public class FeedforwardCharacterization extends Command {
     @Override
     public boolean isFinished() {
         double elapsed = Timer.getFPGATimestamp() - startTime;
-        double distance = Math.abs(startDistance - config.position.getAsDouble());
+        double distance = Math.abs(startDistance - config.sensors.get().position);
         boolean doneHolding = (elapsed >= config.holdTime) && (!rampingUp);
         boolean tooFar = distance >= config.maxDistance;
-        boolean tooFarBack = config.position.getAsDouble() <= (startDistance - 0.01);
+        boolean tooFarBack = config.sensors.get().position <= (startDistance - 0.01);
 
-        Logger.recordOutput("Done HOlding", doneHolding);
+        Logger.recordOutput("Done Holding", doneHolding);
         Logger.recordOutput("Too Far", tooFar);
         Logger.recordOutput("Too Back", tooFarBack);
         Logger.recordOutput("Start distance", startDistance);
@@ -137,7 +142,7 @@ public class FeedforwardCharacterization extends Command {
     public void end(boolean interrupted) {
         Logger.recordOutput("Running characterization", false);
 
-        System.out.printf("ending with position %s\n", config.position.getAsDouble());
+        System.out.printf("ending with position %s\n", config.sensors.get().position);
 
         config.voltage.accept(0);
         data.logCSV(config.name);

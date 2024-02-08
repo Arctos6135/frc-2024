@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.FeedforwardCharacterization;
 import frc.robot.commands.FeedforwardCharacterization.Config;
+import frc.robot.commands.FeedforwardCharacterization.SensorData;
 
 /**
  * A subsystem that controls the drivey bit of the robot.
@@ -154,8 +156,10 @@ public class Drivetrain extends SubsystemBase {
                 Logger.recordOutput("Feedforward Voltage", voltage);
                 io.setVoltages(voltage, voltage);
             },
-            () -> inputs.rightPosition,
-            () -> (inputs.rightVelocity + inputs.rightVelocity) / 2, 
+            () -> {
+                io.updateInputs(inputs);
+                return new SensorData(inputs.rightPosition, inputs.rightVelocity);
+            },
             3, 
             5, 
             5, 

@@ -85,6 +85,7 @@ public class FeedforwardCharacterization extends Command {
     private double currentVoltage = 0;
     private double previousVelocity = 0;
     private double startDistance;
+    private int numLoops = 0;
 
     public FeedforwardCharacterization(Config config, Subsystem... requirements) {
         this.config = config;
@@ -129,13 +130,19 @@ public class FeedforwardCharacterization extends Command {
         boolean doneHolding = (elapsed >= config.holdTime) && (!rampingUp);
         boolean tooFar = distance >= config.maxDistance;
         boolean tooFarBack = config.sensors.get().position <= (startDistance - 0.01);
+        boolean doneLoop = (distance % config.maxDistance) >= -0.01 && (distance % config.maxDistance) <= 0.01;
 
         Logger.recordOutput("Done Holding", doneHolding);
         Logger.recordOutput("Too Far", tooFar);
         Logger.recordOutput("Too Back", tooFarBack);
         Logger.recordOutput("Start distance", startDistance);
 
-        return doneHolding || tooFar || tooFarBack;
+        if (doneLoop && numLoops < 10) {
+            numLoops++;
+            rampingUp = true;
+        }
+
+        return (doneHolding || tooFar || tooFarBack) && numLoops >= 10;
     }
 
     @Override

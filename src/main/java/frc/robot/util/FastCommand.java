@@ -21,7 +21,7 @@ public class FastCommand extends Command {
         this.command = command;
         this.period = period;
         notifier = new Notifier(() -> {
-            synchronized(mutex) {
+            synchronized (mutex) {
                 command.execute();
             }
         });

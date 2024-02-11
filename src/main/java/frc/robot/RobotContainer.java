@@ -6,10 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -33,6 +36,9 @@ public class RobotContainer {
     private final Intake intake;
     private final Arm arm;
     private final Shooter shooter;
+
+    // Sendable choosers (for driveteam to select autos and positions)
+    public LoggedDashboardChooser<PathPlannerAuto> autoChooser;
 
     // Commands
     private final TeleopDrive teleopDrive;
@@ -66,6 +72,17 @@ public class RobotContainer {
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
+        autoChooser = new LoggedDashboardChooser<PathPlannerAuto>("auto chooser");
+
+        autoChooser.addDefaultOption("Test Auto", new PathPlannerAuto("Test Auto"));
+
+        // Placeholders until autos are coded.
+        autoChooser.addOption("Auto1", new PathPlannerAuto("Test Auto"));
+        autoChooser.addOption("Auto2", new PathPlannerAuto("Test Auto"));
+        autoChooser.addOption("Auto3", new PathPlannerAuto("Test Auto"));
+
+        SmartDashboard.putData(autoChooser.getSendableChooser());
+
         configureBindings();
     }
 
@@ -91,6 +108,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return drivetrain.characterize();
+        return autoChooser.get();
     }
 }

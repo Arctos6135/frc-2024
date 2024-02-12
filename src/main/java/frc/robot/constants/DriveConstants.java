@@ -9,7 +9,7 @@ public class DriveConstants {
     public static double PRECISION_FWD_REV = 0.1;
     public static double PRECISION_TURN = 0.1;
 
-    public static double GEARBOX_RATIO = 1 / 8.45;
+    public static double GEARBOX_RATIO = 1 / 8.458;
     public static double WHEEL_DIAMETER = Units.inchesToMeters(6);
     public static double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
     public static double ENCODER_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO;

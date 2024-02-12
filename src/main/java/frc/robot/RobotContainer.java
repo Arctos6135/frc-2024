@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedDashboardBoolean;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -21,6 +22,7 @@ import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.constants.ControllerConstants;
+import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.drivetrain.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.arm.*;
@@ -39,6 +41,9 @@ public class RobotContainer {
 
     // Sendable choosers (for driveteam to select autos and positions)
     public LoggedDashboardChooser<PathPlannerAuto> autoChooser;
+
+    // Creates an option on the dashboard to turn manual intake on and off.
+    public LoggedDashboardBoolean manualIntake;
 
     // Commands
     private final TeleopDrive teleopDrive;
@@ -81,7 +86,7 @@ public class RobotContainer {
         autoChooser.addOption("Auto2", new PathPlannerAuto("Test Auto"));
         autoChooser.addOption("Auto3", new PathPlannerAuto("Test Auto"));
 
-        SmartDashboard.putData(autoChooser.getSendableChooser());
+        manualIntake = new LoggedDashboardBoolean("manual intake");
 
         configureBindings();
     }
@@ -102,7 +107,17 @@ public class RobotContainer {
         new Trigger(() -> driverController.getPOV() == 270).onTrue(new PIDSetAngle(drivetrain, (3 * Math.PI) / 2));
         new Trigger(() -> driverController.getPOV() == 315).onTrue(new PIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
-        new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
+        if (manualIntake.get()) {
+            // Sets the a button to turn the intake on until released.
+            new Trigger(() -> operatorController.getAButtonPressed())
+            .onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)))
+            .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
+        }
+
+        else {
+            // Sets the a button to run the intake command.
+            new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
+        }
 
         // TODO Configure shooter launch button :)
     }

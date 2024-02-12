@@ -50,7 +50,6 @@ public class RobotContainer {
 
     // Commands
     private final TeleopDrive teleopDrive;
-    private final ArmPID armPID;
 
     public RobotContainer() {
         // Creates a real robot.
@@ -125,9 +124,14 @@ public class RobotContainer {
             new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
         }
 
+        // Binds moving the arm to the operator's d-pad if the arm is enabled.
         if (!disableArm.get()) {
-            new Trigger(() -> operatorController.getPOV() == 90)
+            new Trigger(() -> operatorController.getPOV() == 0)
             .onTrue(new ArmPID(arm, arm.getArmPosition() + Math.PI / 180))
+            .onFalse(new ArmPID(arm, arm.getArmPosition()));
+
+            new Trigger(() -> operatorController.getPOV() == 180)
+            .onTrue(new ArmPID(arm, arm.getArmPosition() - Math.PI / 180))
             .onFalse(new ArmPID(arm, arm.getArmPosition()));
         }
 

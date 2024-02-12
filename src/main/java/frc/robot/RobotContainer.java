@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.driving.PIDSetAngle;
+import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
@@ -44,9 +45,12 @@ public class RobotContainer {
 
     // Creates an option on the dashboard to turn manual intake on and off.
     public LoggedDashboardBoolean manualIntake;
+    public LoggedDashboardBoolean disableArm;
+    public LoggedDashboardBoolean resetArmEncoder;
 
     // Commands
     private final TeleopDrive teleopDrive;
+    private final ArmPID armPID;
 
     public RobotContainer() {
         // Creates a real robot.
@@ -87,6 +91,8 @@ public class RobotContainer {
         autoChooser.addOption("Auto3", new PathPlannerAuto("Test Auto"));
 
         manualIntake = new LoggedDashboardBoolean("manual intake");
+        disableArm = new LoggedDashboardBoolean("disable arm");
+        resetArmEncoder = new LoggedDashboardBoolean("reset arm encoder");
 
         configureBindings();
     }
@@ -117,6 +123,12 @@ public class RobotContainer {
         else {
             // Sets the a button to run the intake command.
             new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
+        }
+
+        if (!disableArm.get()) {
+            new Trigger(() -> operatorController.getPOV() == 90)
+            .onTrue(new ArmPID(arm, arm.getArmPosition() + Math.PI / 180))
+            .onFalse(new ArmPID(arm, arm.getArmPosition()));
         }
 
         // TODO Configure shooter launch button :)

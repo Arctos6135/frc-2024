@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.driving.PIDSetAngle;
@@ -24,6 +25,7 @@ import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.PositionConstants;
 import frc.robot.subsystems.drivetrain.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.arm.*;
@@ -42,6 +44,7 @@ public class RobotContainer {
 
     // Sendable choosers (for driveteam to select autos and positions)
     public LoggedDashboardChooser<PathPlannerAuto> autoChooser;
+    public LoggedDashboardChooser<Pose2d> positionChooser;
 
     // Creates an option on the dashboard to turn manual intake on and off.
     public LoggedDashboardBoolean manualIntake;
@@ -81,13 +84,21 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(teleopDrive);
 
         autoChooser = new LoggedDashboardChooser<PathPlannerAuto>("auto chooser");
+        positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
         autoChooser.addDefaultOption("Test Auto", new PathPlannerAuto("Test Auto"));
+        positionChooser.addDefaultOption("default pose", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.
         autoChooser.addOption("Auto1", new PathPlannerAuto("Test Auto"));
         autoChooser.addOption("Auto2", new PathPlannerAuto("Test Auto"));
         autoChooser.addOption("Auto3", new PathPlannerAuto("Test Auto"));
+
+        // Placeholders until positions are configured.
+
+        positionChooser.addOption("Position 1", PositionConstants.POSE2);
+        positionChooser.addOption("Position 2", PositionConstants.POSE2);
+        positionChooser.addOption("Position 3", PositionConstants.POSE3);
 
         manualIntake = new LoggedDashboardBoolean("manual intake");
         disableArm = new LoggedDashboardBoolean("disable arm");
@@ -112,17 +123,18 @@ public class RobotContainer {
         new Trigger(() -> driverController.getPOV() == 270).onTrue(new PIDSetAngle(drivetrain, (3 * Math.PI) / 2));
         new Trigger(() -> driverController.getPOV() == 315).onTrue(new PIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
-        if (manualIntake.get()) {
-            // Sets the a button to turn the intake on until released.
-            new Trigger(() -> operatorController.getAButtonPressed())
-            .onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)))
-            .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
-        }
+        // Sets the right bumper to turn the intake on until released.
+        new Trigger(() -> operatorController.getRightBumperPressed())
+        .onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)))
+        .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
+        
+        // Binds the left bumper to run intake in reverse until released.
+        new Trigger(() -> operatorController.getLeftBumperPressed())
+        .onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)))
+        .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
 
-        else {
-            // Sets the a button to run the intake command.
-            new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
-        }
+        // Binds auto intake
+        new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
 
         // Binds moving the arm to the operator's d-pad if the arm is enabled.
         if (!disableArm.get()) {

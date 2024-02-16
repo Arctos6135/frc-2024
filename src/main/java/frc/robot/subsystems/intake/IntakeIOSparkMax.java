@@ -10,7 +10,7 @@ import frc.robot.constants.CANBus;
 import frc.robot.constants.IntakeConstants;
 
 public class IntakeIOSparkMax extends IntakeIO{
-    private final CANSparkMax motor = new CANSparkMax(CANBus.INTAKE_TOP_MASTER, MotorType.kBrushless);
+    private final CANSparkMax motor = new CANSparkMax(CANBus.INTAKE_MOTOR, MotorType.kBrushless);
 
     private final RelativeEncoder encoder;
 
@@ -18,7 +18,7 @@ public class IntakeIOSparkMax extends IntakeIO{
         // Sets current limits.
         motor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
 
-        motor.setInverted(true); // should this still be inverted
+        motor.setInverted(true);
 
         motor.setIdleMode(IdleMode.kBrake);
 

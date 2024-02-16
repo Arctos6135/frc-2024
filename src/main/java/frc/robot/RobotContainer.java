@@ -125,13 +125,13 @@ public class RobotContainer {
 
         // Sets the right bumper to turn the intake on until released.
         new Trigger(() -> operatorController.getRightBumperPressed())
-        .onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)))
-        .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
+            .onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)))
+            .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
         
         // Binds the left bumper to run intake in reverse until released.
         new Trigger(() -> operatorController.getLeftBumperPressed())
-        .onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)))
-        .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
+            .onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)))
+            .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
 
         // Binds auto intake
         new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));

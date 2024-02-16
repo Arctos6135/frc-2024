@@ -20,7 +20,7 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     public static int CURRENT_LIMIT = 20;
 
     // Constants for Feed Command
-    public static double FEED_VOLTAGE = 6;
+    public static double FEED_VOLTAGE = 3;
     public static double DISTANCE_TOLERANCE = 0.3;
     public static double EMPTY_CURRENT; // set to a default value
     public static double STANDARD_CURRENT_ERROR = 1;

@@ -10,7 +10,7 @@ import frc.robot.constants.CANBus;
 import frc.robot.constants.IntakeConstants;
 
 public class IntakeIOSparkMax extends IntakeIO{
-    private final CANSparkMax motor = new CANSparkMax(CANBus.INTAKE_TOP_MASTER, MotorType.kBrushless);
+    private final CANSparkMax motor = new CANSparkMax(CANBus.INTAKE_MOTOR, MotorType.kBrushless);
 
     private final RelativeEncoder encoder;
 

@@ -12,7 +12,7 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     public static int MEDIAN_FILTER_SIZE = 5;
 
     // The voltage at which the intake motors should rotate at when intaking
-    public static double VOLTAGE = 1;
+    public static double VOLTAGE = 12;
 
     public static double INTAKE_CURRENT = 10;
 

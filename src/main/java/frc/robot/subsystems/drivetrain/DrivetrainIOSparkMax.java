@@ -37,7 +37,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         leftMaster.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
         rightFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
         leftFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
-    
 
         rightFollower.follow(rightMaster);
         leftFollower.follow(leftMaster);

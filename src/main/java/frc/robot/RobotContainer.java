@@ -126,14 +126,12 @@ public class RobotContainer {
         // TODO change back to the operator controller.
         // Sets the right bumper to turn the intake on until released.
 
-        new Trigger(() -> driverController.getAButtonPressed())
-        .onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)))
-        .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
-        
+        new Trigger(() -> driverController.getAButtonPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)));
+        new Trigger(() -> driverController.getAButtonReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+
         // Binds the left bumper to run intake in reverse until released.
-        new Trigger(() -> driverController.getBButtonPressed())
-        .onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)))
-        .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
+        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)));
+        new Trigger(() -> driverController.getBButtonReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
 
         // Binds auto intake to the a button.
         new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));

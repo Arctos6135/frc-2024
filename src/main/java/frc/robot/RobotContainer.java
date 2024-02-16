@@ -133,7 +133,7 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)))
         .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
 
-        // Binds auto intake
+        // Binds auto intake to the a button.
         new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
 
         // Binds moving the arm to the operator's d-pad if the arm is enabled.

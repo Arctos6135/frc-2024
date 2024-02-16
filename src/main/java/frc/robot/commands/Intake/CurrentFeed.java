@@ -22,12 +22,7 @@ public class CurrentFeed extends Command{
 
     @Override
     public boolean isFinished() {
-    
-        return (
-            intake.getFilteredCurrent() >= IntakeConstants.EMPTY_CURRENT - IntakeConstants.STANDARD_CURRENT_ERROR 
-            &&
-            intake.getFilteredCurrent() <= IntakeConstants.EMPTY_CURRENT + IntakeConstants.STANDARD_CURRENT_ERROR
-        );
+        return intake.getFilteredCurrent() <= IntakeConstants.INTAKE_CURRENT;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class IntakePiece extends Command {
 
     @Override
     public boolean isFinished() {
-        return intake.getFilteredCurrent() >= IntakeConstants.MAX_EMPTY_CURRENT;
+        return intake.getFilteredCurrent() >= IntakeConstants.INTAKE_CURRENT;
     }
 
     @Override

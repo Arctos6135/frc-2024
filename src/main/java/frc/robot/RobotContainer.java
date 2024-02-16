@@ -58,7 +58,7 @@ public class RobotContainer {
         // Creates a real robot.
         if (RobotBase.isReal()) {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
-            intake = new Intake(new IntakeIO());
+            intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIO());
             shooter = new Shooter(new ShooterIO());
         }
@@ -90,9 +90,8 @@ public class RobotContainer {
         positionChooser.addDefaultOption("default pose", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.
-        autoChooser.addOption("Auto1", new PathPlannerAuto("Test Auto"));
-        autoChooser.addOption("Auto2", new PathPlannerAuto("Test Auto"));
-        autoChooser.addOption("Auto3", new PathPlannerAuto("Test Auto"));
+        autoChooser.addOption("Quarter Circle", new PathPlannerAuto("Quarter Circle"));
+        autoChooser.addOption("1 Meter Forward", new PathPlannerAuto("1 Meter Forward"));
 
         // Placeholders until positions are configured.
 
@@ -123,13 +122,15 @@ public class RobotContainer {
         new Trigger(() -> driverController.getPOV() == 270).onTrue(new PIDSetAngle(drivetrain, (3 * Math.PI) / 2));
         new Trigger(() -> driverController.getPOV() == 315).onTrue(new PIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
+        // Changed the intake triggers to driver controller for testing.
+        // TODO change back to the operator controller.
         // Sets the right bumper to turn the intake on until released.
-        new Trigger(() -> operatorController.getRightBumperPressed())
+        new Trigger(() -> driverController.getAButtonPressed())
         .onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)))
         .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
         
         // Binds the left bumper to run intake in reverse until released.
-        new Trigger(() -> operatorController.getLeftBumperPressed())
+        new Trigger(() -> driverController.getAButtonPressed())
         .onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)))
         .onFalse(new InstantCommand(() -> intake.setVoltage(0)));
 

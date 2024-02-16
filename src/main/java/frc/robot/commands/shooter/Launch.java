@@ -10,7 +10,7 @@ import frc.robot.subsystems.shooter.Shooter;
 public class Launch extends Command {
     private final Shooter shooter;
 
-    // Rotations per second
+    // Rotations per second.
     private double speed;
 
     /**

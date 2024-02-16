@@ -29,6 +29,7 @@ public class Intake extends SubsystemBase {
         medianCurrent = filter.calculate(inputs.current);
 
         Logger.recordOutput("Intake Filtered Current", medianCurrent);
+        Logger.recordOutput("Intake Raw Current", inputs.current);
     }
 
     public double getPosition() {

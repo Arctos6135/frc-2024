@@ -8,7 +8,8 @@ public class CANBus {
 
     public static final int INTAKE_MOTOR = 5;
 
-    public static final int ARM_MOTOR = 7;
+    public static final int ARM_MASTER = 6;
+    public static final int ARM_FOLLOWER = 7;
 
     public static final int SHOOTER_LEFT = 8;
     public static final int SHOOTER_RIGHT = 9;

@@ -10,34 +10,38 @@ import frc.robot.constants.CANBus;
 import frc.robot.constants.ArmConstants;
 
 public class ArmIOSparkMax extends ArmIO {
-    // Motor that controls the arm.
-    private final CANSparkMax armMotor = new CANSparkMax(CANBus.ARM_MOTOR, MotorType.kBrushless);
+    // Motors that control the arm.
+    private final CANSparkMax armMaster = new CANSparkMax(CANBus.ARM_MASTER, MotorType.kBrushless);
+    private final CANSparkMax armFollower = new CANSparkMax(CANBus.ARM_FOLLOWER, MotorType.kBrushless);
 
     // Encoder to know the arm's position.
     private final RelativeEncoder armEncoder;
 
     public ArmIOSparkMax() {
-        // Sets current limit to prevent brownouts.
-        armMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+        armFollower.follow(armMaster);
 
-        armMotor.setIdleMode(IdleMode.kBrake);
+        // Sets current limit to prevent brownouts.
+        armMaster.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+        armFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+
+        armMaster.setIdleMode(IdleMode.kBrake);
         
-        armEncoder = armMotor.getEncoder();
+        armEncoder = armMaster.getEncoder();
 
         armEncoder.setPositionConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
         armEncoder.setVelocityConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
         armEncoder.setPosition(ArmConstants.STARTING_POSITION);
 
         // sets up soft limits
-        armMotor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        armMotor.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
-        armMotor.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
-        armMotor.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
+        armMaster.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
+        armMaster.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
+        armMaster.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
+        armMaster.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
     }
 
     @Override
     public void setVoltage(double voltage) {
-        armMotor.setVoltage(voltage);
+        armMaster.setVoltage(voltage);
     }
 
     @Override

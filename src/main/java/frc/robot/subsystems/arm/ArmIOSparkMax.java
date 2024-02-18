@@ -18,6 +18,8 @@ public class ArmIOSparkMax extends ArmIO {
     private final RelativeEncoder armEncoder;
 
     public ArmIOSparkMax() {
+        armFollower.setInverted(true);
+
         armFollower.follow(armMaster);
 
         // Sets current limit to prevent brownouts.

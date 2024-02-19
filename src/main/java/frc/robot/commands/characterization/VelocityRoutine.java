@@ -2,6 +2,7 @@ package frc.robot.commands.characterization;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class VelocityRoutine extends Command {
     private final LoggedMechanismGroup mechanism;
@@ -10,10 +11,12 @@ public class VelocityRoutine extends Command {
     private double voltage = 0;
     private double lastTimestamp;
 
-    public VelocityRoutine(LoggedMechanismGroup mechanism, double maxDistance, double rampRate) {
+    public VelocityRoutine(LoggedMechanismGroup mechanism, double maxDistance, double rampRate, Subsystem... requirements) {
         this.mechanism = mechanism;
         this.maxDistance = maxDistance;
         this.rampRate = rampRate;
+
+        addRequirements(requirements);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class RobotContainer {
     private final Shooter shooter;
 
     // Sendable choosers (for driveteam to select autos and positions)
-    public LoggedDashboardChooser<PathPlannerAuto> autoChooser;
+    public LoggedDashboardChooser<Command> autoChooser;
     public LoggedDashboardChooser<Pose2d> positionChooser;
 
     // Creates an option on the dashboard to turn manual intake on and off.
@@ -83,18 +83,21 @@ public class RobotContainer {
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
-        autoChooser = new LoggedDashboardChooser<PathPlannerAuto>("auto chooser");
+        autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
-        autoChooser.addDefaultOption("Test Auto", new PathPlannerAuto("Test Auto"));
-        positionChooser.addDefaultOption("default pose", PositionConstants.POSE1);
+        autoChooser.addDefaultOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
+        positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.
         autoChooser.addOption("Quarter Circle", new PathPlannerAuto("Quarter Circle"));
         autoChooser.addOption("1 Meter Forward", new PathPlannerAuto("1 Meter Forward"));
 
-        // Placeholders until positions are configured.
+        // Characterization routines.
+        autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
+        autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
 
+        // Placeholders until positions are configured.
         positionChooser.addOption("Position 1", PositionConstants.POSE2);
         positionChooser.addOption("Position 2", PositionConstants.POSE2);
         positionChooser.addOption("Position 3", PositionConstants.POSE3);

@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class Logger {
+public class FeedforwardLog {
     private final ArrayList<Double> voltages = new ArrayList<>();
     private final ArrayList<Double> velocities = new ArrayList<>();
     private final ArrayList<Double> accelerations = new ArrayList<>();

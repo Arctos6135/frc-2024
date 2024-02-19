@@ -22,6 +22,12 @@ public class LoggedMechanismGroup {
         this.mechanisms = mechanismList;
     }
 
+    public void initialize() {
+        for (LoggedMechanism loggedMechanism : mechanisms) {
+            loggedMechanism.initialize();
+        }
+    }
+
     public void setVoltage(double voltage) {
         leastDistance = Double.MAX_VALUE;
         greatestDistance = 0;

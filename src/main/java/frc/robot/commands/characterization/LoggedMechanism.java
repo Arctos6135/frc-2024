@@ -1,13 +1,17 @@
 package frc.robot.commands.characterization;
 
 public class LoggedMechanism {
-    private final Logger logger;
+    private final FeedforwardLog logger;
     private final Mechanism mechanism;
     private double previousVoltage = 0;
 
-    public LoggedMechanism(Logger logger, Mechanism mechanism) {
+    public LoggedMechanism(FeedforwardLog logger, Mechanism mechanism) {
         this.logger = logger;
         this.mechanism = mechanism;
+    }
+
+    public void initialize() {
+        mechanism.initialize();
     }
 
     public double update(double voltage) {

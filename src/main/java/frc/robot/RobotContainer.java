@@ -23,9 +23,12 @@ import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.shooter.Launch;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PositionConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.drivetrain.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.arm.*;
@@ -43,7 +46,7 @@ public class RobotContainer {
     private final Shooter shooter;
 
     // Sendable choosers (for driveteam to select autos and positions)
-    public LoggedDashboardChooser<PathPlannerAuto> autoChooser;
+    public LoggedDashboardChooser<Command> autoChooser;
     public LoggedDashboardChooser<Pose2d> positionChooser;
 
     // Creates an option on the dashboard to turn manual intake on and off.
@@ -53,6 +56,8 @@ public class RobotContainer {
 
     // Commands
     private final TeleopDrive teleopDrive;
+    private final Launch shootSpeaker;
+    private final Launch shootAmp;
 
     public RobotContainer() {
         // Creates a real robot.
@@ -80,21 +85,26 @@ public class RobotContainer {
             shooter = new Shooter(new ShooterIO());
         }
 
+        shootSpeaker = new Launch(shooter, ShooterConstants.SPEAKER_RPS);
+        shootAmp = new Launch(shooter, ShooterConstants.AMP_RPS);
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
-        autoChooser = new LoggedDashboardChooser<PathPlannerAuto>("auto chooser");
+        autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
-        autoChooser.addDefaultOption("Test Auto", new PathPlannerAuto("Test Auto"));
-        positionChooser.addDefaultOption("default pose", PositionConstants.POSE1);
+        autoChooser.addDefaultOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
+        positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.
         autoChooser.addOption("Quarter Circle", new PathPlannerAuto("Quarter Circle"));
         autoChooser.addOption("1 Meter Forward", new PathPlannerAuto("1 Meter Forward"));
 
-        // Placeholders until positions are configured.
+        // Characterization routines.
+        autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
+        autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
 
+        // Placeholders until positions are configured.
         positionChooser.addOption("Position 1", PositionConstants.POSE2);
         positionChooser.addOption("Position 2", PositionConstants.POSE2);
         positionChooser.addOption("Position 3", PositionConstants.POSE3);
@@ -137,17 +147,24 @@ public class RobotContainer {
         new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
 
         // Binds moving the arm to the operator's d-pad if the arm is enabled.
+        // Temporarily bound to the driver controller.
         if (!disableArm.get()) {
-            new Trigger(() -> operatorController.getPOV() == 0)
-            .onTrue(new ArmPID(arm, arm.getArmPosition() + Math.PI / 180))
-            .onFalse(new ArmPID(arm, arm.getArmPosition()));
+            new Trigger(() -> driverController.getPOV() == 0)
+            .onTrue(new ArmPID(arm, ArmConstants.AMP_SCORING_POSITION))
+            .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
 
-            new Trigger(() -> operatorController.getPOV() == 180)
-            .onTrue(new ArmPID(arm, arm.getArmPosition() - Math.PI / 180))
-            .onFalse(new ArmPID(arm, arm.getArmPosition()));
+            new Trigger(() -> driverController.getPOV() == 180)
+            .onTrue(new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION))
+            .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
         }
 
         // TODO Configure shooter launch button :)
+        // Binds the speaker shoot to the x button.
+        // Temporarily bound to the driver controller.
+        new Trigger(() -> driverController.getXButtonPressed()).onTrue(shootSpeaker);
+        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> shootSpeaker.end(true)));
+        new Trigger(() -> driverController.getYButtonPressed()).onTrue(shootAmp);
+        new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> shootAmp.end(true)));
     }
 
     public Command getAutonomousCommand() {

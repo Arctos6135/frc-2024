@@ -23,9 +23,11 @@ import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.shooter.Launch;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PositionConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.drivetrain.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.arm.*;
@@ -53,6 +55,8 @@ public class RobotContainer {
 
     // Commands
     private final TeleopDrive teleopDrive;
+    private final Launch shootSpeaker;
+    private final Launch shootAmp;
 
     public RobotContainer() {
         // Creates a real robot.
@@ -80,6 +84,8 @@ public class RobotContainer {
             shooter = new Shooter(new ShooterIO());
         }
 
+        shootSpeaker = new Launch(shooter, ShooterConstants.SPEAKER_RPS);
+        shootAmp = new Launch(shooter, ShooterConstants.AMP_RPS);
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
@@ -151,6 +157,12 @@ public class RobotContainer {
         }
 
         // TODO Configure shooter launch button :)
+        // Binds the speaker shoot to the x button.
+        // Temporarily bound to the driver controller.
+        new Trigger(() -> driverController.getXButtonPressed()).onTrue(shootSpeaker);
+        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> shootSpeaker.end(true)));
+        new Trigger(() -> driverController.getYButtonPressed()).onTrue(shootAmp);
+        new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> shootAmp.end(true)));
     }
 
     public Command getAutonomousCommand() {

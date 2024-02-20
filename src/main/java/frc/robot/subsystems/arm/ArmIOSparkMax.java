@@ -1,13 +1,13 @@
 package frc.robot.subsystems.arm;
 
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
-import frc.robot.constants.CANBus;
 import frc.robot.constants.ArmConstants;
+import frc.robot.constants.CANBus;
 
 public class ArmIOSparkMax extends ArmIO {
     // Motors that control the arm.
@@ -25,6 +25,7 @@ public class ArmIOSparkMax extends ArmIO {
         armRight.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
 
         armLeft.setIdleMode(IdleMode.kBrake);
+        armRight.setIdleMode(IdleMode.kBrake);
         
         armEncoder = armLeft.getEncoder();
 
@@ -37,6 +38,12 @@ public class ArmIOSparkMax extends ArmIO {
         armLeft.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
         armLeft.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
         armLeft.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
+ 
+         // sets up soft limits
+        armRight.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
+        armRight.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
+        armRight.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
+        armRight.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
     }
 
     @Override

@@ -24,6 +24,7 @@ import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.shooter.Launch;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PositionConstants;
@@ -146,14 +147,15 @@ public class RobotContainer {
         new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
 
         // Binds moving the arm to the operator's d-pad if the arm is enabled.
+        // Temporarily bound to the driver controller.
         if (!disableArm.get()) {
-            new Trigger(() -> operatorController.getPOV() == 0)
-            .onTrue(new ArmPID(arm, arm.getArmPosition() + Math.PI / 180))
-            .onFalse(new ArmPID(arm, arm.getArmPosition()));
+            new Trigger(() -> driverController.getPOV() == 0)
+            .onTrue(new ArmPID(arm, ArmConstants.AMP_SCORING_POSITION))
+            .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
 
-            new Trigger(() -> operatorController.getPOV() == 180)
-            .onTrue(new ArmPID(arm, arm.getArmPosition() - Math.PI / 180))
-            .onFalse(new ArmPID(arm, arm.getArmPosition()));
+            new Trigger(() -> driverController.getPOV() == 180)
+            .onTrue(new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION))
+            .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
         }
 
         // TODO Configure shooter launch button :)

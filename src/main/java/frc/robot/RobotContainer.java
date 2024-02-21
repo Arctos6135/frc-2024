@@ -23,7 +23,7 @@ import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.TeleopDrive;
-import frc.robot.commands.shooter.Launch;
+import frc.robot.commands.scoring.Score;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
@@ -56,8 +56,7 @@ public class RobotContainer {
 
     // Commands
     private final TeleopDrive teleopDrive;
-    private final Launch shootSpeaker;
-    private final Launch shootAmp;
+    private final Score score;
 
     public RobotContainer() {
         // Creates a real robot.
@@ -85,8 +84,7 @@ public class RobotContainer {
             shooter = new Shooter(new ShooterIO());
         }
 
-        shootSpeaker = new Launch(shooter, ShooterConstants.SPEAKER_RPS);
-        shootAmp = new Launch(shooter, ShooterConstants.AMP_RPS);
+        score = new Score();
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
@@ -161,10 +159,10 @@ public class RobotContainer {
         // TODO Configure shooter launch button :)
         // Binds the speaker shoot to the x button.
         // Temporarily bound to the driver controller.
-        new Trigger(() -> driverController.getXButtonPressed()).onTrue(shootSpeaker);
-        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> shootSpeaker.end(true)));
-        new Trigger(() -> driverController.getYButtonPressed()).onTrue(shootAmp);
-        new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> shootAmp.end(true)));
+        new Trigger(() -> driverController.getXButtonPressed()).onTrue(score.scoreSpeaker(arm, shooter, intake));
+        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
+        new Trigger(() -> driverController.getYButtonPressed()).onTrue(score.scoreAmp(arm, shooter, intake));
+        new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
     }
 
     public Command getAutonomousCommand() {

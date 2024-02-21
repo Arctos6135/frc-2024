@@ -20,4 +20,18 @@ public class Score {
             () -> arm.getArmPosition() >= ArmConstants.SPEAKER_SCORING_POSITION
         );
     }
+
+    public static Command scoreAmp(Arm arm, Shooter shooter, Intake intake) {
+        return Commands.backgroundTask(
+            new ArmPID(arm, ArmConstants.AMP_SCORING_POSITION),
+            Commands.backgroundTask(new Launch(shooter, ShooterConstants.AMP_RPS), new CurrentFeed(intake), () -> shooter.getVelocity() >= ShooterConstants.AMP_RPS),
+            () -> arm.getArmPosition() >= ArmConstants.AMP_SCORING_POSITION
+        );
+    }
+
+    public static void stop(Arm arm, Shooter shooter, Intake intake) {
+        arm.setVoltage(0);
+        shooter.stop();
+        intake.setVoltage(0);
+    }
 }

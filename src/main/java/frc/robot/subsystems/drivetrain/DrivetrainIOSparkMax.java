@@ -68,6 +68,15 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         Logger.recordOutput("DT Left Voltage", left);        
         Logger.recordOutput("DT Right Voltage", right);
 
+        
+        if (Math.abs(left) < 0.5) {
+            left = 0;
+        }
+
+        if (Math.abs(right) < 0.5) {
+            right = 0;
+        }
+
         leftMaster.setVoltage(left);
         rightMaster.setVoltage(right);
     }

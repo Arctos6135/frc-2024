@@ -13,7 +13,7 @@ import frc.robot.commands.shooter.Launch;
 
 
 public class Score {
-    public static Command scoreSpeaker(Arm arm, Shooter shooter, Intake intake) {        
+    public Command scoreSpeaker(Arm arm, Shooter shooter, Intake intake) {        
         return Commands.backgroundTask(
             new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION), 
             Commands.backgroundTask(new Launch(shooter, ShooterConstants.SPEAKER_RPS), new CurrentFeed(intake, shooter), () -> shooter.getVelocity() >= ShooterConstants.SPEAKER_RPS), 
@@ -21,7 +21,7 @@ public class Score {
         );
     }
 
-    public static Command scoreAmp(Arm arm, Shooter shooter, Intake intake) {
+    public Command scoreAmp(Arm arm, Shooter shooter, Intake intake) {
         return Commands.backgroundTask(
             new ArmPID(arm, ArmConstants.AMP_SCORING_POSITION),
             Commands.backgroundTask(new Launch(shooter, ShooterConstants.AMP_RPS), new CurrentFeed(intake, shooter), () -> shooter.getVelocity() >= ShooterConstants.AMP_RPS),
@@ -29,7 +29,7 @@ public class Score {
         );
     }
 
-    public static void stop(Arm arm, Shooter shooter, Intake intake) {
+    public void stop(Arm arm, Shooter shooter, Intake intake) {
         arm.setVoltage(0);
         shooter.stop();
         intake.setVoltage(0);

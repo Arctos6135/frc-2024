@@ -38,8 +38,8 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController rightController = new PIDController(0, 5, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.2, 0.26);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.2, 0.26);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.213, 0.2);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.235, 0.26);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -183,9 +183,9 @@ public class Drivetrain extends SubsystemBase {
             new LoggedMechanism(rightLog, rightMechanism)
         );
 
-        return new AccelerationRoutine(group, 2.5, 0.25, this).finallyDo(() -> {
-            leftLog.logCSV("DrivetrainVelocityLeft");
-            rightLog.logCSV("DrivetrainVelocityRight");
+        return new AccelerationRoutine(group, 2.5, 5, this).finallyDo(() -> {
+            leftLog.logCSV("DrivetrainAccelerationLeft");
+            rightLog.logCSV("DrivetrainAccelerationRight");
         });
     }
 }

@@ -16,7 +16,7 @@ public class Score {
     public static Command scoreSpeaker(Arm arm, Shooter shooter, Intake intake) {        
         return Commands.backgroundTask(
             new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION), 
-            Commands.backgroundTask(new Launch(shooter, ShooterConstants.SPEAKER_RPS), new CurrentFeed(intake), () -> shooter.getVelocity() >= ShooterConstants.SPEAKER_RPS), 
+            Commands.backgroundTask(new Launch(shooter, ShooterConstants.SPEAKER_RPS), new CurrentFeed(intake, shooter), () -> shooter.getVelocity() >= ShooterConstants.SPEAKER_RPS), 
             () -> arm.getArmPosition() >= ArmConstants.SPEAKER_SCORING_POSITION
         );
     }
@@ -24,7 +24,7 @@ public class Score {
     public static Command scoreAmp(Arm arm, Shooter shooter, Intake intake) {
         return Commands.backgroundTask(
             new ArmPID(arm, ArmConstants.AMP_SCORING_POSITION),
-            Commands.backgroundTask(new Launch(shooter, ShooterConstants.AMP_RPS), new CurrentFeed(intake), () -> shooter.getVelocity() >= ShooterConstants.AMP_RPS),
+            Commands.backgroundTask(new Launch(shooter, ShooterConstants.AMP_RPS), new CurrentFeed(intake, shooter), () -> shooter.getVelocity() >= ShooterConstants.AMP_RPS),
             () -> arm.getArmPosition() >= ArmConstants.AMP_SCORING_POSITION
         );
     }

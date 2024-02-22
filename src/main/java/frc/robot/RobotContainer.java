@@ -13,6 +13,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,6 +25,7 @@ import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
+import frc.robot.commands.shooter.Launch;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
@@ -64,7 +66,7 @@ public class RobotContainer {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIO());
-            shooter = new Shooter(new ShooterIO());
+            shooter = new Shooter(new ShooterIOSparkMax());
         }
         // Creates a simulated robot.
         else if (RobotBase.isSimulation()) {
@@ -116,9 +118,9 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Binds precision drive toggling to driver's right bumper.
-        new Trigger(() -> driverController.getRightBumper())
-            .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
-            .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
+        // new Trigger(() -> driverController.getRightBumper())
+        //     .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
+        //     .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
         // Binds macros for orienting robot turning to driver's dpad.
         new Trigger(() -> driverController.getPOV() == 0).onTrue(new PIDSetAngle(drivetrain, 0));
@@ -134,15 +136,15 @@ public class RobotContainer {
         // TODO change back to the operator controller.
         // Sets the right bumper to turn the intake on until released.
 
-        new Trigger(() -> driverController.getAButtonPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)));
-        new Trigger(() -> driverController.getAButtonReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+        new Trigger(() -> driverController.getRightBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)));
+        new Trigger(() -> driverController.getRightBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
 
-        // Binds the left bumper to run intake in reverse until released.
-        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)));
-        new Trigger(() -> driverController.getBButtonReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+        // // Binds the left bumper to run intake in reverse until released.
+        new Trigger(() -> driverController.getLeftBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)));
+        new Trigger(() -> driverController.getLeftBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
 
         // Binds auto intake to the a button.
-        new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
+        //new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
 
         // Binds moving the arm to the operator's d-pad if the arm is enabled.
         // Temporarily bound to the driver controller.
@@ -156,16 +158,22 @@ public class RobotContainer {
             .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
         }
 
+        new Trigger(() -> driverController.getXButtonPressed()).whileTrue(new InstantCommand(() -> shooter.setVoltages(1.5, 1.5)));
+        new Trigger(() -> driverController.getXButtonReleased()).whileTrue(new InstantCommand(() -> shooter.setVoltages(0, 0)));
+
+        new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new Launch(shooter, 1.5));
+        new Trigger(() -> driverController.getYButtonReleased()).whileTrue(new Launch(shooter, 0));
+
         // TODO Configure shooter launch button :)
         // Binds the speaker shoot to the x button.
         // Temporarily bound to the driver controller.
-        new Trigger(() -> driverController.getXButtonPressed()).onTrue(score.scoreSpeaker(arm, shooter, intake));
-        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
-        new Trigger(() -> driverController.getYButtonPressed()).onTrue(score.scoreAmp(arm, shooter, intake));
-        new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
+        // new Trigger(() -> driverController.getXButtonPressed()).onTrue(score.scoreSpeaker(arm, shooter, intake));
+        // new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
+        // new Trigger(() -> driverController.getYButtonPressed()).onTrue(score.scoreAmp(arm, shooter, intake));
+        // new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.get();
+        return drivetrain.characterizeVelocity();//autoChooser.get();
     }
 }

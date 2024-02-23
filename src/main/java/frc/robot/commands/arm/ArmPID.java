@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.ArmConstants;
 import frc.robot.subsystems.arm.Arm;
 
 /**
@@ -38,6 +39,15 @@ public class ArmPID extends Command {
         addRequirements(arm);
     }
 
+    /**
+     * Update the target angle so that this command is reusable.
+     * 
+     * @param targetAngle
+     */
+    public void setTarget(double targetAngle) {
+        this.targetState = new State(targetAngle, 0);
+    }
+
     @Override
     public void execute() {
         /**
@@ -55,7 +65,9 @@ public class ArmPID extends Command {
     }
 
     @Override
-    public boolean isFinished() { return false; }
+    public boolean isFinished() {
+        return false;
+    }
 
     @Override
     public void end(boolean interrupted) {

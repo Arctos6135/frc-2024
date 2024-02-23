@@ -15,9 +15,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.IntakePiece;
+import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
+import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.drivetrain.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.arm.*;
@@ -36,6 +39,7 @@ public class RobotContainer {
 
     // Commands
     private final TeleopDrive teleopDrive;
+    private final ArmPID armPID;
 
     public RobotContainer() {
         // Creates a real robot.
@@ -66,6 +70,9 @@ public class RobotContainer {
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
+        armPID = new ArmPID(arm, 0);
+        arm.setDefaultCommand(armPID);
+
         configureBindings();
     }
 
@@ -88,6 +95,17 @@ public class RobotContainer {
         new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
 
         // TODO Configure shooter launch button :)
+    }
+
+    /**
+     * Runs on a periodic loop. Check Robot.java.
+     */
+    public void updateButtons() {
+        if (operatorController.getXButton()) {
+            armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
+        } else if (operatorController.getYButton()) {
+            armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
+        }
     }
 
     public Command getAutonomousCommand() {

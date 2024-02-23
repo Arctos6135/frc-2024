@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
 
     private final Mechanism2d mechanism = new Mechanism2d(42, 42);
     private final MechanismRoot2d root = mechanism.getRoot("Arm", 21, 21);
-    private final MechanismLigament2d shortArm = new MechanismLigament2d("Short Arm", 8, 60, 10, new Color8Bit(255, 0, 0));
+    private final MechanismLigament2d shortArm = new MechanismLigament2d("Short Arm", 8, 0, 10, new Color8Bit(255, 0, 0));
     private final MechanismLigament2d longArm = new MechanismLigament2d("Long Arm", 15, -60);
 
     public Arm(ArmIO io) {
@@ -36,7 +36,7 @@ public class Arm extends SubsystemBase {
         io.updateInputs(inputs);
 
         // Update mechanism
-        shortArm.setAngle(inputs.position + 60);
+        shortArm.setAngle(inputs.position);
         longArm.setAngle(-60);
 
         // Log all the sensor data.

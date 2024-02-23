@@ -97,7 +97,7 @@ public class RobotContainer {
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
-        armPID = new ArmPID(arm, 0);
+        armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
         arm.setDefaultCommand(armPID);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
@@ -193,10 +193,12 @@ public class RobotContainer {
             armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
         } else if (operatorController.getYButton()) {
             armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
+        } else {
+            armPID.setTarget(ArmConstants.STARTING_POSITION);
         }
     }
 
     public Command getAutonomousCommand() {
-        return new InstantCommand(() -> shooter.setRPS(20)); //autoChooser.get();
+        return new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)); //autoChooser.get();
     }
 }

@@ -18,9 +18,9 @@ public class ArmPID extends Command {
     private final Arm arm;
 
     // TODO caluclate the proper values for each of these!!
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(0, 0));
-    private final ArmFeedforward feedforward = new ArmFeedforward(1, 1, 1, 1);
-    private final PIDController controller = new PIDController(1, 1, 1);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(0.5, 0.5));
+    private final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 3.31, 0.01);
+    private final PIDController controller = new PIDController(7, 0, 0);
 
     private State targetState;
 
@@ -57,7 +57,10 @@ public class ArmPID extends Command {
          * the voltage with a PIDController to smooth out any suspicious deviations 😈.
          */
         double currentPosition = arm.getArmPosition();
+
+        //State setpoint = targetState;
         State setpoint = profile.calculate(0.02, new State(currentPosition, arm.getArmVelocity()), targetState);
+
         double feedbackEffort = controller.calculate(currentPosition, setpoint.position);
         double feedforwardEffort = feedforward.calculate(setpoint.position, setpoint.velocity);
 

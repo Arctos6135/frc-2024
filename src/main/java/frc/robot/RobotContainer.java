@@ -174,6 +174,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return drivetrain.characterizeVelocity();//autoChooser.get();
+        return new InstantCommand(() -> shooter.setRPS(20)); //autoChooser.get();
     }
 }

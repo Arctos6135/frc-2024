@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -16,8 +17,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.FeedforwardCharacterization;
-import frc.robot.commands.FeedforwardCharacterization.Config;
+import frc.robot.commands.characterization.AccelerationRoutine;
+import frc.robot.commands.characterization.FeedforwardLog;
+import frc.robot.commands.characterization.LoggedMechanism;
+import frc.robot.commands.characterization.LoggedMechanismGroup;
+import frc.robot.commands.characterization.Mechanism;
+import frc.robot.commands.characterization.VelocityRoutine;
 
 /**
  * A subsystem that controls the drivey bit of the robot.
@@ -29,13 +34,12 @@ public class Drivetrain extends SubsystemBase {
     private final DrivetrainInputsAutoLogged inputs = new DrivetrainInputsAutoLogged();
 
     // PIDControllers that control the drivetrain motor voltage output
-    private final PIDController leftController = new PIDController(0.0, 0.0, 0.0);
-    private final PIDController rightController = new PIDController(0.0, 0.0, 0.0);
+    private final PIDController leftController = new PIDController(0, 5, 0.0);
+    private final PIDController rightController = new PIDController(0, 5, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.2, 0.26);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.2, 0.26);
-
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.213, 0.2);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.235, 0.26);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -147,20 +151,41 @@ public class Drivetrain extends SubsystemBase {
         return inputs.yaw;
     }
 
-    // The drivetrain needs 4m of clearance in front of and behind it when running this command.
-    public Command characterize() {
-        return new FeedforwardCharacterization(new Config(
-            voltage -> {
-                Logger.recordOutput("Feedforward Voltage", voltage);
-                io.setVoltages(voltage, voltage);
-            },
-            this::getDistance,
-            () -> (inputs.leftVelocity + inputs.rightVelocity) / 2, 
-            6, 
-            4, 
-            2, 
-            4, 
-            "Drivetrain"
-        ), this);
+    // The drivetrain needs 3m of clearance in front of it when running this command.
+    public Command characterizeVelocity() {
+        FeedforwardLog leftLog = new FeedforwardLog();
+        FeedforwardLog rightLog = new FeedforwardLog();
+
+        Mechanism leftMechanism = new Mechanism(volts -> io.setVoltages(volts, volts), () -> inputs.leftPosition, () -> inputs.leftVelocity);
+        Mechanism rightMechanism = new Mechanism(volts -> io.setVoltages(volts, volts), () -> inputs.rightPosition, () -> inputs.rightVelocity);
+
+        LoggedMechanismGroup group = new LoggedMechanismGroup(
+            new LoggedMechanism(leftLog, leftMechanism),
+            new LoggedMechanism(rightLog, rightMechanism)
+        );
+
+        return new VelocityRoutine(group, 2.5, 0.25, this).finallyDo(() -> {
+            leftLog.logCSV("DrivetrainVelocityLeft");
+            rightLog.logCSV("DrivetrainVelocityRight");
+        });
+    }
+
+    // The drivetrain needs 3m of clearance in front of it when running this command.
+    public Command characterizeAcceleration() {
+        FeedforwardLog leftLog = new FeedforwardLog();
+        FeedforwardLog rightLog = new FeedforwardLog();
+
+        Mechanism leftMechanism = new Mechanism(volts -> io.setVoltages(volts, volts), () -> inputs.leftPosition, () -> inputs.leftVelocity);
+        Mechanism rightMechanism = new Mechanism(volts -> io.setVoltages(volts, volts), () -> inputs.rightPosition, () -> inputs.rightVelocity);
+
+        LoggedMechanismGroup group = new LoggedMechanismGroup(
+            new LoggedMechanism(leftLog, leftMechanism),
+            new LoggedMechanism(rightLog, rightMechanism)
+        );
+
+        return new AccelerationRoutine(group, 2.5, 5, this).finallyDo(() -> {
+            leftLog.logCSV("DrivetrainAccelerationLeft");
+            rightLog.logCSV("DrivetrainAccelerationRight");
+        });
     }
 }

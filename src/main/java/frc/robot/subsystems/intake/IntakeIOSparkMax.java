@@ -3,6 +3,8 @@ package frc.robot.subsystems.intake;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
@@ -10,7 +12,7 @@ import frc.robot.constants.CANBus;
 import frc.robot.constants.IntakeConstants;
 
 public class IntakeIOSparkMax extends IntakeIO{
-    private final CANSparkMax motor = new CANSparkMax(CANBus.INTAKE_TOP_MASTER, MotorType.kBrushless);
+    private final CANSparkMax motor = new CANSparkMax(CANBus.INTAKE_MOTOR, MotorType.kBrushless);
 
     private final RelativeEncoder encoder;
 
@@ -25,11 +27,12 @@ public class IntakeIOSparkMax extends IntakeIO{
         encoder = motor.getEncoder();
 
         // meters of belt
-        encoder.setPositionConversionFactor(IntakeConstants.ENCODER_CONVERSION_FACTOR);
+        encoder.setPositionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR);
+        encoder.setPositionConversionFactor(IntakeConstants.VELOCITY_CONVERSION_FACTOR);
     }
-
     
     public void setVoltage(double voltage) {
+        Logger.recordOutput("Intake Voltage", voltage);
         motor.setVoltage(voltage);
     }
 

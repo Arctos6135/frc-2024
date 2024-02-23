@@ -8,8 +8,11 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ArmConstants;
-import frc.robot.commands.FeedforwardCharacterization;
-import frc.robot.commands.FeedforwardCharacterization.Config;
+import frc.robot.commands.characterization.FeedforwardLog;
+import frc.robot.commands.characterization.LoggedMechanism;
+import frc.robot.commands.characterization.LoggedMechanismGroup;
+import frc.robot.commands.characterization.Mechanism;
+import frc.robot.commands.characterization.VelocityRoutine;
 
 public class Arm extends SubsystemBase {
     private final ArmIO io;
@@ -57,16 +60,12 @@ public class Arm extends SubsystemBase {
 
 
     // If this works then some parameters should be changed
-    public Command characterize() {
-        return new FeedforwardCharacterization(new Config(
-            this::setVoltage,
-            this::getArmPosition,
-            this::getArmVelocity,
-            6, // Change
-            4, // Change
-            2, // Change
-            0.5, // Change 
-            "Arm"
-        ), this);
+    public Command characterizeVelocity() {
+        FeedforwardLog log = new FeedforwardLog();
+        LoggedMechanism mechanism = new LoggedMechanism(
+            log,
+            new Mechanism(this::setVoltage, () -> inputs.position, () -> inputs.velocity)
+        );
+        return new VelocityRoutine(new LoggedMechanismGroup(mechanism), 1, 0.25).finallyDo(() -> log.logCSV("ArmVelocity"));
     }
 }

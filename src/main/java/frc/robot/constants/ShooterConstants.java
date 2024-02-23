@@ -19,11 +19,13 @@ public class ShooterConstants {
 
     // These constants need to be tuned.
     // Static gain in volts (volts needed to make the flywheel barely move).
-    public static final double kS = 1;
+    public static final double kS = 0;
     // Velocity gain in volts/ rotations per second (voltage required to "cruise" at a given constant velocity).
-    public static final double kV = 1;
+    public static final double kV = 12.0 / 1000.0; 
     // Acceleration gain in volts/ rotations per second^2.
-    public static final double kA = 1;
+    public static final double kA = 0;
+
+    public static final double FEED_RPS = 2;
 
     
 }

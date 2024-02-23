@@ -2,8 +2,11 @@ package frc.robot.subsystems.drivetrain;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
+
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -34,27 +37,48 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         leftMaster.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
         rightFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
         leftFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
-    
 
         rightFollower.follow(rightMaster);
         leftFollower.follow(leftMaster);
 
         rightMaster.setInverted(true);
+        leftMaster.setInverted(false);
 
         leftMaster.setIdleMode(IdleMode.kBrake);
         rightMaster.setIdleMode(IdleMode.kBrake);
 
+        leftMaster.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
+        rightMaster.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
+
         rightEncoder = rightMaster.getEncoder();
         leftEncoder = leftMaster.getEncoder();
 
-        this.rightEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
-        this.leftEncoder.setPositionConversionFactor(DriveConstants.ENCODER_CONVERSION_FACTOR);
-    }
+        this.rightEncoder.setVelocityConversionFactor(DriveConstants.VELOCITY_CONVERSION_FACTOR);
+        this.leftEncoder.setVelocityConversionFactor(DriveConstants.VELOCITY_CONVERSION_FACTOR);
+
+        this.rightEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
+        this.leftEncoder.setPositionConversionFactor(DriveConstants.POSITION_CONVERSION_FACTOR);
+
+        leftEncoder.setPosition(0);
+        rightEncoder.setPosition(0);
+    }   
 
     @Override
     public void setVoltages(double left, double right) {
-        leftMaster.set(left);
-        rightMaster.set(right);
+        Logger.recordOutput("DT Left Voltage", left);        
+        Logger.recordOutput("DT Right Voltage", right);
+
+        
+        if (Math.abs(left) < 0.5) {
+            left = 0;
+        }
+
+        if (Math.abs(right) < 0.5) {
+            right = 0;
+        }
+
+        leftMaster.setVoltage(left);
+        rightMaster.setVoltage(right);
     }
 
     @Override

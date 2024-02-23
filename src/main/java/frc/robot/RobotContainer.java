@@ -96,8 +96,10 @@ public class RobotContainer {
         score = new Score();
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
-armPID = new ArmPID(arm, 0);
+
+        armPID = new ArmPID(arm, 0);
         arm.setDefaultCommand(armPID);
+
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
@@ -171,7 +173,10 @@ armPID = new ArmPID(arm, 0);
         new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new Launch(shooter, 1.5));
         new Trigger(() -> driverController.getYButtonReleased()).whileTrue(new Launch(shooter, 0));
 
+        // The armPID is binded to the operator X and Y buttons. Check this.updateButtons() for more information.
+
         // TODO Configure shooter launch button :)
+
         // Binds the speaker shoot to the x button.
         // Temporarily bound to the driver controller.
         // new Trigger(() -> driverController.getXButtonPressed()).onTrue(score.scoreSpeaker(arm, shooter, intake));

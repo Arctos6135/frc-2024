@@ -3,16 +3,17 @@ package frc.robot.constants;
 import edu.wpi.first.math.util.Units;
 
 public class ArmConstants {
-    // TODO Incredible Zero GEARBOX_RATIO
-    public static final double GEARBOX_RATIO = 1;
+    public static final double GEARBOX_RATIO = 1.0 / 170.0;
 
-    // The arm length in meters.
-    public static final double ARM_LENGTH = 1;
-    // In kg
-    public static final double ARM_WEIGHT = 1;
+    // The arm length in meters, measured in CAD.
+    public static final double ARM_LENGTH = Units.inchesToMeters(12.587);
+    // In kg (complete guess)
+    public static final double ARM_WEIGHT = 7;
     
-    // Undecided while design figures out what to do.
-    public static final double ENCODER_CONVERSION_FACTOR = 2 * Math.PI * GEARBOX_RATIO;
+    // Radians.
+    public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI * GEARBOX_RATIO;
+    // Radians per second.
+    public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI * GEARBOX_RATIO / 60.0;
 
     public static final double STARTING_POSITION = Units.degreesToRadians(-55);
 

@@ -52,15 +52,6 @@ public class ArmIOSparkMax extends ArmIO {
 
     @Override
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Arm Voltage", voltage);
-
-        Logger.recordOutput("Left Motor Current", armLeft.getOutputCurrent());
-        Logger.recordOutput("Right Motor Current", armRight.getOutputCurrent());
-
-        Logger.recordOutput("Left Motor Power", armLeft.get());
-        Logger.recordOutput("Right Motor Power", armRight.get());
-
-
         armLeft.setVoltage(voltage);
         armRight.setVoltage(voltage);
     }

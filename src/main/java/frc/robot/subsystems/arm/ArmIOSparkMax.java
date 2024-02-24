@@ -1,8 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import org.littletonrobotics.junction.Logger;
-
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;

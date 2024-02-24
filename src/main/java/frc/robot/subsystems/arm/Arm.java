@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.ArmConstants;
 import frc.robot.commands.characterization.FeedforwardLog;
 import frc.robot.commands.characterization.LoggedMechanism;
 import frc.robot.commands.characterization.LoggedMechanismGroup;

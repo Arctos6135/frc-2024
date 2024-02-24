@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;

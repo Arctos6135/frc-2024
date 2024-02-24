@@ -6,8 +6,6 @@ import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 

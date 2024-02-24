@@ -29,5 +29,6 @@ public class ShooterConstants {
 
     public static final double FEED_RPS = 2;
 
-    
+    // The voltage we run the shooter at for the advance shooter command
+    public static final double ADVANCE_VOLTAGE = 2;
 }

@@ -50,4 +50,8 @@ public class Shooter extends SubsystemBase {
     public double getVelocity() {
         return (inputs.leftVelocity + inputs.rightVelocity) / 2;
     }
+    
+    public double getPosition() {
+        return inputs.leftPosition;
+    }
 }

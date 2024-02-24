@@ -5,6 +5,9 @@ import org.littletonrobotics.junction.AutoLog;
 public class ShooterIO {
     @AutoLog
     public static class ShooterInputs {
+        public double leftPosition;
+        public double rightPosition;
+
         public double leftCurrent;
         public double rightCurrent;
 

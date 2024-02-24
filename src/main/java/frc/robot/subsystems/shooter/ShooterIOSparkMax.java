@@ -32,8 +32,11 @@ public class ShooterIOSparkMax extends ShooterIO {
         rightEncoder = right.getEncoder();
         leftEncoder = left.getEncoder();
 
-        rightEncoder.setPositionConversionFactor(ShooterConstants.ENCODER_CONVERSION_FACTOR);
-        leftEncoder.setPositionConversionFactor(ShooterConstants.ENCODER_CONVERSION_FACTOR);
+        rightEncoder.setPositionConversionFactor(ShooterConstants.POSITION_CONVERSION_FACTOR);
+        leftEncoder.setPositionConversionFactor(ShooterConstants.POSITION_CONVERSION_FACTOR);
+    
+        rightEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
+        leftEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
     }
     
     public void setVoltages(double leftVoltage, double rightVoltage) {

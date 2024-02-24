@@ -14,7 +14,7 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     // The voltage at which the intake motors should rotate at when intaking
     public static double VOLTAGE = 12;
 
-    public static double INTAKE_CURRENT = 10;
+    public static double INTAKE_CURRENT = 18;
 
     // Current limit of the intake motor.
     public static int CURRENT_LIMIT = 20;

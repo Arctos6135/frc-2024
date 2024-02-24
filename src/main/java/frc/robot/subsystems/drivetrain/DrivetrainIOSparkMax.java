@@ -65,10 +65,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
     @Override
     public void setVoltages(double left, double right) {
-        Logger.recordOutput("DT Left Voltage", left);        
-        Logger.recordOutput("DT Right Voltage", right);
-
-        
         if (Math.abs(left) < 0.5) {
             left = 0;
         }

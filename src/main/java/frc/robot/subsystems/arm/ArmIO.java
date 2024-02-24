@@ -25,7 +25,7 @@ public class ArmIO {
 
     /**
      * Set the voltage of the arm motor.
-     * @param motor shh dont tell anyone 🤫
+     * @param voltage shh dont tell anyone 🤫
      */
-    public void setVoltage(double motor) {}
+    public void setVoltage(double voltage) {}
 }

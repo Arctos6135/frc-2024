@@ -100,10 +100,18 @@ public class Drivetrain extends SubsystemBase {
 
         double left = leftFeedforwardEffort + leftFeedbackEffort;
 
+        Logger.recordOutput("DT Left Feedback", leftFeedbackEffort);
+        Logger.recordOutput("DT Left Feedforward", leftFeedforwardEffort);
+        Logger.recordOutput("DT Left Voltage", left);
+
         double rightFeedforwardEffort = rightForward.calculate(targetVelocityRight, rightAcceleration);
         double rightFeedbackEffort = rightController.calculate(rightVelocity, targetVelocityRight);
 
         double right = rightFeedforwardEffort + rightFeedbackEffort;
+
+        Logger.recordOutput("DT Right Feedback", rightFeedbackEffort);
+        Logger.recordOutput("DT Right Feedforward", rightFeedforwardEffort);
+        Logger.recordOutput("DT Right Voltage", right);
 
         io.setVoltages(left, right);
     }
@@ -124,8 +132,8 @@ public class Drivetrain extends SubsystemBase {
      * @param speedRight the target speed of the right side in m/s
      */
     public void setSpeed(double speedLeft, double speedRight) {
-        Logger.recordOutput("Drivetrain Target Left Velocity", speedLeft);
-        Logger.recordOutput("Drivetrain Target Right Velocity", speedRight);
+        Logger.recordOutput("DT Left Velocity Target", speedLeft);
+        Logger.recordOutput("DT Right Velocity Target", speedRight);
 
         previousTargetVelocityLeft = targetVelocityLeft;
         previousTargetVelocityRight = targetVelocityRight;
@@ -136,8 +144,8 @@ public class Drivetrain extends SubsystemBase {
         leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
         rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
 
-        Logger.recordOutput("Drivetrain Target Left Acceleration", leftAcceleration);
-        Logger.recordOutput("Drivetrain Target Right Acceleration", rightAcceleration);
+        Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
+        Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
     }
 
     /**

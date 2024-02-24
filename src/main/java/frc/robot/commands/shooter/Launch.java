@@ -29,7 +29,6 @@ public class Launch extends Command {
 
     @Override
     public void execute() {
-        Logger.recordOutput("Shooter Launch RPS", speed);
         shooter.setRPS(speed);
     }
 

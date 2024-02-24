@@ -99,7 +99,7 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(teleopDrive);
 
         armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
-        //arm.setDefaultCommand(armPID);
+        arm.setDefaultCommand(armPID);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
@@ -186,7 +186,7 @@ public class RobotContainer {
             armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
         } else {
             System.out.println("Nothing being pressed");
-            arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
+            //arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
         }
     }
 

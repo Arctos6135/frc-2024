@@ -1,9 +1,12 @@
 package frc.robot.commands.arm;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ArmConstants;
 import frc.robot.subsystems.arm.Arm;
@@ -18,11 +21,14 @@ public class ArmPID extends Command {
     private final Arm arm;
 
     // TODO caluclate the proper values for each of these!!
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(0.5, 0.5));
-    private final ArmFeedforward feedforward = new ArmFeedforward(0, 0, 3.31, 0.01);
-    private final PIDController controller = new PIDController(7, 0, 0);
+    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 8);
+    private final TrapezoidProfile profile = new TrapezoidProfile(constraints);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0, 0.25, 3.8, 0.01);
+    private final PIDController controller = new PIDController(7, 10, 0);
 
     private State targetState;
+    private State initialState;
+    private double startTime;
 
     /**
      * Direct the ARM to rotate to a specific angle.
@@ -35,8 +41,15 @@ public class ArmPID extends Command {
     public ArmPID(Arm arm, double targetAngle) {
         this.arm = arm;
         this.targetState = new State(targetAngle, 0);
+        controller.setIntegratorRange(-6, 6);
 
         addRequirements(arm);
+    }
+
+    @Override
+    public void initialize() {
+        initialState = new State(arm.getArmPosition(), arm.getArmVelocity());
+        startTime = Timer.getFPGATimestamp();
     }
 
     /**
@@ -45,7 +58,8 @@ public class ArmPID extends Command {
      * @param targetAngle
      */
     public void setTarget(double targetAngle) {
-        this.targetState = new State(targetAngle, 0);
+        targetState = new State(targetAngle, 0);
+        initialize();
     }
 
     @Override
@@ -58,15 +72,22 @@ public class ArmPID extends Command {
          */
         double currentPosition = arm.getArmPosition();
 
+        Logger.recordOutput("Arm PID Target Position", targetState.position);
+
         //State setpoint = targetState;
-        State setpoint = profile.calculate(0.02, new State(currentPosition, arm.getArmVelocity()), targetState);
+        //State setpoint = profile.calculate(0.02, new State(currentPosition, arm.getArmVelocity()), targetState);
+        State setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, initialState, targetState);
+
+        Logger.recordOutput("Arm PID Setpoint Position", setpoint.position);
+        Logger.recordOutput("Arm PID Setpoint Velocity", setpoint.velocity);
 
         double feedbackEffort = controller.calculate(currentPosition, setpoint.position);
         double feedforwardEffort = feedforward.calculate(setpoint.position, setpoint.velocity);
 
-        arm.setVoltage(feedforwardEffort + feedbackEffort);
+        Logger.recordOutput("Arm PID Feedback", feedbackEffort);
+        Logger.recordOutput("Arm PID Feedforward", feedforwardEffort);
 
-        throw new RuntimeException();
+        arm.setVoltage(feedforwardEffort + feedbackEffort);
     }
 
     @Override

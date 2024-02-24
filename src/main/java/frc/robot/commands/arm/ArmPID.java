@@ -65,6 +65,8 @@ public class ArmPID extends Command {
         double feedforwardEffort = feedforward.calculate(setpoint.position, setpoint.velocity);
 
         arm.setVoltage(feedforwardEffort + feedbackEffort);
+
+        throw new RuntimeException();
     }
 
     @Override

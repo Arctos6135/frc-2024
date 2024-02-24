@@ -27,5 +27,5 @@ public class ArmConstants {
     public static final double ARM_TOLERANCE = 5 * Math.PI / 180;
 
     // Current limit for arm motor.
-    public static final int CURRENT_LIMIT = 15;
+    public static final int CURRENT_LIMIT = 30;
 }

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -72,7 +73,7 @@ public class RobotContainer {
         if (RobotBase.isReal()) {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
             intake = new Intake(new IntakeIOSparkMax());
-            arm = new Arm(new ArmIO());
+            arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
         }
         // Creates a simulated robot.
@@ -98,7 +99,7 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(teleopDrive);
 
         armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
-        arm.setDefaultCommand(armPID);
+        //arm.setDefaultCommand(armPID);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
@@ -155,19 +156,8 @@ public class RobotContainer {
         // Binds auto intake to the a button.
         //new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
 
-        // Binds moving the arm to the operator's d-pad if the arm is enabled.
-        // Temporarily bound to the driver controller.
-        if (!disableArm.get()) {
-            new Trigger(() -> driverController.getPOV() == 0)
-            .onTrue(new ArmPID(arm, ArmConstants.AMP_SCORING_POSITION))
-            .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
 
-            new Trigger(() -> driverController.getPOV() == 180)
-            .onTrue(new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION))
-            .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
-        }
-
-        new Trigger(() -> driverController.getXButtonPressed()).whileTrue(new InstantCommand(() -> shooter.setVoltages(1.5, 1.5)));
+        new Trigger(() -> driverController.getXButtonPressed()).whileTrue(new InstantCommand(() -> shooter.setVoltages(12, 12)));
         new Trigger(() -> driverController.getXButtonReleased()).whileTrue(new InstantCommand(() -> shooter.setVoltages(0, 0)));
 
         new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new Launch(shooter, 1.5));
@@ -190,11 +180,13 @@ public class RobotContainer {
      */
     public void updateButtons() {
         if (operatorController.getXButton()) {
-            armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
+            arm.setVoltage(8); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
+            System.out.println("X is being pressed");
         } else if (operatorController.getYButton()) {
             armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
         } else {
-            armPID.setTarget(ArmConstants.STARTING_POSITION);
+            System.out.println("Nothing being pressed");
+            arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
         }
     }
 

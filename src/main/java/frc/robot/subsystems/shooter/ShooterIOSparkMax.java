@@ -23,7 +23,8 @@ public class ShooterIOSparkMax extends ShooterIO {
         right.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
         left.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
         
-        right.setInverted(true);
+        right.setInverted(false);
+        left.setInverted(true);
 
         right.setIdleMode(IdleMode.kBrake);
         left.setIdleMode(IdleMode.kBrake);

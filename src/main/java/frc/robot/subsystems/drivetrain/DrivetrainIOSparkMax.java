@@ -85,5 +85,23 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
         inputs.yaw = gyro.getAngle(gyro.getYawAxis());
         inputs.yawRate = gyro.getRate(gyro.getYawAxis());
+
+        // Current
+        inputs.leftMasterCurrent = leftMaster.getOutputCurrent();
+        inputs.rightMasterCurrent = rightMaster.getOutputCurrent();
+        inputs.leftFollowerCurrent = leftMaster.getOutputCurrent();
+        inputs.rightFollowerCurrent = rightMaster.getOutputCurrent();
+
+        // Temperature
+        inputs.leftMasterTemperature = leftMaster.getMotorTemperature();
+        inputs.rightMasterTemperature = rightMaster.getMotorTemperature();
+        inputs.leftFollowerTemperature = leftMaster.getMotorTemperature();
+        inputs.rightFollowerTemperature = rightMaster.getMotorTemperature();
+
+        // Voltage
+        inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.get();
+        inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.get();
+        inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.get();
+        inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.get();
     }
 }

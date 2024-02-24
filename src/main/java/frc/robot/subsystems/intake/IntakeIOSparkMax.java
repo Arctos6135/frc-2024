@@ -39,6 +39,13 @@ public class IntakeIOSparkMax extends IntakeIO{
     public void updateInputs(IntakeInputs inputs) {
         inputs.position = encoder.getPosition();
 
+        // Current
         inputs.current = motor.getOutputCurrent();
+
+        // Temperature
+        inputs.temperature = motor.getMotorTemperature();
+
+        // Voltage
+        inputs.voltage = motor.getBusVoltage() * motor.get();
     }
 }

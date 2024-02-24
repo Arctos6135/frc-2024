@@ -57,5 +57,17 @@ public class ArmIOSparkMax extends ArmIO {
     public void updateInputs(ArmInputs inputs) {
         inputs.position = armEncoder.getPosition();
         inputs.velocity = armEncoder.getVelocity();
+
+        // Current
+        inputs.leftCurrent = armLeft.getOutputCurrent();
+        inputs.rightCurrent = armRight.getOutputCurrent();
+
+        // Temperature
+        inputs.leftTemperature = armLeft.getMotorTemperature();
+        inputs.rightTemperature = armRight.getMotorTemperature();
+
+        // Voltage
+        inputs.leftVoltage = armLeft.getBusVoltage() * armLeft.get();
+        inputs.rightVoltage = armRight.getBusVoltage() * armRight.get();
     }
 }

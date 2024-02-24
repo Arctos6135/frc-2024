@@ -46,10 +46,19 @@ public class ShooterIOSparkMax extends ShooterIO {
     }
 
     public void updateInputs(ShooterInputs inputs) {
+        inputs.rightVelocity = rightEncoder.getVelocity();
+        inputs.leftVelocity = leftEncoder.getVelocity();
+
+        // Current
         inputs.rightCurrent = right.getOutputCurrent();
         inputs.leftCurrent = left.getOutputCurrent();
 
-        inputs.rightVelocity = rightEncoder.getVelocity();
-        inputs.leftVelocity = leftEncoder.getVelocity();
+        // Temperature
+        inputs.leftTemperature = left.getMotorTemperature();
+        inputs.rightTemperature = right.getMotorTemperature();
+
+        // Voltage
+        inputs.leftVoltage = left.getBusVoltage() * left.get();
+        inputs.rightVoltage = right.getBusVoltage() * right.get();
     }
 }

@@ -16,6 +16,18 @@ public class ArmIO {
 
         // Radians per second
         public double velocity;
+
+        // Amps
+        public double rightCurrent;
+        public double leftCurrent;
+
+        // Celsius
+        public double rightTemperature;
+        public double leftTemperature;
+
+        // % Max Volts
+        public double rightVoltage;
+        public double leftVoltage; 
     }
 
     /**

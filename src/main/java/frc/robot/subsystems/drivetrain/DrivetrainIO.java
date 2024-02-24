@@ -20,6 +20,24 @@ public class DrivetrainIO {
         
         public double yaw;
         public double yawRate;
+
+        // Amps
+        public double rightMasterCurrent;
+        public double leftMasterCurrent;
+        public double rightFollowerCurrent;
+        public double leftFollowerCurrent;
+
+        // Celsius
+        public double rightMasterTemperature;
+        public double leftMasterTemperature;
+        public double rightFollowerTemperature;
+        public double leftFollowerTemperature;
+
+        // % Max Volts
+        public double rightMasterVoltage;
+        public double leftMasterVoltage;
+        public double rightFollowerVoltage;
+        public double leftFollowerVoltage;
     }
 
     /**

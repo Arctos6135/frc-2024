@@ -1,20 +1,15 @@
 package frc.robot.subsystems.shooter;
 
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.constants.ShooterConstants;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 
 public class ShooterIOSim extends ShooterIO {
-    private final LinearSystem<N1, N1, N1> flywheelPlant = LinearSystemId.identifyVelocitySystem(ShooterConstants.kV, ShooterConstants.kA);
+    // private final LinearSystem<N1, N1, N1> flywheelPlant = LinearSystemId.identifyVelocitySystem(ShooterConstants.kV, ShooterConstants.kA);
     
-    private final FlywheelSim left = new FlywheelSim(flywheelPlant, DCMotor.getNEO(1), 1);
-    private final FlywheelSim right = new FlywheelSim(flywheelPlant, DCMotor.getNEO(1), 1);
+    private final FlywheelSim left = new FlywheelSim(DCMotor.getNEO(1), 1, ShooterConstants.MOMENT_OF_INERTIA);
+    private final FlywheelSim right = new FlywheelSim(DCMotor.getNEO(1), 1, ShooterConstants.MOMENT_OF_INERTIA);
 
     @Override
     public void setVoltages(double leftVoltage, double rightVoltage) {

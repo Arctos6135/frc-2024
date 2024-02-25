@@ -27,7 +27,7 @@ public class ShooterConstants {
     // Acceleration gain in volts/ radians per second^2.
     public static final double kA = 0.001;
 
-    public static final double MOMENT_OF_INERTIA = 0.0699941016;
+    public static final double MOMENT_OF_INERTIA = 0.07137412;
 
     public static final double FEED_RPS = 2;
 

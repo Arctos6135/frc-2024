@@ -71,7 +71,7 @@ public class RobotContainer {
             // Will be changed to IntakeIOSim when it is programmed.
             intake = new Intake(new IntakeIO());
             // Will be changed to ShooterIOSim when it is programmed.
-            shooter = new Shooter(new ShooterIO());
+            shooter = new Shooter(new ShooterIOSim());
         } 
         // Creates a replay robot.
         else {

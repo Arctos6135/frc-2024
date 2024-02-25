@@ -25,7 +25,7 @@ public class ShooterConstants {
     // Velocity gain in volts/ radians per second (voltage required to "cruise" at a given constant velocity).
     public static final double kV = 0.0019;
     // Acceleration gain in volts/ radians per second^2.
-    public static final double kA = 0;
+    public static final double kA = 0.001;
 
     public static final double FEED_RPS = 2;
 

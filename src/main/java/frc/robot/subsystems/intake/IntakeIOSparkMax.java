@@ -47,5 +47,8 @@ public class IntakeIOSparkMax extends IntakeIO{
 
         // Voltage
         inputs.voltage = motor.getBusVoltage() * motor.get();
+
+        // Speed (converts to meters of tread per second).
+        inputs.speed = (encoder.getVelocity() * (Math.PI * 2)) * IntakeConstants.WHEEL_CIRCUMFERENCE;
     }
 }

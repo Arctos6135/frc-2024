@@ -35,6 +35,7 @@ import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
 import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOSparkMax;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
@@ -83,7 +84,7 @@ public class RobotContainer {
             arm = new Arm(new ArmIOSim());
             
             // Will be changed to IntakeIOSim when it is programmed.
-            intake = new Intake(new IntakeIO());
+            intake = new Intake(new IntakeIOSim());
             // Will be changed to ShooterIOSim when it is programmed.
             shooter = new Shooter(new ShooterIOSim());
         } 

@@ -15,6 +15,9 @@ public class IntakeIO {
 
         // % Max Volts
         public double voltage;
+
+        // In meters of tread / second.
+        public double speed;
     }
 
     public void updateInputs(IntakeInputs inputs) {}

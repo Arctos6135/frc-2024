@@ -1,7 +1,6 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.shooter.Shooter;
 
 /**

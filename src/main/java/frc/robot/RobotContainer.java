@@ -13,22 +13,18 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.commands.Intake.Feed;
-import frc.robot.commands.Intake.IntakePiece;
-import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.arm.ArmPID;
-import frc.robot.commands.driving.TeleopDrive;
-import frc.robot.commands.shooter.Launch;
+import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
+import frc.robot.commands.scoring.Score;
+import frc.robot.commands.shooter.Launch;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PositionConstants;
-import frc.robot.constants.ShooterConstants;
+import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.subsystems.drivetrain.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.arm.*;
@@ -56,16 +52,16 @@ public class RobotContainer {
 
     // Commands
     private final TeleopDrive teleopDrive;
-    private final Launch shootSpeaker;
-    private final Launch shootAmp;
+    private final ArmPID armPID;
+    private final Score score;
 
     public RobotContainer() {
         // Creates a real robot.
         if (RobotBase.isReal()) {
             drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
             intake = new Intake(new IntakeIOSparkMax());
-            arm = new Arm(new ArmIO());
-            shooter = new Shooter(new ShooterIO());
+            arm = new Arm(new ArmIOSparkMax());
+            shooter = new Shooter(new ShooterIOSparkMax());
         }
         // Creates a simulated robot.
         else if (RobotBase.isSimulation()) {
@@ -85,10 +81,12 @@ public class RobotContainer {
             shooter = new Shooter(new ShooterIO());
         }
 
-        shootSpeaker = new Launch(shooter, ShooterConstants.SPEAKER_RPS);
-        shootAmp = new Launch(shooter, ShooterConstants.AMP_RPS);
+        score = new Score();
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
+
+        armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
+        arm.setDefaultCommand(armPID);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
@@ -112,15 +110,14 @@ public class RobotContainer {
         manualIntake = new LoggedDashboardBoolean("manual intake");
         disableArm = new LoggedDashboardBoolean("disable arm");
         resetArmEncoder = new LoggedDashboardBoolean("reset arm encoder");
-
         configureBindings();
     }
 
     private void configureBindings() {
         // Binds precision drive toggling to driver's right bumper.
-        new Trigger(() -> driverController.getRightBumper())
-            .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
-            .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
+        // new Trigger(() -> driverController.getRightBumper())
+        //     .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
+        //     .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
         // Binds macros for orienting robot turning to driver's dpad.
         new Trigger(() -> driverController.getPOV() == 0).onTrue(new PIDSetAngle(drivetrain, 0));
@@ -136,38 +133,51 @@ public class RobotContainer {
         // TODO change back to the operator controller.
         // Sets the right bumper to turn the intake on until released.
 
-        new Trigger(() -> driverController.getAButtonPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)));
-        new Trigger(() -> driverController.getAButtonReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+        new Trigger(() -> driverController.getRightBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)));
+        new Trigger(() -> driverController.getRightBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
 
-        // Binds the left bumper to run intake in reverse until released.
-        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)));
-        new Trigger(() -> driverController.getBButtonReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+        // // Binds the left bumper to run intake in reverse until released.
+        new Trigger(() -> driverController.getLeftBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)));
+        new Trigger(() -> driverController.getLeftBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
 
         // Binds auto intake to the a button.
-        new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
+        //new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
 
-        // Binds moving the arm to the operator's d-pad if the arm is enabled.
-        // Temporarily bound to the driver controller.
-        if (!disableArm.get()) {
-            new Trigger(() -> driverController.getPOV() == 0)
-            .onTrue(new ArmPID(arm, ArmConstants.AMP_SCORING_POSITION))
-            .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
 
-            new Trigger(() -> driverController.getPOV() == 180)
-            .onTrue(new ArmPID(arm, ArmConstants.SPEAKER_SCORING_POSITION))
-            .onFalse(new InstantCommand(() -> arm.setVoltage(0)));
-        }
+        new Trigger(() -> driverController.getXButtonPressed()).whileTrue(new InstantCommand(() -> shooter.setVoltages(12, 12)));
+        new Trigger(() -> driverController.getXButtonReleased()).whileTrue(new InstantCommand(() -> shooter.setVoltages(0, 0)));
+
+        new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new Launch(shooter, 1.5));
+        new Trigger(() -> driverController.getYButtonReleased()).whileTrue(new Launch(shooter, 0));
+
+        // The armPID is binded to the operator X and Y buttons. Check this.updateButtons() for more information.
 
         // TODO Configure shooter launch button :)
+
         // Binds the speaker shoot to the x button.
         // Temporarily bound to the driver controller.
-        new Trigger(() -> driverController.getXButtonPressed()).onTrue(shootSpeaker);
-        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> shootSpeaker.end(true)));
-        new Trigger(() -> driverController.getYButtonPressed()).onTrue(shootAmp);
-        new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> shootAmp.end(true)));
+        // new Trigger(() -> driverController.getXButtonPressed()).onTrue(score.scoreSpeaker(arm, shooter, intake));
+        // new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
+        // new Trigger(() -> driverController.getYButtonPressed()).onTrue(score.scoreAmp(arm, shooter, intake));
+        // new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
+    }
+
+    /**
+     * Runs on a periodic loop. Check Robot.java.
+     */
+    public void updateButtons() {
+        if (operatorController.getXButton()) {
+            arm.setVoltage(8); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
+            System.out.println("X is being pressed");
+        } else if (operatorController.getYButton()) {
+            armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
+        } else {
+            System.out.println("Nothing being pressed");
+            //arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
+        }
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.get();
+        return new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)); //autoChooser.get();
     }
 }

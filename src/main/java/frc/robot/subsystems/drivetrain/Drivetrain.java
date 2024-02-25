@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -38,8 +37,8 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController rightController = new PIDController(0, 5, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.2, 0.26);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.2, 0.26);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.213, 0.2);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.235, 0.26);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -100,10 +99,18 @@ public class Drivetrain extends SubsystemBase {
 
         double left = leftFeedforwardEffort + leftFeedbackEffort;
 
+        Logger.recordOutput("DT Left Feedback", leftFeedbackEffort);
+        Logger.recordOutput("DT Left Feedforward", leftFeedforwardEffort);
+        Logger.recordOutput("DT Left Voltage", left);
+
         double rightFeedforwardEffort = rightForward.calculate(targetVelocityRight, rightAcceleration);
         double rightFeedbackEffort = rightController.calculate(rightVelocity, targetVelocityRight);
 
         double right = rightFeedforwardEffort + rightFeedbackEffort;
+
+        Logger.recordOutput("DT Right Feedback", rightFeedbackEffort);
+        Logger.recordOutput("DT Right Feedforward", rightFeedforwardEffort);
+        Logger.recordOutput("DT Right Voltage", right);
 
         io.setVoltages(left, right);
     }
@@ -124,8 +131,8 @@ public class Drivetrain extends SubsystemBase {
      * @param speedRight the target speed of the right side in m/s
      */
     public void setSpeed(double speedLeft, double speedRight) {
-        Logger.recordOutput("Drivetrain Target Left Velocity", speedLeft);
-        Logger.recordOutput("Drivetrain Target Right Velocity", speedRight);
+        Logger.recordOutput("DT Left Velocity Target", speedLeft);
+        Logger.recordOutput("DT Right Velocity Target", speedRight);
 
         previousTargetVelocityLeft = targetVelocityLeft;
         previousTargetVelocityRight = targetVelocityRight;
@@ -136,8 +143,8 @@ public class Drivetrain extends SubsystemBase {
         leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
         rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
 
-        Logger.recordOutput("Drivetrain Target Left Acceleration", leftAcceleration);
-        Logger.recordOutput("Drivetrain Target Right Acceleration", rightAcceleration);
+        Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
+        Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
     }
 
     /**
@@ -183,9 +190,9 @@ public class Drivetrain extends SubsystemBase {
             new LoggedMechanism(rightLog, rightMechanism)
         );
 
-        return new AccelerationRoutine(group, 2.5, 0.25, this).finallyDo(() -> {
-            leftLog.logCSV("DrivetrainVelocityLeft");
-            rightLog.logCSV("DrivetrainVelocityRight");
+        return new AccelerationRoutine(group, 2.5, 5, this).finallyDo(() -> {
+            leftLog.logCSV("DrivetrainAccelerationLeft");
+            rightLog.logCSV("DrivetrainAccelerationRight");
         });
     }
 }

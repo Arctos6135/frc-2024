@@ -4,10 +4,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.TunableNumber;
 
 public class Feed extends Command {
     private final Intake intake;
+    private final Shooter shooter;
     private final double setPointDistance;
 
     private final TunableNumber kP = new TunableNumber("PIDSetAngle kP", 0);
@@ -16,8 +18,9 @@ public class Feed extends Command {
 
     private final PIDController distanceController = new PIDController(0, 0, 0);
 
-    public Feed(Intake intake, double setPointDistance) {
+    public Feed(Intake intake, Shooter shooter, double setPointDistance) {
         this.intake = intake;
+        this.shooter = shooter;
         this.setPointDistance = setPointDistance;
 
         addRequirements(intake);
@@ -26,6 +29,7 @@ public class Feed extends Command {
     @Override
     public void initialize() {
         intake.setVoltage(IntakeConstants.FEED_VOLTAGE);
+        //shooter.setVoltages(ShooterConstants.FEED_VOLTAGE, ShooterConstants.FEED_VOLTAGE);
     }
 
     @Override

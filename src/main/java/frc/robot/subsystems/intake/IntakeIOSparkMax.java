@@ -3,6 +3,8 @@ package frc.robot.subsystems.intake;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
@@ -28,15 +30,22 @@ public class IntakeIOSparkMax extends IntakeIO{
         encoder.setPositionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR);
         encoder.setPositionConversionFactor(IntakeConstants.VELOCITY_CONVERSION_FACTOR);
     }
-
     
     public void setVoltage(double voltage) {
+        Logger.recordOutput("Intake Voltage", voltage);
         motor.setVoltage(voltage);
     }
 
     public void updateInputs(IntakeInputs inputs) {
         inputs.position = encoder.getPosition();
 
+        // Current
         inputs.current = motor.getOutputCurrent();
+
+        // Temperature
+        inputs.temperature = motor.getMotorTemperature();
+
+        // Voltage
+        inputs.voltage = motor.getBusVoltage() * motor.get();
     }
 }

@@ -1,7 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.constants.ArmConstants;
@@ -14,7 +12,7 @@ public class ArmIOSim extends ArmIO {
 
     private final SingleJointedArmSim arm = new SingleJointedArmSim(
         DCMotor.getNEO(2),
-        ArmConstants.GEARBOX_RATIO,
+        1.0 / ArmConstants.GEARBOX_RATIO,
         MOMENT_OF_INERTIA,
         ArmConstants.ARM_LENGTH,
         ArmConstants.MIN_POSITION,

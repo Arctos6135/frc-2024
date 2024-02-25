@@ -22,6 +22,9 @@
         "Drivetrain": {
           "open": true
         },
+        "Shooter": {
+          "open": true
+        },
         "open": true
       }
     }

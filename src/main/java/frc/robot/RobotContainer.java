@@ -4,31 +4,42 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
-
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardBoolean;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.PIDSetAngle;
-import frc.robot.constants.ArmConstants;
-import frc.robot.constants.ControllerConstants;
+import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
 import frc.robot.commands.shooter.Launch;
+import frc.robot.constants.ArmConstants;
+import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PositionConstants;
-import frc.robot.commands.driving.TeleopDrive;
-import frc.robot.subsystems.drivetrain.*;
-import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.arm.*;
-import frc.robot.subsystems.shooter.*;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.arm.ArmIOSparkMax;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainIO;
+import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
+import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 
 public class RobotContainer {
     // Xbox controllers
@@ -53,7 +64,10 @@ public class RobotContainer {
     // Commands
     private final TeleopDrive teleopDrive;
     private final ArmPID armPID;
-    private final Score score;
+
+    // Named Commands (for autos)
+    public NamedCommands scoreSpeaker;
+    public NamedCommands runIntake;
 
     public RobotContainer() {
         // Creates a real robot.
@@ -81,7 +95,12 @@ public class RobotContainer {
             shooter = new Shooter(new ShooterIO());
         }
 
-        score = new Score();
+        // Named commands for autos.
+        NamedCommands.registerCommand("scoreSpeaker", Score.scoreSpeaker(arm, shooter, intake));
+        NamedCommands.registerCommand("stopScoring", new InstantCommand(() -> Score.stop(arm, shooter, intake)));
+        NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
+        NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
+
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
@@ -95,7 +114,7 @@ public class RobotContainer {
         positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.
-        autoChooser.addOption("Quarter Circle", new PathPlannerAuto("Quarter Circle"));
+        autoChooser.addOption("Three Note Auto", new PathPlannerAuto("Three Note Auto"));
         autoChooser.addOption("1 Meter Forward", new PathPlannerAuto("1 Meter Forward"));
 
         // Characterization routines.
@@ -110,6 +129,7 @@ public class RobotContainer {
         manualIntake = new LoggedDashboardBoolean("manual intake");
         disableArm = new LoggedDashboardBoolean("disable arm");
         resetArmEncoder = new LoggedDashboardBoolean("reset arm encoder");
+
         configureBindings();
     }
 
@@ -176,6 +196,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)); //autoChooser.get();
+        return autoChooser.get();
     }
 }

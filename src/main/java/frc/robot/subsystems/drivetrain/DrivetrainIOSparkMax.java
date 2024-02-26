@@ -4,9 +4,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
-
-import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -65,10 +64,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
     @Override
     public void setVoltages(double left, double right) {
-        Logger.recordOutput("DT Left Voltage", left);        
-        Logger.recordOutput("DT Right Voltage", right);
-
-        
         if (Math.abs(left) < 0.5) {
             left = 0;
         }
@@ -91,5 +86,23 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
         inputs.yaw = gyro.getAngle(gyro.getYawAxis());
         inputs.yawRate = gyro.getRate(gyro.getYawAxis());
+
+        // Current
+        inputs.leftMasterCurrent = leftMaster.getOutputCurrent();
+        inputs.rightMasterCurrent = rightMaster.getOutputCurrent();
+        inputs.leftFollowerCurrent = leftMaster.getOutputCurrent();
+        inputs.rightFollowerCurrent = rightMaster.getOutputCurrent();
+
+        // Temperature
+        inputs.leftMasterTemperature = leftMaster.getMotorTemperature();
+        inputs.rightMasterTemperature = rightMaster.getMotorTemperature();
+        inputs.leftFollowerTemperature = leftMaster.getMotorTemperature();
+        inputs.rightFollowerTemperature = rightMaster.getMotorTemperature();
+
+        // Voltage
+        inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.get();
+        inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.get();
+        inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.get();
+        inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.get();
     }
 }

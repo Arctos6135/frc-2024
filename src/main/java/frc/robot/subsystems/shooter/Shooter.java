@@ -35,7 +35,7 @@ public class Shooter extends SubsystemBase {
 
     public void setRPS(double rps) {
         double feedforwardOutput = feedforward.calculate(rps);
-        Logger.recordOutput("Shooter Target Velocity", rps);
+        Logger.recordOutput("Shoot Velocity Target", rps);
 
         double leftOutput = feedforwardOutput;
         double rightOutput = feedforwardOutput;
@@ -49,5 +49,17 @@ public class Shooter extends SubsystemBase {
 
     public double getVelocity() {
         return (inputs.leftVelocity + inputs.rightVelocity) / 2;
+    }
+    
+    public double getPosition() {
+        return inputs.leftPosition;
+    }
+
+    public double getCurrent() {
+        return (inputs.leftCurrent + inputs.rightCurrent) / 2;
+    }
+
+    public double getVoltage(){
+        return (inputs.leftVoltage + inputs.rightVoltage) / 2;
     }
 }

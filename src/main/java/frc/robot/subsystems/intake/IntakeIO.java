@@ -7,7 +7,17 @@ public class IntakeIO {
     public static class IntakeInputs {
         public double position;
 
+        // Amps
         public double current;
+
+        // Celsius
+        public double temperature;
+
+        // % Max Volts
+        public double voltage;
+
+        // In meters of tread / second.
+        public double speed;
     }
 
     public void updateInputs(IntakeInputs inputs) {}

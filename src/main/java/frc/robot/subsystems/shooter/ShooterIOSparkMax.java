@@ -32,8 +32,11 @@ public class ShooterIOSparkMax extends ShooterIO {
         rightEncoder = right.getEncoder();
         leftEncoder = left.getEncoder();
 
-        rightEncoder.setPositionConversionFactor(ShooterConstants.ENCODER_CONVERSION_FACTOR);
-        leftEncoder.setPositionConversionFactor(ShooterConstants.ENCODER_CONVERSION_FACTOR);
+        rightEncoder.setPositionConversionFactor(ShooterConstants.POSITION_CONVERSION_FACTOR);
+        leftEncoder.setPositionConversionFactor(ShooterConstants.POSITION_CONVERSION_FACTOR);
+    
+        rightEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
+        leftEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
     }
     
     public void setVoltages(double leftVoltage, double rightVoltage) {
@@ -43,10 +46,19 @@ public class ShooterIOSparkMax extends ShooterIO {
     }
 
     public void updateInputs(ShooterInputs inputs) {
+        inputs.rightVelocity = rightEncoder.getVelocity();
+        inputs.leftVelocity = leftEncoder.getVelocity();
+
+        // Current
         inputs.rightCurrent = right.getOutputCurrent();
         inputs.leftCurrent = left.getOutputCurrent();
 
-        inputs.rightVelocity = rightEncoder.getVelocity();
-        inputs.leftVelocity = leftEncoder.getVelocity();
+        // Temperature
+        inputs.leftTemperature = left.getMotorTemperature();
+        inputs.rightTemperature = right.getMotorTemperature();
+
+        // Voltage
+        inputs.leftVoltage = left.getBusVoltage() * left.get();
+        inputs.rightVoltage = right.getBusVoltage() * right.get();
     }
 }

@@ -1,8 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import org.littletonrobotics.junction.Logger;
-
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -54,15 +51,6 @@ public class ArmIOSparkMax extends ArmIO {
 
     @Override
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Arm Voltage", voltage);
-
-        Logger.recordOutput("Left Motor Current", armLeft.getOutputCurrent());
-        Logger.recordOutput("Right Motor Current", armRight.getOutputCurrent());
-
-        Logger.recordOutput("Left Motor Power", armLeft.get());
-        Logger.recordOutput("Right Motor Power", armRight.get());
-
-
         armLeft.setVoltage(voltage);
         armRight.setVoltage(voltage);
     }
@@ -71,5 +59,17 @@ public class ArmIOSparkMax extends ArmIO {
     public void updateInputs(ArmInputs inputs) {
         inputs.position = armEncoder.getPosition();
         inputs.velocity = armEncoder.getVelocity();
+
+        // Current
+        inputs.leftCurrent = armLeft.getOutputCurrent();
+        inputs.rightCurrent = armRight.getOutputCurrent();
+
+        // Temperature
+        inputs.leftTemperature = armLeft.getMotorTemperature();
+        inputs.rightTemperature = armRight.getMotorTemperature();
+
+        // Voltage
+        inputs.leftVoltage = armLeft.getBusVoltage() * armLeft.get();
+        inputs.rightVoltage = armRight.getBusVoltage() * armRight.get();
     }
 }

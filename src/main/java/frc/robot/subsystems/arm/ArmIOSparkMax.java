@@ -36,17 +36,17 @@ public class ArmIOSparkMax extends ArmIO {
 
         // sets up soft limits
 
-        armLeft.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
-        armLeft.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, ArmConstants.MIN_POSITION);
-        armLeft.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        armLeft.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
+        armLeft.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
+        armLeft.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.MIN_POSITION);
+        armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
  
          // sets up soft limits
 
-        armRight.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
-        armRight.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
-        armRight.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        armRight.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
+        armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
+        armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
+        armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class FeedToShooter extends Command{
     @Override
     public void execute() {
         if (shooter.getVoltage() != initialShooterVoltage) {
-            double distance = Units.inchesToMeters(15) / (ShooterConstants.WHEEL_DIAMETER / 2)
+            double distance = Units.inchesToMeters(15) / (ShooterConstants.WHEEL_DIAMETER / 2);
         //     advanceShooter
         }
     }

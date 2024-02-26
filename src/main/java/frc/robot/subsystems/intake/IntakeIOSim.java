@@ -10,7 +10,7 @@ import com.revrobotics.CANSparkMax;
 
 // These constants need to be tuned and do not accurately represent the intake.
 public class IntakeIOSim extends IntakeIO {
-    private final FlywheelSim intake = new FlywheelSim(DCMotor.getNeo550(1), 5, 0.8);
+    private final FlywheelSim intake = new FlywheelSim(DCMotor.getNeo550(1), 5, IntakeConstants.MOMENT_OF_INERTIA);
 
      @Override
     public void setVoltage(double voltage) {

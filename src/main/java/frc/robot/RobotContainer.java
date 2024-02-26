@@ -111,7 +111,6 @@ public class RobotContainer {
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
-        autoChooser.addDefaultOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
         positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.

@@ -11,15 +11,15 @@ import frc.robot.commands.shooter.AdvanceShooter;
 public class FeedToShooter extends Command{
     private final Intake intake;
     private final Shooter shooter;
-    // private final AdvanceShooter advanceShooter;
+    private final AdvanceShooter advanceShooter;
     private double initialShooterVoltage = 0;
 
-    public FeedToShooter(Intake intake, Shooter shooter) {
+    public FeedToShooter(Intake intake, Shooter shooter, AdvanceShooter advanceShooter) {
         this.intake = intake;
         this.shooter = shooter;
-        // this.advanceShooter = advanceShooter;
+        this.advanceShooter = advanceShooter;
 
-        addRequirements(intake);
+        addRequirements(intake, shooter);
     }
     
     @Override
@@ -33,7 +33,7 @@ public class FeedToShooter extends Command{
     public void execute() {
         if (shooter.getVoltage() != initialShooterVoltage) {
             double distance = Units.inchesToMeters(15) / (ShooterConstants.WHEEL_DIAMETER / 2)
-            new AdvanceShooter(shooter, distance);
+        //     advanceShooter
         }
     }
 

@@ -54,4 +54,12 @@ public class Shooter extends SubsystemBase {
     public double getPosition() {
         return inputs.leftPosition;
     }
+
+    public double getCurrent() {
+        return (inputs.leftCurrent + inputs.rightCurrent) / 2;
+    }
+
+    public double getVoltage(){
+        return (inputs.leftVoltage + inputs.rightVoltage) / 2;
+    }
 }

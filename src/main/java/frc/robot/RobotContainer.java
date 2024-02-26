@@ -180,12 +180,10 @@ public class RobotContainer {
      */
     public void updateButtons() {
         if (operatorController.getXButton()) {
-            arm.setVoltage(8); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
-            System.out.println("X is being pressed");
+            arm.setVoltage(6); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
         } else if (operatorController.getYButton()) {
             armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
         } else {
-            System.out.println("Nothing being pressed");
             arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
         }
     }

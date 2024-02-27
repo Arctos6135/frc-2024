@@ -9,12 +9,14 @@ import frc.robot.subsystems.shooter.Shooter;
 public class CurrentFeed extends Command{
     private final Intake intake;
     private final Shooter shooter;
+    private double maxCurrent;
 
     private double startTime;
 
     public CurrentFeed(Intake intake, Shooter shooter) {
         this.intake = intake;
         this.shooter = shooter;
+        maxCurrent = 0;
 
         addRequirements(intake);
     }
@@ -24,6 +26,10 @@ public class CurrentFeed extends Command{
         intake.setVoltage(IntakeConstants.FEED_VOLTAGE);
         shooter.setRPS(ShooterConstants.FEED_RPS);
         startTime = Timer.getFPGATimestamp();
+        double current = intake.getFilteredCurrent();
+        if (current > maxCurrent) {
+            maxCurrent = current;
+        }
     }
 
     @Override
@@ -31,7 +37,8 @@ public class CurrentFeed extends Command{
 
     @Override
     public boolean isFinished() {
-        return intake.getFilteredCurrent() <= 8 && (Timer.getFPGATimestamp() - startTime) > 0.25;
+        return maxCurrent - intake.getFilteredCurrent() >= 3 && (Timer.getFPGATimestamp() - startTime) > 0.25;
+        // return intake.getFilteredCurrent() <= 8 && (Timer.getFPGATimestamp() - startTime) > 0.25;
     }
 
     @Override

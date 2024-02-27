@@ -64,14 +64,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
     @Override
     public void setVoltages(double left, double right) {
-        if (Math.abs(left) < 0.5) {
-            left = 0;
-        }
-
-        if (Math.abs(right) < 0.5) {
-            right = 0;
-        }
-
         leftMaster.setVoltage(left);
         rightMaster.setVoltage(right);
     }

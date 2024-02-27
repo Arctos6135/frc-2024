@@ -114,6 +114,7 @@ public class RobotContainer {
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
+        autoChooser.addDefaultOption("Quarter Circle", new PathPlannerAuto("Quarter Circle"));
         positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.

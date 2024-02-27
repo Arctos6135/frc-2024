@@ -37,8 +37,10 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController rightController = new PIDController(0, 5, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.213, 0.2);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.235, 0.26);
+    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.213, 0.2);
+    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.235, 0.26);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2, 0.2);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2, 0.2);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -72,7 +74,12 @@ public class Drivetrain extends SubsystemBase {
                 odometry.resetPosition(Rotation2d.fromRadians(inputs.yaw), new DifferentialDriveWheelPositions(inputs.leftPosition, inputs.rightPosition), pose);
             }, 
             () -> new ChassisSpeeds((inputs.leftVelocity + inputs.rightVelocity) / 2, 0, inputs.yawRate), 
-            speeds -> arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond), 
+            speeds -> {
+                DifferentialDriveWheelSpeeds diffSpeeds = kinematics.toWheelSpeeds(speeds);
+                Logger.recordOutput("DT Voltage Target", diffSpeeds.leftMetersPerSecond);
+
+                io.setVoltages(diffSpeeds.leftMetersPerSecond, diffSpeeds.rightMetersPerSecond);
+            },//speeds -> arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond), 
             new ReplanningConfig(), 
             () -> false, 
             this
@@ -81,8 +88,9 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This tells our drivetrain-like-thing (either real or simulated) to update our class with all the sensor data.
         io.updateInputs(inputs);
+
+        // This tells our drivetrain-like-thing (either real or simulated) to update our class with all the sensor data.
         // Log all the sensor data.
         Logger.processInputs("Drivetrain", inputs);
         // Get the rotation of the robot from the gyro.
@@ -112,7 +120,7 @@ public class Drivetrain extends SubsystemBase {
         Logger.recordOutput("DT Right Feedforward", rightFeedforwardEffort);
         Logger.recordOutput("DT Right Voltage", right);
 
-        io.setVoltages(left, right);
+        //io.setVoltages(left, right);
     }
 
     /**

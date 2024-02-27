@@ -29,6 +29,9 @@ public class Intake extends SubsystemBase {
         Logger.recordOutput("Intake Filtered Current", medianCurrent);
     }
 
+    /**
+     * @return position in meters
+     */
     public double getPosition() {
         return inputs.position;
     }

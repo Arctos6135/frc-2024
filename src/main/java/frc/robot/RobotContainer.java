@@ -14,20 +14,25 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.CurrentFeed;
 import frc.robot.commands.Intake.IntakePiece;
+import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
+import frc.robot.commands.shooter.AdvanceShooter;
 import frc.robot.commands.shooter.Launch;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PositionConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -175,6 +180,8 @@ public class RobotContainer {
 
         new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new Launch(shooter, 1.5));
         new Trigger(() -> driverController.getYButtonReleased()).whileTrue(new Launch(shooter, 0));
+
+        new Trigger(() -> operatorController.getLeftBumperPressed()).whileTrue(new RaceFeed(intake).raceWith(new WaitCommand(0.5).andThen(new AdvanceShooter(shooter, Units.inchesToMeters(ShooterConstants.ADVANCE_DISTANCE)))));
 
         // The armPID is binded to the operator X and Y buttons. Check this.updateButtons() for more information.
 

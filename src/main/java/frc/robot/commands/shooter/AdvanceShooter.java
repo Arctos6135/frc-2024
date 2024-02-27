@@ -7,7 +7,7 @@ import frc.robot.constants.ShooterConstants;
 public class AdvanceShooter extends Command{
     private final Shooter shooter;
 
-    private double rotations;
+    private double meters;
 
     private double initialPosition;
 
@@ -16,9 +16,9 @@ public class AdvanceShooter extends Command{
      * @param shooter the shooter subsystem
      * @param distance the number of radians we want to rotate shooter wheels by
      */
-    public AdvanceShooter(Shooter shooter, double rotations){
+    public AdvanceShooter(Shooter shooter, double meters){
         this.shooter = shooter;
-        this.rotations = rotations;
+        this.meters = meters;
         this.initialPosition = shooter.getPosition();
 
         addRequirements(shooter);
@@ -31,7 +31,7 @@ public class AdvanceShooter extends Command{
 
     @Override
     public boolean isFinished(){
-        return shooter.getPosition() - this.initialPosition >= rotations * ShooterConstants.WHEEL_CIRCUMFERENCE;
+        return shooter.getPosition() - this.initialPosition >= meters;
     }
 
     @Override

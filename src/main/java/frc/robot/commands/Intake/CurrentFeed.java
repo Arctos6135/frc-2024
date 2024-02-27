@@ -26,14 +26,15 @@ public class CurrentFeed extends Command{
         intake.setVoltage(IntakeConstants.FEED_VOLTAGE);
         shooter.setRPS(ShooterConstants.FEED_RPS);
         startTime = Timer.getFPGATimestamp();
+    }
+
+    @Override
+    public void execute() {
         double current = intake.getFilteredCurrent();
         if (current > maxCurrent) {
             maxCurrent = current;
         }
     }
-
-    @Override
-    public void execute() {}
 
     @Override
     public boolean isFinished() {

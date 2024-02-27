@@ -1,6 +1,7 @@
+package frc.robot.commands.Intake;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.shooter.AdvanceShooter;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.ShooterConstants;

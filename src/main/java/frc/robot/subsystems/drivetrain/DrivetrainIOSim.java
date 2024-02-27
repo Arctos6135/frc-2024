@@ -48,6 +48,7 @@ public class DrivetrainIOSim extends DrivetrainIO {
         //     right -= 0.2;
         // }
         // drive.setInputs(left + Math.random() - 0.5, right + Math.random() - 0.5);
+
         drive.setInputs(left, right);
     }
 }

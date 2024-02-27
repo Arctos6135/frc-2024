@@ -73,14 +73,11 @@ public class Drivetrain extends SubsystemBase {
             (pose) -> {
                 odometry.resetPosition(Rotation2d.fromRadians(inputs.yaw), new DifferentialDriveWheelPositions(inputs.leftPosition, inputs.rightPosition), pose);
             }, 
-            () -> new ChassisSpeeds((inputs.leftVelocity + inputs.rightVelocity) / 2, 0, inputs.yawRate), 
+            () -> getSpeeds(), 
             speeds -> {
-                DifferentialDriveWheelSpeeds diffSpeeds = kinematics.toWheelSpeeds(speeds);
-                Logger.recordOutput("DT Voltage Target", diffSpeeds.leftMetersPerSecond);
-
-                io.setVoltages(diffSpeeds.leftMetersPerSecond, diffSpeeds.rightMetersPerSecond);
-            },//speeds -> arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond), 
-            new ReplanningConfig(), 
+                arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+            },
+            new ReplanningConfig(),
             () -> false, 
             this
         );
@@ -120,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
         Logger.recordOutput("DT Right Feedforward", rightFeedforwardEffort);
         Logger.recordOutput("DT Right Voltage", right);
 
-        //io.setVoltages(left, right);
+        io.setVoltages(left, right);
     }
 
     /**
@@ -153,6 +150,11 @@ public class Drivetrain extends SubsystemBase {
 
         Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
         Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
+    }
+
+    public ChassisSpeeds getSpeeds() {
+        return kinematics.toChassisSpeeds(
+            new DifferentialDriveWheelSpeeds(inputs.leftVelocity, inputs.rightVelocity));
     }
 
     /**

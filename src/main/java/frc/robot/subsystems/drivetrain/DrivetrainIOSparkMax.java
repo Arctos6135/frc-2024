@@ -76,8 +76,8 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         inputs.leftVelocity = leftEncoder.getVelocity();
         inputs.rightVelocity = rightEncoder.getVelocity();
 
-        inputs.yaw = gyro.getAngle(gyro.getYawAxis());
-        inputs.yawRate = gyro.getRate(gyro.getYawAxis());
+        inputs.yaw = Units.degreesToRadians(gyro.getAngle(gyro.getYawAxis()));
+        inputs.yawRate = Units.degreesToRadians(gyro.getRate(gyro.getYawAxis()));
 
         // Current
         inputs.leftMasterCurrent = leftMaster.getOutputCurrent();

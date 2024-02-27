@@ -15,18 +15,21 @@ public class ArmIOSparkMax extends ArmIO {
 
     // Encoder to know the arm's position.
     private final RelativeEncoder armEncoder;
+    private final RelativeEncoder other;
 
     public ArmIOSparkMax() {
         armLeft.setInverted(true);
         armRight.setInverted(false);
+
+        // armRight.follow(armLeft);
 
 
         // Sets current limit to prevent brownouts.
         armLeft.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
         armRight.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
 
-        armLeft.setIdleMode(IdleMode.kCoast);
-        armRight.setIdleMode(IdleMode.kCoast);
+        armLeft.setIdleMode(IdleMode.kBrake);
+        armRight.setIdleMode(IdleMode.kBrake);
         
         armEncoder = armLeft.getEncoder();
 
@@ -34,19 +37,25 @@ public class ArmIOSparkMax extends ArmIO {
         armEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
         armEncoder.setPosition(ArmConstants.STARTING_POSITION);
 
+        other = armRight.getEncoder();
+
+        other.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        other.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
+        other.setPosition(ArmConstants.STARTING_POSITION);
+
         // sets up soft limits
 
-        armLeft.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
-        armLeft.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.MIN_POSITION);
-        armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        // armLeft.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
+        // armLeft.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
+        armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+        armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
  
          // sets up soft limits
 
-        armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
-        armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
-        armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        // armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
+        // armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
+        armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+        armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
     }
 
     @Override
@@ -58,6 +67,7 @@ public class ArmIOSparkMax extends ArmIO {
     @Override
     public void updateInputs(ArmInputs inputs) {
         inputs.position = armEncoder.getPosition();
+        inputs.other = other.getPosition();
         inputs.velocity = armEncoder.getVelocity();
 
         // Current

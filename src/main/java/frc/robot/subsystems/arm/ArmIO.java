@@ -14,6 +14,8 @@ public class ArmIO {
         // Zero radians should be parallel to the ground.
         public double position;
 
+        public double other;
+
         // Radians per second
         public double velocity;
 

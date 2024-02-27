@@ -87,6 +87,7 @@ public class ArmPID extends Command {
         Logger.recordOutput("Arm PID Feedback", feedbackEffort);
         Logger.recordOutput("Arm PID Feedforward", feedforwardEffort);
 
+
         arm.setVoltage(feedforwardEffort + feedbackEffort);
     }
 

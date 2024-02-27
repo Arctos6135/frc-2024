@@ -11,12 +11,14 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.CurrentFeed;
+import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
@@ -107,7 +109,7 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(teleopDrive);
 
         armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
-        arm.setDefaultCommand(armPID);
+        //arm.setDefaultCommand(armPID);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
@@ -164,6 +166,7 @@ public class RobotContainer {
         // Binds auto intake to the a button.
         new Trigger(() -> driverController.getAButtonPressed()).onTrue(new CurrentFeed(intake, shooter));
         //new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
+        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new IntakePiece(intake));
 
 
         new Trigger(() -> driverController.getXButtonPressed()).whileTrue(new InstantCommand(() -> shooter.setVoltages(12, 12)));
@@ -189,15 +192,18 @@ public class RobotContainer {
      */
     public void updateButtons() {
         if (operatorController.getXButton()) {
-            arm.setVoltage(8); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
+            arm.setVoltage(4); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
+            System.out.println("Pressing X");
         } else if (operatorController.getYButton()) {
-            armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
+            //armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
+            arm.setVoltage(-4);
         } else {
             arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
+            System.out.println("Not pressing X");
         }
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.get();
+        return new PathPlannerAuto("1 Meter Forward");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//autoChooser.get();
     }
 }

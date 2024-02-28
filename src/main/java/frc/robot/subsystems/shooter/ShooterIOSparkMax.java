@@ -58,7 +58,7 @@ public class ShooterIOSparkMax extends ShooterIO {
         inputs.rightTemperature = right.getMotorTemperature();
 
         // Voltage
-        inputs.leftVoltage = left.getBusVoltage() * left.get();
-        inputs.rightVoltage = right.getBusVoltage() * right.get();
+        inputs.leftVoltage = left.getBusVoltage() * left.getAppliedOutput();
+        inputs.rightVoltage = right.getBusVoltage() * right.getAppliedOutput();
     }
 }

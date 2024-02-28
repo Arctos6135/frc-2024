@@ -14,8 +14,8 @@ public class ArmIOSparkMax extends ArmIO {
     private final CANSparkMax armRight = new CANSparkMax(CANBus.ARM_RIGHT, MotorType.kBrushless);
 
     // Encoder to know the arm's position.
-    private final RelativeEncoder armEncoder;
-    private final RelativeEncoder other;
+    private final RelativeEncoder leftEncoder;
+    private final RelativeEncoder rightEncoder;
 
     public ArmIOSparkMax() {
         armLeft.setInverted(false);
@@ -30,17 +30,17 @@ public class ArmIOSparkMax extends ArmIO {
         armLeft.setIdleMode(IdleMode.kBrake);
         armRight.setIdleMode(IdleMode.kBrake);
         
-        armEncoder = armLeft.getEncoder();
+        leftEncoder = armLeft.getEncoder();
 
-        armEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-        armEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
-        armEncoder.setPosition(ArmConstants.STARTING_POSITION);
+        leftEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        leftEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
+        leftEncoder.setPosition(ArmConstants.STARTING_POSITION);
 
-        other = armRight.getEncoder();
+        rightEncoder = armRight.getEncoder();
 
-        other.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-        other.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
-        other.setPosition(ArmConstants.STARTING_POSITION);
+        rightEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        rightEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
+        rightEncoder.setPosition(ArmConstants.STARTING_POSITION);
 
         // sets up soft limits
         // we don't need tp enable soft stops on armLeft since it is following armRight
@@ -62,9 +62,13 @@ public class ArmIOSparkMax extends ArmIO {
 
     @Override
     public void updateInputs(ArmInputs inputs) {
-        inputs.position = armEncoder.getPosition();
-        inputs.other = other.getPosition();
-        inputs.velocity = armEncoder.getVelocity();
+        // Position
+        inputs.leftPosition = leftEncoder.getPosition();
+        inputs.rightPosition = rightEncoder.getPosition();
+
+        // Velocity
+        inputs.leftVelocity = leftEncoder.getVelocity();
+        inputs.rightPosition = rightEncoder.getVelocity();
 
         // Current
         inputs.leftCurrent = armLeft.getOutputCurrent();
@@ -75,7 +79,7 @@ public class ArmIOSparkMax extends ArmIO {
         inputs.rightTemperature = armRight.getMotorTemperature();
 
         // Voltage
-        inputs.leftVoltage = armLeft.getBusVoltage() * armLeft.get();
-        inputs.rightVoltage = armRight.getBusVoltage() * armRight.get();
+        inputs.leftVoltage = armLeft.getBusVoltage() * armLeft.getAppliedOutput();
+        inputs.rightVoltage = armRight.getBusVoltage() * armRight.getAppliedOutput();
     }
 }

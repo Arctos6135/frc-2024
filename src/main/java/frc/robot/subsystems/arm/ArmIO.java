@@ -12,12 +12,12 @@ public class ArmIO {
     @AutoLog
     public static class ArmInputs {
         // Zero radians should be parallel to the ground.
-        public double position;
-
-        public double other;
+        public double leftPosition;
+        public double rightPosition;
 
         // Radians per second
-        public double velocity;
+        public double leftVelocity;
+        public double rightVelocity;
 
         // Amps
         public double rightCurrent;

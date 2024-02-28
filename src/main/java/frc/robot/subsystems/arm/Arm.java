@@ -35,7 +35,7 @@ public class Arm extends SubsystemBase {
         io.updateInputs(inputs);
 
         // Update mechanism
-        shortArm.setAngle(inputs.position);
+        shortArm.setAngle(inputs.leftPosition);
         longArm.setAngle(-60);
 
         // Log all the sensor data.
@@ -45,11 +45,11 @@ public class Arm extends SubsystemBase {
     }
 
     public double getArmPosition() {
-        return inputs.position;
+        return inputs.leftPosition;
     }
 
     public double getArmVelocity() {
-        return inputs.velocity;
+        return inputs.leftVelocity;
     }
 
     public void setVoltage(double voltage) {
@@ -63,7 +63,7 @@ public class Arm extends SubsystemBase {
         FeedforwardLog log = new FeedforwardLog();
         LoggedMechanism mechanism = new LoggedMechanism(
             log,
-            new Mechanism(this::setVoltage, () -> inputs.position, () -> inputs.velocity)
+            new Mechanism(this::setVoltage, () -> inputs.leftPosition, () -> inputs.leftVelocity)
         );
         return new VelocityRoutine(new LoggedMechanismGroup(mechanism), 1, 0.25).finallyDo(() -> log.logCSV("ArmVelocity"));
     }

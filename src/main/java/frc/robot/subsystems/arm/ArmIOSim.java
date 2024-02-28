@@ -25,8 +25,11 @@ public class ArmIOSim extends ArmIO {
     public void updateInputs(ArmInputs inputs) {
         arm.update(0.02);
 
-        inputs.position = arm.getAngleRads();
-        inputs.velocity = arm.getVelocityRadPerSec();
+        inputs.leftPosition = arm.getAngleRads();
+        inputs.leftVelocity = arm.getVelocityRadPerSec();
+
+        inputs.rightPosition = arm.getAngleRads();
+        inputs.rightVelocity = arm.getVelocityRadPerSec();
     }
 
     @Override

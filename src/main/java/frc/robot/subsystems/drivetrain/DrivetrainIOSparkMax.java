@@ -92,9 +92,9 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         inputs.rightFollowerTemperature = rightMaster.getMotorTemperature();
 
         // Voltage
-        inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.get();
-        inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.get();
-        inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.get();
-        inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.get();
+        inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.getAppliedOutput();
+        inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.getAppliedOutput();
+        inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.getAppliedOutput();
+        inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.getAppliedOutput();
     }
 }

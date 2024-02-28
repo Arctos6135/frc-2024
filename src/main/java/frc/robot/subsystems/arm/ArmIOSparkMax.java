@@ -18,11 +18,10 @@ public class ArmIOSparkMax extends ArmIO {
     private final RelativeEncoder other;
 
     public ArmIOSparkMax() {
-        armLeft.setInverted(true);
+        armLeft.setInverted(false);
         armRight.setInverted(false);
 
-        // armRight.follow(armLeft);
-
+        armLeft.follow(armRight, true);
 
         // Sets current limit to prevent brownouts.
         armLeft.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
@@ -44,9 +43,7 @@ public class ArmIOSparkMax extends ArmIO {
         other.setPosition(ArmConstants.STARTING_POSITION);
 
         // sets up soft limits
-
-        // armLeft.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
-        // armLeft.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
+        // we don't need tp enable soft stops on armLeft since it is following armRight
         armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
         armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
  
@@ -60,7 +57,6 @@ public class ArmIOSparkMax extends ArmIO {
 
     @Override
     public void setVoltage(double voltage) {
-        armLeft.setVoltage(voltage);
         armRight.setVoltage(voltage);
     }
 

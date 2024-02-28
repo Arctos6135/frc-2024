@@ -29,6 +29,8 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     public static double STANDARD_CURRENT_ERROR = 1;
 
     public static double REVERSE_DISTANCE = Units.inchesToMeters(-6);
+    public static double REVERSE_FEED_TIME = 0.5;
+    public static double FEED_TIME = 0.15;
 
 
     public static void setEmptyCurrent(Intake intake) { // maybe not needed

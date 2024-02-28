@@ -20,7 +20,7 @@ public class ReversePIDFeed extends Command {
 
     private final PIDController distanceController = new PIDController(0, 0, 0);
 
-    public ReversePIDFeed(Intake intake, double setPointDistance) {
+    public ReversePIDFeed(Intake intake) {
         this.intake = intake;
 
         addRequirements(intake);
@@ -43,7 +43,7 @@ public class ReversePIDFeed extends Command {
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(intake.getPosition() - setPointDistance) < IntakeConstants.DISTANCE_TOLERANCE) || (Timer.getFPGATimestamp() - startTime) >= 0.5;
+        return (Math.abs(intake.getPosition() - setPointDistance) < IntakeConstants.DISTANCE_TOLERANCE) || (Timer.getFPGATimestamp() - startTime) >= IntakeConstants.REVERSE_FEED_TIME;
     }
 
     @Override

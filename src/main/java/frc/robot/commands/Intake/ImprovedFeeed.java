@@ -13,8 +13,8 @@ public class ImprovedFeeed extends Command{
     private final Shooter shooter;
     private final ReversePIDFeed reversePIDFeed;
     private final AdvanceShooter advanceShooter;
-    private double maxCurrent;
     private double startTime;
+    private double maxCurrent;
     private boolean peaked;
     private boolean touchedShooter;
     private double shooterCurrent;
@@ -30,6 +30,18 @@ public class ImprovedFeeed extends Command{
         touchedShooter = false;
         shooterCurrent = 0;
 
+        addRequirements(intake, shooter); // might want to remove If I understand this correctly
+    }
+
+    public ImprovedFeeed(Intake intake, Shooter shooter) {
+        this.intake = intake;
+        this.shooter = shooter;
+        this.reversePIDFeed = new ReversePIDFeed(intake);
+        this.advanceShooter = new AdvanceShooter(shooter, ShooterConstants.ADVANCE_DISTANCE);
+        maxCurrent = 0;
+        peaked = false;
+        touchedShooter = false;
+        shooterCurrent = 0;
 
         addRequirements(intake, shooter); // might want to remove If I understand this correctly
     }
@@ -43,12 +55,12 @@ public class ImprovedFeeed extends Command{
     @Override
     public void execute() {
         double current = intake.getFilteredCurrent();
-        if (current < maxCurrent && !peaked) {
+        if ((current < maxCurrent || (Timer.getFPGATimestamp() - startTime) > IntakeConstants.FEED_TIME) && !peaked) {
             peaked = true;
             reversePIDFeed.schedule();
         }
 
-        if (reversePIDFeed.isFinished() && !touchedShooter) {
+        if ((reversePIDFeed.isFinished() || (!reversePIDFeed.isScheduled() && peaked)) && !touchedShooter) {
             if (jankFix) {
                 intake.setVoltage(IntakeConstants.FEED_VOLTAGE);
                 shooter.setRPS(ShooterConstants.FEED_RPS);

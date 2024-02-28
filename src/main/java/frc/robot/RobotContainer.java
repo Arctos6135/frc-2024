@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.CurrentFeed;
+import frc.robot.commands.Intake.ImprovedFeeed;
 import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.arm.ArmPID;
@@ -182,6 +183,7 @@ public class RobotContainer {
         new Trigger(() -> driverController.getYButtonReleased()).whileTrue(new Launch(shooter, 0));
 
         new Trigger(() -> operatorController.getLeftBumperPressed()).whileTrue(new RaceFeed(intake).raceWith(new WaitCommand(0.5).andThen(new AdvanceShooter(shooter, Units.inchesToMeters(ShooterConstants.ADVANCE_DISTANCE)))));
+        new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new ImprovedFeeed(intake, shooter));
 
         // The armPID is binded to the operator X and Y buttons. Check this.updateButtons() for more information.
 

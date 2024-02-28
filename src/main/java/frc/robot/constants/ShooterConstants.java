@@ -34,4 +34,7 @@ public class ShooterConstants {
 
     // The voltage we run the shooter at for the advance shooter command
     public static final double ADVANCE_VOLTAGE = 6;
+
+    // Meters to run the shooter tread forward
+    public static final double ADVANCE_DISTANCE = 12;
 }

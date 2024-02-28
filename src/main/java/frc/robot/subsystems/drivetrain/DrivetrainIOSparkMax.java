@@ -64,14 +64,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
     @Override
     public void setVoltages(double left, double right) {
-        if (Math.abs(left) < 0.5) {
-            left = 0;
-        }
-
-        if (Math.abs(right) < 0.5) {
-            right = 0;
-        }
-
         leftMaster.setVoltage(left);
         rightMaster.setVoltage(right);
     }
@@ -84,8 +76,8 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         inputs.leftVelocity = leftEncoder.getVelocity();
         inputs.rightVelocity = rightEncoder.getVelocity();
 
-        inputs.yaw = gyro.getAngle(gyro.getYawAxis());
-        inputs.yawRate = gyro.getRate(gyro.getYawAxis());
+        inputs.yaw = Units.degreesToRadians(gyro.getAngle(gyro.getYawAxis()));
+        inputs.yawRate = Units.degreesToRadians(gyro.getRate(gyro.getYawAxis()));
 
         // Current
         inputs.leftMasterCurrent = leftMaster.getOutputCurrent();

@@ -9,12 +9,14 @@ import frc.robot.subsystems.shooter.Shooter;
 public class CurrentFeed extends Command{
     private final Intake intake;
     private final Shooter shooter;
+    private double maxCurrent;
 
     private double startTime;
 
     public CurrentFeed(Intake intake, Shooter shooter) {
         this.intake = intake;
         this.shooter = shooter;
+        maxCurrent = 0;
 
         addRequirements(intake);
     }
@@ -27,11 +29,17 @@ public class CurrentFeed extends Command{
     }
 
     @Override
-    public void execute() {}
+    public void execute() {
+        double current = intake.getFilteredCurrent();
+        if (current > maxCurrent) {
+            maxCurrent = current;
+        }
+    }
 
     @Override
     public boolean isFinished() {
-        return intake.getFilteredCurrent() <= 8 && (Timer.getFPGATimestamp() - startTime) > 0.25;
+        return maxCurrent - intake.getFilteredCurrent() >= 3 && (Timer.getFPGATimestamp() - startTime) > 0.25;
+        // return intake.getFilteredCurrent() <= 8 && (Timer.getFPGATimestamp() - startTime) > 0.25;
     }
 
     @Override

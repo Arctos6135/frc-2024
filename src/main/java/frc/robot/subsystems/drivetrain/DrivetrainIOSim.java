@@ -36,6 +36,19 @@ public class DrivetrainIOSim extends DrivetrainIO {
 
     @Override
     public void setVoltages(double left, double right) {
+        // if (Math.abs(left) < 0.5) {
+        //     left = 0;
+        // } else {
+        //     left -= 0.2;
+        // }
+
+        // if (Math.abs(right) < 0.5) {
+        //     right = 0;
+        // } else {
+        //     right -= 0.2;
+        // }
+        // drive.setInputs(left + Math.random() - 0.5, right + Math.random() - 0.5);
+
         drive.setInputs(left, right);
     }
 }

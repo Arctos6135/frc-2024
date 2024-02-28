@@ -28,6 +28,8 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     public static double EMPTY_CURRENT; // set to a default value
     public static double STANDARD_CURRENT_ERROR = 1;
 
+    public static double REVERSE_DISTANCE = Units.inchesToMeters(-6);
+
 
     public static void setEmptyCurrent(Intake intake) { // maybe not needed
         intake.setVoltage(FEED_VOLTAGE);

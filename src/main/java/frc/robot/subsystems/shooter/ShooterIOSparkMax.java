@@ -40,7 +40,8 @@ public class ShooterIOSparkMax extends ShooterIO {
     }
     
     public void setVoltages(double leftVoltage, double rightVoltage) {
-        Logger.recordOutput("Shooter Voltage", leftVoltage);
+        Logger.recordOutput("Left Shooter Voltage", leftVoltage);
+        Logger.recordOutput("Right Shooter Voltage", rightVoltage);
         left.setVoltage(leftVoltage);
         right.setVoltage(rightVoltage);
     }

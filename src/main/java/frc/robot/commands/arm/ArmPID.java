@@ -20,10 +20,19 @@ import frc.robot.util.TunableNumber;
 public class ArmPID extends Command {
     private final Arm arm;
 
-    // TODO caluclate the proper values for each of these!!
-    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 8);
-    private final TrapezoidProfile profile = new TrapezoidProfile(constraints);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0, 0.25, 3.8, 0.01);
+    private final TunableNumber maxVelocity = new TunableNumber("Arm/Max Velocity", 2);
+    private final TunableNumber maxAcceleration = new TunableNumber("Arm/Max Acceleration", 2);
+    private final TunableNumber kS = new TunableNumber("Arm/kS", 0);
+    private final TunableNumber kG = new TunableNumber("Arm/kG", 0.25);
+    private final TunableNumber kV = new TunableNumber("Arm/kV", 3.8);
+    private final TunableNumber kA = new TunableNumber("Arm/kA", 0.01);
+    private final TunableNumber kP = new TunableNumber("Arm/kP", 7);
+    private final TunableNumber kI = new TunableNumber("Arm/kI", 10);
+    private final TunableNumber kD = new TunableNumber("Arm/kD", 7);
+
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 8);
+    private TrapezoidProfile profile = new TrapezoidProfile(constraints);
+    private ArmFeedforward feedforward = new ArmFeedforward(0, 0.25, 3.8, 0.01);
     private final PIDController controller = new PIDController(7, 10, 0);
 
     private State targetState;
@@ -42,6 +51,35 @@ public class ArmPID extends Command {
         this.arm = arm;
         this.targetState = new State(targetAngle, 0);
         controller.setIntegratorRange(-6, 6);
+
+        TunableNumber.ifChanged(
+            () -> {
+                constraints = new TrapezoidProfile.Constraints(maxVelocity.get(), maxAcceleration.get());
+                profile = new TrapezoidProfile(constraints);
+                initialize();
+            },
+            maxVelocity,
+            maxAcceleration
+        );
+
+        TunableNumber.ifChanged(
+            () -> {
+                feedforward = new ArmFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
+            },
+            kS,
+            kG,
+            kV,
+            kA
+        );
+
+        TunableNumber.ifChanged(
+            () -> {
+                controller.setPID(kP.get(), kI.get(), kD.get());
+            },
+            kP,
+            kI,
+            kD
+        );
 
         addRequirements(arm);
     }

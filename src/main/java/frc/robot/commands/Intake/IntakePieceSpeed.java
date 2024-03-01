@@ -19,6 +19,7 @@ public class IntakePieceSpeed extends Command {
     private final Intake intake;
     private final MedianFilter speedFilter;
     private final TunableNumber speedDrop = new TunableNumber("Intake/Speed Drop", 0.5);
+    private final TunableNumber voltage = new TunableNumber("Intake/Intaking Voltage", 12);
     private double normalSpeed = 0;
 
     public IntakePieceSpeed(Intake intake) {
@@ -38,7 +39,7 @@ public class IntakePieceSpeed extends Command {
     public void execute() {
         Logger.recordOutput("Input/Median Velocity", normalSpeed);
         normalSpeed = speedFilter.calculate(intake.getVelocity());
-        intake.setVoltage(IntakeConstants.VOLTAGE);
+        intake.setVoltage(voltage.get());
     }
 
     @Override

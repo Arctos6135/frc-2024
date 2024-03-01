@@ -29,6 +29,10 @@ public class Intake extends SubsystemBase {
         Logger.recordOutput("Intake Filtered Current", medianCurrent);
     }
 
+    public double getVelocity() {
+        return inputs.speed;
+    }
+
     /**
      * @return position in meters
      */

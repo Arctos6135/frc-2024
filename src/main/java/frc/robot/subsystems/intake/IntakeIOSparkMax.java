@@ -28,7 +28,7 @@ public class IntakeIOSparkMax extends IntakeIO{
 
         // meters of belt
         encoder.setPositionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR);
-        encoder.setPositionConversionFactor(IntakeConstants.VELOCITY_CONVERSION_FACTOR);
+        encoder.setVelocityConversionFactor(IntakeConstants.VELOCITY_CONVERSION_FACTOR);
     }
     
     public void setVoltage(double voltage) {
@@ -48,7 +48,7 @@ public class IntakeIOSparkMax extends IntakeIO{
         // Voltage
         inputs.voltage = motor.getBusVoltage() * motor.getAppliedOutput();
 
-        // Speed (converts to meters of tread per second).
-        inputs.speed = (encoder.getVelocity() * (Math.PI * 2)) * IntakeConstants.WHEEL_CIRCUMFERENCE;
+        // Speed (don't need to convert because we do that by setting the velocity conversion factor).
+        inputs.speed = encoder.getVelocity();
     }
 }

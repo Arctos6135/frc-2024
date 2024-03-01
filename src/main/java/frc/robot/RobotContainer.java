@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.CurrentFeed;
 import frc.robot.commands.Intake.ImprovedFeeed;
@@ -144,8 +145,15 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        Trigger driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
+        Trigger driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+        Trigger driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
+        Trigger driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
+        Trigger driverX = new JoystickButton(driverController, XboxController.Button.kY.value);
+        Trigger driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
+
         // Binds precision drive toggling to driver's right bumper.
-        // new Trigger(() -> driverController.getRightBumper())
+        // driverRightBumper
         //     .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
         //     .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
@@ -161,29 +169,27 @@ public class RobotContainer {
 
         // Changed the intake triggers to driver controller for testing.
         // TODO change back to the operator controller.
-        // Sets the right bumper to turn the intake on until released.
 
-        new Trigger(() -> driverController.getRightBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(IntakeConstants.VOLTAGE)));
-        new Trigger(() -> driverController.getRightBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
-
-        // // Binds the left bumper to run intake in reverse until released.
-        new Trigger(() -> driverController.getLeftBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(-IntakeConstants.VOLTAGE)));
-        new Trigger(() -> driverController.getLeftBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+        Trigger operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+        Trigger operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+        Trigger operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
+        Trigger operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
+        Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kY.value);
+        Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
         // Binds auto intake to the a button.
-        new Trigger(() -> driverController.getAButtonPressed()).onTrue(new CurrentFeed(intake, shooter));
-        //new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new IntakePiece(intake));
-        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new IntakePiece(intake));
+        // operatorA.onTrue(new CurrentFeed(intake, shooter));
+        operatorB.onTrue(new IntakePiece(intake));
 
 
-        new Trigger(() -> driverController.getXButtonPressed()).whileTrue(new InstantCommand(() -> shooter.setVoltages(12, 12)));
-        new Trigger(() -> driverController.getXButtonReleased()).whileTrue(new InstantCommand(() -> shooter.setVoltages(0, 0)));
+        operatorX.whileTrue(new InstantCommand(() -> shooter.setVoltages(12, 12)));
+        operatorX.whileFalse(new InstantCommand(() -> shooter.setVoltages(0, 0)));
 
-        new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new Launch(shooter, 1.5));
-        new Trigger(() -> driverController.getYButtonReleased()).whileTrue(new Launch(shooter, 0));
+        operatorY.whileTrue(new Launch(shooter, 1.5));
+        operatorY.whileFalse(new Launch(shooter, 0));
 
-        new Trigger(() -> operatorController.getLeftBumperPressed()).whileTrue(new RaceFeed(intake).raceWith(new WaitCommand(0.5).andThen(new AdvanceShooter(shooter, Units.inchesToMeters(ShooterConstants.ADVANCE_DISTANCE)))));
-        new Trigger(() -> operatorController.getAButtonPressed()).onTrue(new ImprovedFeeed(intake, shooter));
+        operatorLeftBumper.whileTrue(new RaceFeed(intake).raceWith(new WaitCommand(0.5).andThen(new AdvanceShooter(shooter, Units.inchesToMeters(ShooterConstants.ADVANCE_DISTANCE)))));
+        operatorA.onTrue(new ImprovedFeeed(intake, shooter));
 
         // The armPID is binded to the operator X and Y buttons. Check this.updateButtons() for more information.
 
@@ -191,10 +197,10 @@ public class RobotContainer {
 
         // Binds the speaker shoot to the x button.
         // Temporarily bound to the driver controller.
-        // new Trigger(() -> driverController.getXButtonPressed()).onTrue(score.scoreSpeaker(arm, shooter, intake));
-        // new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
-        // new Trigger(() -> driverController.getYButtonPressed()).onTrue(score.scoreAmp(arm, shooter, intake));
-        // new Trigger(() -> driverController.getYButtonReleased()).onTrue(new InstantCommand(() -> score.stop(arm, shooter, intake)));
+        // driverX.onTrue(score.scoreSpeaker(arm, shooter, intake));
+        // driverX.onFalse(new InstantCommand(() -> score.stop(arm, shooter, intake)));
+        // driverY.onTrue(score.scoreAmp(arm, shooter, intake));
+        // driverY.onFalse(new InstantCommand(() -> score.stop(arm, shooter, intake)));
     }
 
     /**
@@ -211,6 +217,9 @@ public class RobotContainer {
             arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
             System.out.println("Not pressing X");
         }
+
+        // Runs the intake faster or slower depending on how the operator trigger is pulled.
+        intake.setVoltage((operatorController.getRightTriggerAxis() - operatorController.getLeftTriggerAxis()) * 12);
     }
 
     public Command getAutonomousCommand() {

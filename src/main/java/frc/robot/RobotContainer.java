@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.CurrentFeed;
 import frc.robot.commands.Intake.ImprovedFeeed;
 import frc.robot.commands.Intake.IntakePiece;
+import frc.robot.commands.Intake.IntakePieceSpeed;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.PIDSetAngle;
@@ -200,20 +201,29 @@ public class RobotContainer {
     /**
      * Runs on a periodic loop. Check Robot.java.
      */
+    IntakePieceSpeed speed = null;
     public void updateButtons() {
-        if (operatorController.getXButton()) {
-            arm.setVoltage(4); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
-            System.out.println("Pressing X");
-        } else if (operatorController.getYButton()) {
-            //armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
-            arm.setVoltage(-4);
-        } else {
-            arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
-            System.out.println("Not pressing X");
+        // if (operatorController.getXButton()) {
+        //     arm.setVoltage(4); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
+        //     System.out.println("Pressing X");
+        // } else if (operatorController.getYButton()) {
+        //     //armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
+        //     arm.setVoltage(-4);
+        // } else {
+        //     arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
+        //     System.out.println("Not pressing X");
+        // }
+        if (speed == null) {
+            speed = new IntakePieceSpeed(intake);
+        }
+        System.out.printf("%f %f %f %f\n", driverController.getLeftX(), driverController.getLeftY(), driverController.getRightX(), driverController.getRightY());
+        if (driverController.getLeftX() > 0 && !speed.isScheduled()) {
+            speed.schedule();
         }
     }
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("1 Meter Forward");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//autoChooser.get();
+        return new IntakePieceSpeed(intake);
+        //return new PathPlannerAuto("1 Meter Forward");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//autoChooser.get();
     }
 }

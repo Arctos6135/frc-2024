@@ -21,6 +21,6 @@ public class IntakeIOSim extends IntakeIO {
     public void updateInputs(IntakeInputs inputs) {
         intake.update(0.2);
 
-        inputs.speed = intake.getAngularVelocityRadPerSec() * IntakeConstants.WHEEL_CIRCUMFERENCE;
+        inputs.speed = intake.getAngularVelocityRadPerSec() * IntakeConstants.WHEEL_CIRCUMFERENCE / (2 * Math.PI);
     }
 }

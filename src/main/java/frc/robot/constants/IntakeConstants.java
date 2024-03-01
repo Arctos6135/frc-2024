@@ -32,7 +32,6 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     public static double REVERSE_FEED_TIME = 0.5;
     public static double FEED_TIME = 0.15;
 
-
     public static void setEmptyCurrent(Intake intake) { // maybe not needed
         intake.setVoltage(FEED_VOLTAGE);
         EMPTY_CURRENT = intake.getFilteredCurrent();

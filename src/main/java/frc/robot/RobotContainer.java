@@ -17,18 +17,20 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.CurrentFeed;
 import frc.robot.commands.Intake.ImprovedFeeed;
 import frc.robot.commands.Intake.IntakePiece;
-import frc.robot.commands.Intake.IntakePieceSpeed;
+//import frc.robot.commands.Intake.IntakePieceSpeed;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.Intake.ShooterPositionFeed;
+//import frc.robot.commands.Intake.ShooterPositionFeed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.PIDSetAngle;
-import frc.robot.commands.driving.ProfiledPIDSetAngle;
+//import frc.robot.commands.driving.ProfiledPIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
 import frc.robot.commands.shooter.AdvanceShooter;
@@ -109,17 +111,11 @@ public class RobotContainer {
             shooter = new Shooter(new ShooterIO());
         }
 
-        // Named commands for autos.
-        NamedCommands.registerCommand("scoreSpeaker", Score.scoreSpeaker(arm, shooter, intake));
-        NamedCommands.registerCommand("stopScoring", new InstantCommand(() -> Score.stop(arm, shooter, intake)));
-        NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
-        NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
-
         teleopDrive = new TeleopDrive(drivetrain, driverController);
         drivetrain.setDefaultCommand(teleopDrive);
 
         armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
-        //arm.setDefaultCommand(armPID);
+        arm.setDefaultCommand(armPID);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
@@ -136,13 +132,20 @@ public class RobotContainer {
         autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
 
         // Placeholders until positions are configured.
-        positionChooser.addOption("Position 1", PositionConstants.POSE2);
+        positionChooser.addOption("Position 1", PositionConstants.POSE1);
         positionChooser.addOption("Position 2", PositionConstants.POSE2);
         positionChooser.addOption("Position 3", PositionConstants.POSE3);
 
         manualIntake = new LoggedDashboardBoolean("manual intake");
         disableArm = new LoggedDashboardBoolean("disable arm");
         resetArmEncoder = new LoggedDashboardBoolean("reset arm encoder");
+
+        // Named commands for autos.
+        NamedCommands.registerCommand("scoreSpeaker", Score.scoreSpeaker(arm, armPID, shooter, intake));
+        NamedCommands.registerCommand("stopScoring", new InstantCommand(() -> Score.stop(arm, shooter, intake)));
+        NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
+        NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
+
 
         configureBindings();
     }
@@ -161,14 +164,14 @@ public class RobotContainer {
         //     .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
         // Binds macros for orienting robot turning to driver's dpad.
-        new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
-        new Trigger(() -> driverController.getPOV() == 45).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI / 4));
-        new Trigger(() -> driverController.getPOV() == 90).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI / 2));
-        new Trigger(() -> driverController.getPOV() == 135).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 4));
-        new Trigger(() -> driverController.getPOV() == 180).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI));
-        new Trigger(() -> driverController.getPOV() == 225).onTrue(new ProfiledPIDSetAngle(drivetrain, (5 * Math.PI) / 4));
-        new Trigger(() -> driverController.getPOV() == 270).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 2));
-        new Trigger(() -> driverController.getPOV() == 315).onTrue(new ProfiledPIDSetAngle(drivetrain, (7 * Math.PI) / 4));
+        // new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
+        // new Trigger(() -> driverController.getPOV() == 45).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI / 4));
+        // new Trigger(() -> driverController.getPOV() == 90).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI / 2));
+        // new Trigger(() -> driverController.getPOV() == 135).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 4));
+        // new Trigger(() -> driverController.getPOV() == 180).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI));
+        // new Trigger(() -> driverController.getPOV() == 225).onTrue(new ProfiledPIDSetAngle(drivetrain, (5 * Math.PI) / 4));
+        // new Trigger(() -> driverController.getPOV() == 270).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 2));
+        // new Trigger(() -> driverController.getPOV() == 315).onTrue(new ProfiledPIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
         // Changed the intake triggers to driver controller for testing.
         // TODO change back to the operator controller.
@@ -183,21 +186,39 @@ public class RobotContainer {
         new Trigger(() -> driverController.getLeftBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(12)));
         new Trigger(() -> driverController.getLeftBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
 
-        new Trigger(() -> driverController.getAButtonPressed()).onTrue(new ShooterPositionFeed(intake, shooter));
-        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new IntakePiece(intake));
-        new Trigger(() -> driverController.getXButtonPressed()).onTrue(new IntakePieceSpeed(intake));
+        new Trigger(() -> driverController.getRightBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(-12)));
+        new Trigger(() -> driverController.getRightBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+
+        //new Trigger(() -> driverController.getXButtonPressed()).whileTrue(new Launch(shooter, 10));
+        new Trigger(() -> driverController.getXButtonPressed()).onTrue(new InstantCommand(() -> {
+            shooter.setVoltages(-12, -12);
+            //throw new ArithmeticException();
+        }));
+        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> {
+            shooter.setVoltages(0, 0);
+            //throw new ArithmeticException();
+        }));
+        new Trigger(() -> driverController.getYButtonPressed()).onTrue(new InstantCommand(() -> {
+            shooter.setVoltages(0, 0);
+            //throw new ArithmeticException();
+        }));
+
+        //new Trigger(() -> driverController.getXButtonPressed()).onTrue(new ShooterPositionFeed(intake, shooter));
+        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.2)));
+        new Trigger(() -> driverController.getAButtonPressed()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
+        // new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new StartEndCommand(() -> {
+        //     arm.setVoltage(-9);
+        // }, () -> {
+        // }));
     }
 
     /**
      * Runs on a periodic loop. Check Robot.java.
      */
     public void updateButtons() {
-        // if (operatorController.getXButton()) {
-        //     arm.setVoltage(4); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
-        //     System.out.println("Pressing X");
-        // } else if (operatorController.getYButton()) {
+        // if (operatorController.getYButton()) {
         //     //armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
-        //     arm.setVoltage(-4);
+        //     arm.setVoltage(-12);
         // } else {
         //     arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
         //     System.out.println("Not pressing X");
@@ -205,8 +226,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
+        //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
         //return new IntakePieceSpeed(intake);
-        //return new PathPlannerAuto("1 Meter Forward");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//autoChooser.get();
+        return new PathPlannerAuto("Square Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//autoChooser.get();
     }
 }

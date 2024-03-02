@@ -2,6 +2,11 @@ package frc.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
@@ -34,13 +39,13 @@ public class ArmIOSparkMax extends ArmIO {
 
         leftEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
         leftEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
-        leftEncoder.setPosition(ArmConstants.STARTING_POSITION);
+        leftEncoder.setPosition(-ArmConstants.STARTING_POSITION);
 
         rightEncoder = armRight.getEncoder();
 
         rightEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
         rightEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
-        rightEncoder.setPosition(ArmConstants.STARTING_POSITION);
+        rightEncoder.setPosition(-ArmConstants.STARTING_POSITION);
 
         // sets up soft limits
         // we don't need tp enable soft stops on armLeft since it is following armRight
@@ -53,21 +58,26 @@ public class ArmIOSparkMax extends ArmIO {
         // armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
         armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
         armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+
+        // new Trigger(() -> new XboxController(0).getXButtonPressed()).onTrue(new InstantCommand(() -> {
+        //     leftEncoder.setPosition(-ArmConstants.STARTING_POSITION);
+        //     rightEncoder.setPosition(-ArmConstants.STARTING_POSITION);
+        // }));
     }
 
     @Override
     public void setVoltage(double voltage) {
-        armRight.setVoltage(voltage);
+        armRight.setVoltage(-voltage);
     }
 
     @Override
-    public void updateInputs(ArmInputs inputs) {
+    public void updateInputs(ArmInputs inputs) {   
         // Position
-        inputs.leftPosition = leftEncoder.getPosition();
+        inputs.leftPosition = -leftEncoder.getPosition();
         inputs.rightPosition = rightEncoder.getPosition();
 
         // Velocity
-        inputs.leftVelocity = leftEncoder.getVelocity();
+        inputs.leftVelocity = -leftEncoder.getVelocity();
         inputs.rightPosition = rightEncoder.getVelocity();
 
         // Current

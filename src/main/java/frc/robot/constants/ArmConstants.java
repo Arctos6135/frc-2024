@@ -21,8 +21,8 @@ public class ArmConstants {
     public static final float MAX_POSITION = (float) Units.degreesToRadians(60); // Soft stop for max (farthest from floor) position
     public static final float MIN_POSITION = (float) Units.degreesToRadians(6); // Soft stop for min (closest to floor) position
     
-    public static final double AMP_SCORING_POSITION = Units.degreesToRadians(60); // Binded to X
-    public static final double SPEAKER_SCORING_POSITION = Units.degreesToRadians(6); // Binded to Y
+    public static final double AMP_SCORING_POSITION = STARTING_POSITION + 1.5; // Binded to X
+    public static final double SPEAKER_SCORING_POSITION = STARTING_POSITION; // Binded to Y
 
     public static final double ARM_TOLERANCE = 5 * Math.PI / 180;
 

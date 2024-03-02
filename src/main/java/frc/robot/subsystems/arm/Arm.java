@@ -41,7 +41,6 @@ public class Arm extends SubsystemBase {
         // Log all the sensor data.
         Logger.processInputs("Arm", inputs);
         Logger.recordOutput("Arm Mechanism", mechanism);
-
     }
 
     public double getArmPosition() {

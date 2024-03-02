@@ -1,12 +1,16 @@
 package frc.robot.commands.arm;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.TunableNumber;
@@ -30,10 +34,12 @@ public class ArmPID extends Command {
     private final TunableNumber kI = new TunableNumber("Arm/kI", 10);
     private final TunableNumber kD = new TunableNumber("Arm/kD", 7);
 
-    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 8);
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 2);
     private TrapezoidProfile profile = new TrapezoidProfile(constraints);
-    private ArmFeedforward feedforward = new ArmFeedforward(0, 0.25, 3.8, 0.01);
-    private final PIDController controller = new PIDController(7, 10, 0);
+    //private ArmFeedforward feedforward = new ArmFeedforward(0, 0, 0, 0);
+    private ArmFeedforward feedforward = new ArmFeedforward(0, 0.21, 3.5, 0.01);
+    private final PIDController controller = new PIDController(0.5, 0.2, 0);
+    //private final PIDController controller = new PIDController(7, 10, 0);
 
     private State targetState;
     private State initialState;
@@ -126,7 +132,8 @@ public class ArmPID extends Command {
         Logger.recordOutput("Arm PID Feedforward", feedforwardEffort);
 
 
-        arm.setVoltage(feedforwardEffort + feedbackEffort);
+        if (!new XboxController(0).getYButton())
+            arm.setVoltage(feedforwardEffort + feedbackEffort);
     }
 
     @Override
@@ -137,5 +144,9 @@ public class ArmPID extends Command {
     @Override
     public void end(boolean interrupted) {
         arm.setVoltage(0);
+    }
+
+    public boolean atTarget() {
+        return Math.abs(arm.getArmPosition() - targetState.position) < Units.degreesToRadians(5) && Math.abs(arm.getArmVelocity()) < Units.degreesToRadians(10);
     }
 }

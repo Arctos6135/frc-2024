@@ -25,6 +25,7 @@ import frc.robot.commands.Intake.ImprovedFeeed;
 import frc.robot.commands.Intake.IntakePiece;
 import frc.robot.commands.Intake.IntakePieceSpeed;
 import frc.robot.commands.Intake.RaceFeed;
+import frc.robot.commands.Intake.ShooterPositionFeed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.PIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
@@ -179,29 +180,9 @@ public class RobotContainer {
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
         // Binds auto intake to the a button.
-        // operatorA.onTrue(new CurrentFeed(intake, shooter));
-        operatorB.onTrue(new IntakePiece(intake));
-
-
-        operatorX.whileTrue(new InstantCommand(() -> shooter.setVoltages(12, 12)));
-        operatorX.whileFalse(new InstantCommand(() -> shooter.setVoltages(0, 0)));
-
-        operatorY.whileTrue(new Launch(shooter, 1.5));
-        operatorY.whileFalse(new Launch(shooter, 0));
-
-        operatorLeftBumper.whileTrue(new RaceFeed(intake).raceWith(new WaitCommand(0.5).andThen(new AdvanceShooter(shooter, Units.inchesToMeters(ShooterConstants.ADVANCE_DISTANCE)))));
-        operatorA.onTrue(new ImprovedFeeed(intake, shooter));
-
-        // The armPID is binded to the operator X and Y buttons. Check this.updateButtons() for more information.
-
-        // TODO Configure shooter launch button :)
-
-        // Binds the speaker shoot to the x button.
-        // Temporarily bound to the driver controller.
-        // driverX.onTrue(score.scoreSpeaker(arm, shooter, intake));
-        // driverX.onFalse(new InstantCommand(() -> score.stop(arm, shooter, intake)));
-        // driverY.onTrue(score.scoreAmp(arm, shooter, intake));
-        // driverY.onFalse(new InstantCommand(() -> score.stop(arm, shooter, intake)));
+        new Trigger(() -> driverController.getAButtonPressed()).onTrue(new ShooterPositionFeed(intake, shooter));
+        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new IntakePiece(intake));
+        new Trigger(() -> driverController.getXButtonPressed()).onTrue(new IntakePieceSpeed(intake));
     }
 
     /**
@@ -219,16 +200,6 @@ public class RobotContainer {
         //     arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
         //     System.out.println("Not pressing X");
         // }
-        if (speed == null) {
-            speed = new IntakePieceSpeed(intake);
-        }
-        System.out.printf("%f %f %f %f\n", driverController.getLeftX(), driverController.getLeftY(), driverController.getRightX(), driverController.getRightY());
-        if (driverController.getLeftX() > 0 && !speed.isScheduled()) {
-            speed.schedule();
-        }
-
-        // Runs the intake faster or slower depending on how the operator trigger is pulled.
-        intake.setVoltage((operatorController.getRightTriggerAxis() - operatorController.getLeftTriggerAxis()) * 12);
     }
 
     public Command getAutonomousCommand() {

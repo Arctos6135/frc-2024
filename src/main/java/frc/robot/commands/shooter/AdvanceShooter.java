@@ -14,7 +14,7 @@ public class AdvanceShooter extends Command{
     /**
      * 
      * @param shooter the shooter subsystem
-     * @param distance the number of radians we want to rotate shooter wheels by
+     * @param meters the 
      */
     public AdvanceShooter(Shooter shooter, double meters){
         this.shooter = shooter;

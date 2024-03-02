@@ -1,5 +1,7 @@
 package frc.robot.commands.driving;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DriveConstants;
@@ -29,9 +31,9 @@ import frc.robot.util.MathUtils;
 public class PIDSetAngle extends Command {
     private final Drivetrain drivetrain;
 
-    private final TunableNumber kP = new TunableNumber("PIDSetAngle kP", 0);
+    private final TunableNumber kP = new TunableNumber("PIDSetAngle kP", 7);
     private final TunableNumber kI = new TunableNumber("PIDSetAngle kI", 0);
-    private final TunableNumber kD = new TunableNumber("PIDSetAngle kD", 0);
+    private final TunableNumber kD = new TunableNumber("PIDSetAngle kD", 0.1);
 
     private final PIDController rotationController = new PIDController(0, 0, 0);
 
@@ -58,19 +60,27 @@ public class PIDSetAngle extends Command {
             setpointAngle
         );
 
+        Logger.recordOutput("Drivetrain/Proportional SetAngle", kP.get() * (drivetrain.getYaw() - setpointAngle));
+        rotationController.setIntegratorRange(-12, 12);
+
         // Clamp the speed
-        pidRotation = MathUtils.clamp(pidRotation, -0.5, 0.5);
+        pidRotation = MathUtils.clamp(pidRotation, -10, 10);
+        Logger.recordOutput("Drivetrain/Total Set Angle", pidRotation);
 
         drivetrain.arcadeDrive(0, pidRotation);
+
+        Logger.recordOutput("Drivetrain/Setting Angle", true);
+        Logger.recordOutput("Drivetrain/Target Yaw", setpointAngle);
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(drivetrain.getYaw() - setpointAngle) < DriveConstants.ROTATION_TOLERANCE;
+        return Math.abs(drivetrain.getYaw() - setpointAngle) < DriveConstants.ROTATION_TOLERANCE && drivetrain.getYawRate() < DriveConstants.ROTATION_TOLERANCE;
     }
 
     @Override
     public void end(boolean interrupted) {
+        Logger.recordOutput("Drivetrain/Setting Angle", false);
         drivetrain.arcadeDrive(0, 0);
     }
 }

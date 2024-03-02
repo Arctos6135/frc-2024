@@ -168,6 +168,10 @@ public class Drivetrain extends SubsystemBase {
         return inputs.yaw;
     }
 
+    public double getYawRate() {
+        return inputs.yawRate;
+    }
+
     // The drivetrain needs 3m of clearance in front of it when running this command.
     public Command characterizeVelocity() {
         FeedforwardLog leftLog = new FeedforwardLog();

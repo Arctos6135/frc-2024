@@ -28,6 +28,7 @@ import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.Intake.ShooterPositionFeed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.driving.PIDSetAngle;
+import frc.robot.commands.driving.ProfiledPIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
 import frc.robot.commands.shooter.AdvanceShooter;
@@ -160,14 +161,14 @@ public class RobotContainer {
         //     .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
         // Binds macros for orienting robot turning to driver's dpad.
-        new Trigger(() -> driverController.getPOV() == 0).onTrue(new PIDSetAngle(drivetrain, 0));
-        new Trigger(() -> driverController.getPOV() == 45).onTrue(new PIDSetAngle(drivetrain, Math.PI / 4));
-        new Trigger(() -> driverController.getPOV() == 90).onTrue(new PIDSetAngle(drivetrain, Math.PI / 2));
-        new Trigger(() -> driverController.getPOV() == 135).onTrue(new PIDSetAngle(drivetrain, (3 * Math.PI) / 4));
-        new Trigger(() -> driverController.getPOV() == 180).onTrue(new PIDSetAngle(drivetrain, Math.PI));
-        new Trigger(() -> driverController.getPOV() == 225).onTrue(new PIDSetAngle(drivetrain, (5 * Math.PI) / 4));
-        new Trigger(() -> driverController.getPOV() == 270).onTrue(new PIDSetAngle(drivetrain, (3 * Math.PI) / 2));
-        new Trigger(() -> driverController.getPOV() == 315).onTrue(new PIDSetAngle(drivetrain, (7 * Math.PI) / 4));
+        new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
+        new Trigger(() -> driverController.getPOV() == 45).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI / 4));
+        new Trigger(() -> driverController.getPOV() == 90).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI / 2));
+        new Trigger(() -> driverController.getPOV() == 135).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 4));
+        new Trigger(() -> driverController.getPOV() == 180).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI));
+        new Trigger(() -> driverController.getPOV() == 225).onTrue(new ProfiledPIDSetAngle(drivetrain, (5 * Math.PI) / 4));
+        new Trigger(() -> driverController.getPOV() == 270).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 2));
+        new Trigger(() -> driverController.getPOV() == 315).onTrue(new ProfiledPIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
         // Changed the intake triggers to driver controller for testing.
         // TODO change back to the operator controller.
@@ -179,7 +180,9 @@ public class RobotContainer {
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kY.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        // Binds auto intake to the a button.
+        new Trigger(() -> driverController.getLeftBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(12)));
+        new Trigger(() -> driverController.getLeftBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+
         new Trigger(() -> driverController.getAButtonPressed()).onTrue(new ShooterPositionFeed(intake, shooter));
         new Trigger(() -> driverController.getBButtonPressed()).onTrue(new IntakePiece(intake));
         new Trigger(() -> driverController.getXButtonPressed()).onTrue(new IntakePieceSpeed(intake));
@@ -188,7 +191,6 @@ public class RobotContainer {
     /**
      * Runs on a periodic loop. Check Robot.java.
      */
-    IntakePieceSpeed speed = null;
     public void updateButtons() {
         // if (operatorController.getXButton()) {
         //     arm.setVoltage(4); //armPID.setTarget(ArmConstants.AMP_SCORING_POSITION);
@@ -203,7 +205,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new IntakePieceSpeed(intake);
+        return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
+        //return new IntakePieceSpeed(intake);
         //return new PathPlannerAuto("1 Meter Forward");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//autoChooser.get();
     }
 }

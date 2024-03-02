@@ -16,7 +16,7 @@ public class DriveConstants {
     public static double CONTROLLER_DEADZONE = 0.15;
 
     // Needs to be tuned :)
-    public static final double ROTATION_TOLERANCE = 0.5;
+    public static final double ROTATION_TOLERANCE = 0.03;
 
     public static final double MAX_TELEOP_SPEED = 1.5;
 

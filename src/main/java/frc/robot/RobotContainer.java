@@ -223,6 +223,8 @@ public class RobotContainer {
         //     arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
         //     System.out.println("Not pressing X");
         // }
+
+        intake.setVoltage((operatorController.getRightTriggerAxis() - operatorController.getLeftTriggerAxis())*12);
     }
 
     public Command getAutonomousCommand() {

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import frc.robot.commands.*;
 // import frc.robot.commands.Intake.CurrentFeed;
 // import frc.robot.commands.arm.ArmPID;
@@ -79,10 +80,7 @@ public class RobotContainer {
 
     // Named Commands (for autos)
     public NamedCommands scoreSpeaker;
-    public NamedCommands runIntake;
-
-    // Photon Camera
-    public PhotonCamera photonCamera;
+    public NamedCommands runIntake;    
 
     public RobotContainer() {
         // Creates a real robot.
@@ -91,6 +89,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
+            vision = new Vision();
         }
         // Creates a simulated robot.
         else if (RobotBase.isSimulation()) {

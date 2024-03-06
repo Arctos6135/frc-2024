@@ -175,35 +175,21 @@ public class RobotContainer {
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kY.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        new Trigger(() -> driverController.getLeftBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(12)));
-        new Trigger(() -> driverController.getLeftBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+        operatorLeftBumper.onTrue(new InstantCommand(() -> intake.setVoltage(12)));
+        operatorLeftBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
 
-        new Trigger(() -> driverController.getRightBumperPressed()).onTrue(new InstantCommand(() -> intake.setVoltage(-12)));
-        new Trigger(() -> driverController.getRightBumperReleased()).onTrue(new InstantCommand(() -> intake.setVoltage(0)));
+        operatorRightBumper.onTrue(new InstantCommand(() -> intake.setVoltage(-12)));
+        operatorRightBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
 
-        //new Trigger(() -> driverController.getXButtonPressed()).whileTrue(new Launch(shooter, 10));
-        new Trigger(() -> driverController.getXButtonPressed()).onTrue(new InstantCommand(() -> {
-            shooter.setVoltages(-12, -12);
-            //throw new ArithmeticException();
-        }));
-        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new AltImprovedFeed(intake, shooter));
-        new Trigger(() -> driverController.getYButtonPressed()).onTrue(new InstantCommand(() -> {
-            shooter.setVoltages(0, 0);
-            //throw new ArithmeticException();
-        }));
-
-        //new Trigger(() -> driverController.getXButtonPressed()).onTrue(new ShooterPositionFeed(intake, shooter));
-        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.5)));
-        new Trigger(() -> driverController.getAButtonPressed()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
+        // // Climb Command
         // new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new StartEndCommand(() -> {
         //     arm.setVoltage(-9);
         // }, () -> {
         // }));
 
-        new Trigger(() -> operatorController.getAButton()).whileTrue(new RaceFeed(shooter, intake));
-        new Trigger(() -> operatorController.getBButton()).whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
-        new Trigger(() -> operatorController.getXButton()).whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
-        new Trigger(() -> operatorController.getYButton()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
+        operatorA.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
+        operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
     }
 
     /**

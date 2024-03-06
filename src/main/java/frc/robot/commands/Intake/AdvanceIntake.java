@@ -16,7 +16,7 @@ public class AdvanceIntake extends Command {
      * @param intake the intake 
      * @param distance distance to move the intake in meters can take negative
      */ 
-    public void AdvanceIntake(Intake intake, double distance) {
+    public AdvanceIntake(Intake intake, double distance) {
         this.intake = intake;
         this.distance = distance;
         forwards = distance > 0;

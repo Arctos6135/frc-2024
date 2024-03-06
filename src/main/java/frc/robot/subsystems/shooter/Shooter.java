@@ -33,6 +33,12 @@ public class Shooter extends SubsystemBase {
         io.setVoltages(leftVoltage, rightVoltage);
     }
 
+    public void setVoltages(double voltage) {
+        Logger.recordOutput("Shooter Left Voltage", voltage);
+        Logger.recordOutput("Shooter Right Voltage", voltage);
+        io.setVoltages(voltage, voltage);
+    }
+
     public void setRPS(double rps) {
         double feedforwardOutput = feedforward.calculate(rps);
         Logger.recordOutput("Shoot Velocity Target", rps);

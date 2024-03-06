@@ -11,35 +11,21 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Intake.CurrentFeed;
-import frc.robot.commands.Intake.ImprovedFeeed;
-import frc.robot.commands.Intake.IntakePiece;
-//import frc.robot.commands.Intake.IntakePieceSpeed;
-import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.Intake.ShooterPositionFeed;
-//import frc.robot.commands.Intake.ShooterPositionFeed;
 import frc.robot.commands.arm.ArmPID;
-import frc.robot.commands.driving.PIDSetAngle;
 //import frc.robot.commands.driving.ProfiledPIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.Intake.DrivingIntake;
 import frc.robot.commands.scoring.Score;
-import frc.robot.commands.shooter.AdvanceShooter;
-import frc.robot.commands.shooter.Launch;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
-import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PositionConstants;
-import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -80,6 +66,7 @@ public class RobotContainer {
     // Commands
     private final TeleopDrive teleopDrive;
     private final ArmPID armPID;
+    private final DrivingIntake drivingIntake;
 
     // Named Commands (for autos)
     public NamedCommands scoreSpeaker;
@@ -116,6 +103,9 @@ public class RobotContainer {
 
         armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
         arm.setDefaultCommand(armPID);
+
+        drivingIntake = new DrivingIntake(intake, operatorController);
+        intake.setDefaultCommand(drivingIntake);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
@@ -222,7 +212,7 @@ public class RobotContainer {
         //     arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
         //     System.out.println("Not pressing X");
         // }
-    }
+        }
 
     public Command getAutonomousCommand() {
         //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);

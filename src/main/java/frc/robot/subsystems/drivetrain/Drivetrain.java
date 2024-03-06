@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -33,14 +34,16 @@ public class Drivetrain extends SubsystemBase {
     private final DrivetrainInputsAutoLogged inputs = new DrivetrainInputsAutoLogged();
 
     // PIDControllers that control the drivetrain motor voltage output
-    private final PIDController leftController = new PIDController(0, 5, 0.0);
-    private final PIDController rightController = new PIDController(0, 5, 0.0);
+    private final PIDController leftController = new PIDController(1, 0, 0.0);
+    //private final PIDController leftController = new PIDController(0, 0, 0.0);
+    //private final PIDController rightController = new PIDController(0, 0, 0.0);
+    private final PIDController rightController = new PIDController(1, 0, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.213, 0.2);
-    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.235, 0.26);
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2, 0.2);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2, 0.2);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.577, 0.26);
+    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2, 0.2);
+    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2, 0.2);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -59,7 +62,7 @@ public class Drivetrain extends SubsystemBase {
      */
     private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromRadians(inputs.yaw), inputs.leftPosition, inputs.rightPosition);
 
-    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(21.83));
+    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(23.2));
 
     /**
      * Construct a new drivetrain.
@@ -70,20 +73,18 @@ public class Drivetrain extends SubsystemBase {
 
         AutoBuilder.configureRamsete(
             () -> odometry.getPoseMeters(), 
-            (pose) -> {
-                odometry.resetPosition(Rotation2d.fromRadians(inputs.yaw), new DifferentialDriveWheelPositions(inputs.leftPosition, inputs.rightPosition), pose);
-            }, 
+            this::resetOdometry,
             () -> getSpeeds(), 
             speeds -> {
                 arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
             },
             new ReplanningConfig(),
-            () -> false, 
+            () -> true, 
             this
         );
     }
 
-    @Override
+    // @Override
     public void periodic() {
         io.updateInputs(inputs);
 
@@ -172,6 +173,10 @@ public class Drivetrain extends SubsystemBase {
         return inputs.yawRate;
     }
 
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(Rotation2d.fromRadians(inputs.yaw), new DifferentialDriveWheelPositions(inputs.leftPosition, inputs.rightPosition), pose);
+    }
+
     // The drivetrain needs 3m of clearance in front of it when running this command.
     public Command characterizeVelocity() {
         FeedforwardLog leftLog = new FeedforwardLog();
@@ -185,7 +190,7 @@ public class Drivetrain extends SubsystemBase {
             new LoggedMechanism(rightLog, rightMechanism)
         );
 
-        return new VelocityRoutine(group, 2.5, 0.25, this).finallyDo(() -> {
+        return new VelocityRoutine(group, 3.5, 0.25, this).finallyDo(() -> {
             leftLog.logCSV("DrivetrainVelocityLeft");
             rightLog.logCSV("DrivetrainVelocityRight");
         });

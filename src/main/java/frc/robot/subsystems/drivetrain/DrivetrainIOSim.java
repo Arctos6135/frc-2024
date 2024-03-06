@@ -31,7 +31,7 @@ public class DrivetrainIOSim extends DrivetrainIO {
         inputs.yawRate = (inputs.yaw - previousHeading) / 0.02;
         previousHeading = inputs.yaw;
 
-        Logger.recordOutput("Drivetrain Sim Pose", drive.getPose());
+        Logger.recordOutput("Drivetrain Sim Pose", drive.getPose());//derek was here
     }
 
     @Override

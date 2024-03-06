@@ -21,7 +21,7 @@ public class Score {
             .andThen(new WaitUntilCommand(armPID::atTarget))
             .andThen(new Launch(shooter, ShooterConstants.SPEAKER_RPS)
             .raceWith(
-                new WaitCommand(1.2).andThen(new Feed(intake))
+                new WaitCommand(1.2).andThen(new Feed(intake).withTimeout(2))
             ));
     }
 

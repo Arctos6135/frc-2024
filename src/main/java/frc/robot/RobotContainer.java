@@ -4,13 +4,16 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardBoolean;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Intake.ShooterPositionFeed;
 import frc.robot.commands.arm.ArmPID;
+import frc.robot.commands.driving.ProfiledPIDSetAngle;
 //import frc.robot.commands.driving.ProfiledPIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.Intake.AltImprovedFeed;
@@ -77,7 +81,7 @@ public class RobotContainer {
     public RobotContainer() {
         // Creates a real robot.
         if (RobotBase.isReal()) {
-            drivetrain = new Drivetrain(new DrivetrainIO());
+            drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
@@ -107,24 +111,25 @@ public class RobotContainer {
         arm.setDefaultCommand(armPID);
 
         drivingIntake = new DrivingIntake(intake, operatorController);
-        //intake.setDefaultCommand(drivingIntake);
+        intake.setDefaultCommand(drivingIntake);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
-        autoChooser.addDefaultOption("Quarter Circle", new PathPlannerAuto("Quarter Circle"));
+        // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
+        autoChooser.addOption("Return", new PathPlannerAuto("Return"));
         positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.
-        autoChooser.addOption("Three Note Auto", new PathPlannerAuto("Three Note Auto"));
+        autoChooser.addDefaultOption("Three Note Auto", new PathPlannerAuto("Three Note Auto"));
         autoChooser.addOption("1 Meter Forward", new PathPlannerAuto("1 Meter Forward"));
+        // autoChooser.addOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
 
         // Characterization routines.
         autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
         autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
 
         // Placeholders until positions are configured.
-        positionChooser.addOption("Position 1", PositionConstants.POSE1);
         positionChooser.addOption("Position 2", PositionConstants.POSE2);
         positionChooser.addOption("Position 3", PositionConstants.POSE3);
 
@@ -134,9 +139,21 @@ public class RobotContainer {
 
         // Named commands for autos.
         NamedCommands.registerCommand("scoreSpeaker", Score.scoreSpeaker(arm, armPID, shooter, intake));
+        NamedCommands.registerCommand("scoreAmp", Score.scoreAmp(arm, armPID, shooter, intake));
+
+        // Shouldn't need stopScoring.
         NamedCommands.registerCommand("stopScoring", new InstantCommand(() -> Score.stop(arm, shooter, intake)));
         NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
+        NamedCommands.registerCommand("spin180", new ProfiledPIDSetAngle(drivetrain, Units.degreesToRadians(120)));
+
+        PathPlannerLogging.setLogTargetPoseCallback(pose -> {
+            Logger.recordOutput("Target Pose", pose);
+        });
+
+        PathPlannerLogging.setLogCurrentPoseCallback(pose -> {
+            Logger.recordOutput("Current Pathplanner Pose", pose);
+        });
 
 
         configureBindings();
@@ -149,6 +166,9 @@ public class RobotContainer {
         Trigger driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
         Trigger driverX = new JoystickButton(driverController, XboxController.Button.kY.value);
         Trigger driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
+
+        driverA.onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
+        driverB.onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI));
 
         // Binds precision drive toggling to driver's right bumper.
         // driverRightBumper
@@ -175,11 +195,11 @@ public class RobotContainer {
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kY.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        operatorLeftBumper.onTrue(new InstantCommand(() -> intake.setVoltage(12)));
-        operatorLeftBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
+        // operatorLeftBumper.onTrue(new InstantCommand(() -> intake.setVoltage(12)));
+        // operatorLeftBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
 
-        operatorRightBumper.onTrue(new InstantCommand(() -> intake.setVoltage(-12)));
-        operatorRightBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
+        // operatorRightBumper.onTrue(new InstantCommand(() -> intake.setVoltage(-12)));
+        // operatorRightBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
 
         // // Climb Command
         // new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new StartEndCommand(() -> {
@@ -203,11 +223,16 @@ public class RobotContainer {
         //     arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
         //     System.out.println("Not pressing X");
         // }
-        }
+    }
+
+    public void startMatch() {
+        drivetrain.resetOdometry(positionChooser.get());
+    }
 
     public Command getAutonomousCommand() {
         //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
         //return new IntakePieceSpeed(intake);
-        return new PathPlannerAuto("Square Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//autoChooser.get();
+        return new PathPlannerAuto("2 Note Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
+        //return autoChooser.get();
     }
 }

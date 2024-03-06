@@ -9,7 +9,7 @@ import frc.robot.constants.ShooterConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 
-public class AltImprovedFeeed extends Command{
+public class AltImprovedFeed extends Command{
     private final Intake intake;
     private final Shooter shooter;
     private final AdvanceIntake reverseIntake;
@@ -22,7 +22,7 @@ public class AltImprovedFeeed extends Command{
     private double shooterCurrent;
     private boolean jankFix = true;
 
-    public AltImprovedFeeed(Intake intake, Shooter shooter, AdvanceIntake advanceIntake, AdvanceIntake reverseIntake, AdvanceShooter advanceShooter) {
+    public AltImprovedFeed(Intake intake, Shooter shooter, AdvanceIntake advanceIntake, AdvanceIntake reverseIntake, AdvanceShooter advanceShooter) {
         this.intake = intake;
         this.shooter = shooter;
         this.advanceIntake = advanceIntake;
@@ -36,7 +36,7 @@ public class AltImprovedFeeed extends Command{
         addRequirements(intake, shooter); // might want to remove If I understand this correctly
     }
 
-    public AltImprovedFeeed(Intake intake, Shooter shooter) {
+    public AltImprovedFeed(Intake intake, Shooter shooter) {
         this.intake = intake;
         this.shooter = shooter;
         this.advanceIntake = new AdvanceIntake(intake, IntakeConstants.FEED_DISTANCE);

@@ -10,7 +10,7 @@ import frc.robot.subsystems.shooter.Shooter;
 public class ShooterPositionFeed extends ParallelRaceGroup {
     public ShooterPositionFeed(Intake intake, Shooter shooter) {
         addCommands(
-            new RaceFeed(intake),
+            //new RaceFeed(intake),
             new WaitCommand(1).andThen(new AdvanceShooter(shooter, Units.inchesToMeters(14)))
         );
     }

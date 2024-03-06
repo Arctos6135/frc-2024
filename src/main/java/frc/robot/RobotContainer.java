@@ -21,7 +21,9 @@ import frc.robot.commands.Intake.ShooterPositionFeed;
 import frc.robot.commands.arm.ArmPID;
 //import frc.robot.commands.driving.ProfiledPIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.Intake.AltImprovedFeed;
 import frc.robot.commands.Intake.DrivingIntake;
+import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.scoring.Score;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
@@ -105,7 +107,7 @@ public class RobotContainer {
         arm.setDefaultCommand(armPID);
 
         drivingIntake = new DrivingIntake(intake, operatorController);
-        intake.setDefaultCommand(drivingIntake);
+        //intake.setDefaultCommand(drivingIntake);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
@@ -184,21 +186,24 @@ public class RobotContainer {
             shooter.setVoltages(-12, -12);
             //throw new ArithmeticException();
         }));
-        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new ImprovedFeeed(intake, shooter)
-            //throw new ArithmeticException();
-        };
+        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new AltImprovedFeed(intake, shooter));
         new Trigger(() -> driverController.getYButtonPressed()).onTrue(new InstantCommand(() -> {
             shooter.setVoltages(0, 0);
             //throw new ArithmeticException();
         }));
 
         //new Trigger(() -> driverController.getXButtonPressed()).onTrue(new ShooterPositionFeed(intake, shooter));
-        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.2)));
+        new Trigger(() -> driverController.getBButtonPressed()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.5)));
         new Trigger(() -> driverController.getAButtonPressed()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         // new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new StartEndCommand(() -> {
         //     arm.setVoltage(-9);
         // }, () -> {
         // }));
+
+        new Trigger(() -> operatorController.getAButton()).whileTrue(new RaceFeed(shooter, intake));
+        new Trigger(() -> operatorController.getBButton()).whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        new Trigger(() -> operatorController.getXButton()).whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
+        new Trigger(() -> operatorController.getYButton()).onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
     }
 
     /**

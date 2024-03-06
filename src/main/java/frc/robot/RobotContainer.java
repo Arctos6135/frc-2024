@@ -88,7 +88,7 @@ public class RobotContainer {
     public RobotContainer() {
         // Creates a real robot.
         if (RobotBase.isReal()) {
-            drivetrain = new Drivetrain(new DrivetrainIOSparkMax());
+            drivetrain = new Drivetrain(new DrivetrainIO());
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
@@ -194,10 +194,9 @@ public class RobotContainer {
             shooter.setVoltages(-12, -12);
             //throw new ArithmeticException();
         }));
-        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new InstantCommand(() -> {
-            shooter.setVoltages(0, 0);
+        new Trigger(() -> driverController.getXButtonReleased()).onTrue(new ImprovedFeeed(intake, shooter)
             //throw new ArithmeticException();
-        }));
+        };
         new Trigger(() -> driverController.getYButtonPressed()).onTrue(new InstantCommand(() -> {
             shooter.setVoltages(0, 0);
             //throw new ArithmeticException();

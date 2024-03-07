@@ -71,13 +71,14 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
 
-        AutoBuilder.configureRamsete(
+        AutoBuilder.configureLTV(
             () -> odometry.getPoseMeters(), 
             this::resetOdometry,
             () -> getSpeeds(), 
             speeds -> {
                 arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
             },
+            0.02,
             new ReplanningConfig(),
             () -> true, 
             this

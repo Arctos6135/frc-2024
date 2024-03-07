@@ -8,43 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8909454969907094,
+        "x": 1.8909454969907094,
         "y": 6.993104356579084
       },
       "isLocked": false,
       "linkedName": "2 Note End"
-    },
-    {
-      "anchor": {
-        "x": 2.8909454969907094,
-        "y": 5.332534425752613
-      },
-      "prevControl": {
-        "x": 3.6309122093784953,
-        "y": 5.247975023680137
-      },
-      "nextControl": {
-        "x": 2.150978784602925,
-        "y": 5.417093827825088
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.072354686019913,
-        "y": 6.653973877748326
-      },
-      "prevControl": {
-        "x": 2.2685818007865155,
-        "y": 6.180696806116882
-      },
-      "nextControl": {
-        "x": 1.8761275712533114,
-        "y": 7.12725094937977
-      },
-      "isLocked": false,
-      "linkedName": null
     },
     {
       "anchor": {
@@ -74,7 +42,7 @@
     "rotation": 0,
     "rotateFast": false
   },
-  "reversed": false,
+  "reversed": true,
   "folder": null,
   "previewStartingState": {
     "rotation": 0,

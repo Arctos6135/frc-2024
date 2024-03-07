@@ -42,6 +42,7 @@ public class Intake extends SubsystemBase {
 
     public void setVoltage(double voltage) {
         Logger.recordOutput("Intake Voltage", voltage);
+        System.out.printf("Running at %s voltage\n", voltage);
         io.setVoltage(voltage);
     }
 

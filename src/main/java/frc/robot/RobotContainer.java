@@ -111,7 +111,7 @@ public class RobotContainer {
         arm.setDefaultCommand(armPID);
 
         drivingIntake = new DrivingIntake(intake, operatorController);
-        intake.setDefaultCommand(drivingIntake);
+        //intake.setDefaultCommand(drivingIntake);
 
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
@@ -154,7 +154,6 @@ public class RobotContainer {
         PathPlannerLogging.setLogCurrentPoseCallback(pose -> {
             Logger.recordOutput("Current Pathplanner Pose", pose);
         });
-
 
         configureBindings();
     }

@@ -232,7 +232,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
         //return new IntakePieceSpeed(intake);
-        return new PathPlannerAuto("2 Note Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
+        return new PathPlannerAuto("Alt Ruben 2-Piece Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
     }
 }

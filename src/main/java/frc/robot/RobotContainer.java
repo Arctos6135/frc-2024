@@ -222,7 +222,7 @@ public class RobotContainer {
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
         operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)));
-        operatorRightBumper.onTrue(Climb.Climb(arm, winch));
+        operatorRightBumper.onTrue(new Climb(arm, winch));
     }
 
     /**

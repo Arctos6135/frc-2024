@@ -26,9 +26,7 @@ public class Score {
     }
 
     public static Command scoreAmp(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {
-        return new RaceFeed(shooter, intake)
-            .withTimeout(6)
-            .andThen(new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)))
+        return new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION))
             .andThen(new WaitUntilCommand(armPID::atTarget))
             .andThen(new Launch(shooter, ShooterConstants.AMP_RPS).withTimeout(0.5))
             .andThen(new InstantCommand(() -> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION)));

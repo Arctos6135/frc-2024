@@ -27,6 +27,7 @@ import frc.robot.commands.driving.ProfiledPIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.Intake.AltImprovedFeed;
 import frc.robot.commands.Intake.DrivingIntake;
+import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.scoring.Score;
 import frc.robot.constants.ArmConstants;
@@ -206,9 +207,10 @@ public class RobotContainer {
         // }, () -> {
         // }));
 
-        operatorA.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        operatorA.onTrue(new Feed(intake).withTimeout(6));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
+        operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
     }
 
     /**

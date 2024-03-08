@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -54,6 +55,10 @@ public class Arm extends SubsystemBase {
     public void setVoltage(double voltage) {
         Logger.recordOutput("Arm Voltage", voltage);
         io.setVoltage(voltage);
+    }
+
+    public void setIdleMode(IdleMode idleMode) {
+        io.setIdleMode(idleMode);
     }
 
 

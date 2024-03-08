@@ -30,6 +30,7 @@ import frc.robot.commands.Intake.DrivingIntake;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.scoring.Score;
+import frc.robot.commands.arm.Climb;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.PositionConstants;
@@ -49,6 +50,9 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
+import frc.robot.subsystems.winch.Winch;
+import frc.robot.subsystems.winch.WinchIO;
+import frc.robot.subsystems.winch.WinchIOSparkMax;
 
 public class RobotContainer {
     // Xbox controllers
@@ -60,6 +64,7 @@ public class RobotContainer {
     private final Intake intake;
     private final Arm arm;
     private final Shooter shooter;
+    private final Winch winch;
 
     // Sendable choosers (for driveteam to select autos and positions)
     public LoggedDashboardChooser<Command> autoChooser;
@@ -86,16 +91,15 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
+            winch = new Winch(new WinchIOSparkMax());
         }
         // Creates a simulated robot.
         else if (RobotBase.isSimulation()) {
             drivetrain = new Drivetrain(new DrivetrainIOSim());
             arm = new Arm(new ArmIOSim());
-            
-            // Will be changed to IntakeIOSim when it is programmed.
             intake = new Intake(new IntakeIOSim());
-            // Will be changed to ShooterIOSim when it is programmed.
             shooter = new Shooter(new ShooterIOSim());
+            winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
         else {
@@ -103,6 +107,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIO());
             arm = new Arm(new ArmIO());
             shooter = new Shooter(new ShooterIO());
+            winch = new Winch(new WinchIO());
         }
 
         teleopDrive = new TeleopDrive(drivetrain, driverController);
@@ -211,6 +216,8 @@ public class RobotContainer {
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)));
+        operatorRightBumper.onTrue(Climb.Climb(arm, winch));
     }
 
     /**

@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "runIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Note Forward A"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2 Note B Forward"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "spin180"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreSpeaker"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

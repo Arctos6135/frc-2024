@@ -13,6 +13,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -123,13 +124,11 @@ public class RobotContainer {
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
         // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
-        autoChooser.addOption("Return", new PathPlannerAuto("Return"));
         positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.
         autoChooser.addDefaultOption("Three Note Auto", new PathPlannerAuto("Three Note Auto"));
         autoChooser.addOption("1 Meter Forward", new PathPlannerAuto("1 Meter Forward"));
-        // autoChooser.addOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
 
         // Characterization routines.
         autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
@@ -152,6 +151,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
         NamedCommands.registerCommand("spin180", new ProfiledPIDSetAngle(drivetrain, Units.degreesToRadians(120)));
+        NamedCommands.registerCommand("invertPose", new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(drivetrain.getPose().getTranslation(), drivetrain.getPose().getRotation().plus(Rotation2d.fromDegrees(180))))));
 
         PathPlannerLogging.setLogTargetPoseCallback(pose -> {
             Logger.recordOutput("Target Pose", pose);
@@ -160,6 +160,11 @@ public class RobotContainer {
         PathPlannerLogging.setLogCurrentPoseCallback(pose -> {
             Logger.recordOutput("Current Pathplanner Pose", pose);
         });
+
+        PathPlannerLogging.setLogActivePathCallback(path -> {
+            Logger.recordOutput("Trajectory", path.toArray(new Pose2d[path.size()]));
+        });
+
 
         configureBindings();
     }
@@ -240,7 +245,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
         //return new IntakePieceSpeed(intake);
-        return new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
+        return new PathPlannerAuto("2 Note All Backwards Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
     }
 }

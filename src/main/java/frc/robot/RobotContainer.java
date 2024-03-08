@@ -57,8 +57,8 @@ import frc.robot.subsystems.winch.WinchIOSparkMax;
 
 public class RobotContainer {
     // Xbox controllers
-    private final XboxController driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER);
-    private final XboxController operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER);
+    public final XboxController driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER);
+    public final XboxController operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER);
 
     // Subsystems
     private final Drivetrain drivetrain;
@@ -222,7 +222,7 @@ public class RobotContainer {
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
         operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)));
-        operatorRightBumper.onTrue(new Climb(arm, winch));
+        operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController));
     }
 
     /**

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import org.littletonrobotics.junction.AutoLog;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 /**
  * This class represents anything that behaves like an arm. 
@@ -42,4 +43,6 @@ public class ArmIO {
      * @param voltage shh dont tell anyone 🤫
      */
     public void setVoltage(double voltage) {}
+
+    public void setIdleMode(IdleMode idleMode) {}
 }

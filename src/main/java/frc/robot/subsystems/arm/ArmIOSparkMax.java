@@ -92,4 +92,9 @@ public class ArmIOSparkMax extends ArmIO {
         inputs.leftVoltage = armLeft.getBusVoltage() * armLeft.getAppliedOutput();
         inputs.rightVoltage = armRight.getBusVoltage() * armRight.getAppliedOutput();
     }
+
+    public void setIdleMode(IdleMode idleMode) {
+        armLeft.setIdleMode(idleMode);
+        armRight.setIdleMode(idleMode);
+    }
 }

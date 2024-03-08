@@ -40,10 +40,10 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController rightController = new PIDController(1, 0, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.577, 0.26);
-    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2, 0.2);
-    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2, 0.2);
+    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
+    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.577, 0.26);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.5, 0.4);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.5, 0.4);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -72,7 +72,7 @@ public class Drivetrain extends SubsystemBase {
         this.io = io;
 
         AutoBuilder.configureRamsete(
-            () -> odometry.getPoseMeters(), 
+            this::getPose, 
             this::resetOdometry,
             () -> getSpeeds(), 
             speeds -> {
@@ -151,6 +151,10 @@ public class Drivetrain extends SubsystemBase {
 
         Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
         Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
+    }
+
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
     }
 
     public ChassisSpeeds getSpeeds() {

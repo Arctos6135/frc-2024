@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Note Forward "
+            "pathName": "2 Note Forward A"
           }
         },
         {
@@ -30,15 +30,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "2 Note Backward"
+            "name": "invertPose"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "spin180"
+            "pathName": "2 Note B Backward"
           }
         },
         {

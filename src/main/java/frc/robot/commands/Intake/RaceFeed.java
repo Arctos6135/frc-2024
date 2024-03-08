@@ -15,7 +15,7 @@ public class RaceFeed extends Command {
 
     @Override
     public void execute() {
-        shooter.setVoltages(-1.5, -1.5);
+        shooter.setVoltages(-1, -1);
         intake.setVoltage(12);
     }
 

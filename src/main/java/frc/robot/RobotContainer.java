@@ -13,6 +13,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,8 +28,10 @@ import frc.robot.commands.driving.ProfiledPIDSetAngle;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.Intake.AltImprovedFeed;
 import frc.robot.commands.Intake.DrivingIntake;
+import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.scoring.Score;
+import frc.robot.commands.arm.Climb;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.PositionConstants;
@@ -48,17 +51,21 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOSparkMax;
+import frc.robot.subsystems.winch.Winch;
+import frc.robot.subsystems.winch.WinchIO;
+import frc.robot.subsystems.winch.WinchIOSparkMax;
 
 public class RobotContainer {
     // Xbox controllers
-    private final XboxController driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER);
-    private final XboxController operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER);
+    public final XboxController driverController = new XboxController(ControllerConstants.DRIVER_CONTROLLER);
+    public final XboxController operatorController = new XboxController(ControllerConstants.OPERATOR_CONTROLLER);
 
     // Subsystems
     private final Drivetrain drivetrain;
     private final Intake intake;
     private final Arm arm;
     private final Shooter shooter;
+    private final Winch winch;
 
     // Sendable choosers (for driveteam to select autos and positions)
     public LoggedDashboardChooser<Command> autoChooser;
@@ -85,16 +92,15 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
+            winch = new Winch(new WinchIOSparkMax());
         }
         // Creates a simulated robot.
         else if (RobotBase.isSimulation()) {
             drivetrain = new Drivetrain(new DrivetrainIOSim());
             arm = new Arm(new ArmIOSim());
-            
-            // Will be changed to IntakeIOSim when it is programmed.
             intake = new Intake(new IntakeIOSim());
-            // Will be changed to ShooterIOSim when it is programmed.
             shooter = new Shooter(new ShooterIOSim());
+            winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
         else {
@@ -102,6 +108,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIO());
             arm = new Arm(new ArmIO());
             shooter = new Shooter(new ShooterIO());
+            winch = new Winch(new WinchIO());
         }
 
         teleopDrive = new TeleopDrive(drivetrain, driverController);
@@ -117,13 +124,11 @@ public class RobotContainer {
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
         // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
-        autoChooser.addOption("Return", new PathPlannerAuto("Return"));
         positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
 
         // Placeholders until autos are coded.
         autoChooser.addDefaultOption("Three Note Auto", new PathPlannerAuto("Three Note Auto"));
         autoChooser.addOption("1 Meter Forward", new PathPlannerAuto("1 Meter Forward"));
-        // autoChooser.addOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
 
         // Characterization routines.
         autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
@@ -146,6 +151,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
         NamedCommands.registerCommand("spin180", new ProfiledPIDSetAngle(drivetrain, Units.degreesToRadians(120)));
+        NamedCommands.registerCommand("invertPose", new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(drivetrain.getPose().getTranslation(), drivetrain.getPose().getRotation().plus(Rotation2d.fromDegrees(180))))));
 
         PathPlannerLogging.setLogTargetPoseCallback(pose -> {
             Logger.recordOutput("Target Pose", pose);
@@ -153,6 +159,10 @@ public class RobotContainer {
 
         PathPlannerLogging.setLogCurrentPoseCallback(pose -> {
             Logger.recordOutput("Current Pathplanner Pose", pose);
+        });
+
+        PathPlannerLogging.setLogActivePathCallback(path -> {
+            Logger.recordOutput("Trajectory", path.toArray(new Pose2d[path.size()]));
         });
 
 
@@ -207,9 +217,12 @@ public class RobotContainer {
         // }, () -> {
         // }));
 
-        operatorA.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        operatorA.onTrue(new Feed(intake).withTimeout(6));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
+        operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)));
+        operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController));
     }
 
     /**
@@ -232,7 +245,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
         //return new IntakePieceSpeed(intake);
-        return new PathPlannerAuto("Alt2 Ruben 2-Piece Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
+        return new PathPlannerAuto("2 Note All Backwards Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
     }
 }

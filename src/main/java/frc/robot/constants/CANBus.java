@@ -13,4 +13,6 @@ public class CANBus {
 
     public static final int SHOOTER_LEFT = 8;
     public static final int SHOOTER_RIGHT = 9;
+
+    public static final int WINCH_MOTOR = 10;
 }

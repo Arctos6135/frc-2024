@@ -18,9 +18,9 @@ public class DriveConstants {
     // Needs to be tuned :)
     public static final double ROTATION_TOLERANCE = 0.03;
 
-    public static final double MAX_TELEOP_SPEED = 1.5;
+    public static final double MAX_TELEOP_SPEED = 2.5;
 
-    public static final double MAX_TURN_SPEED_FACTOR = 1;
+    public static final double MAX_TURN_SPEED_FACTOR = 1.8;
 
     // Current limits for drivetrain motors.
     public static final int CURRENT_LIMIT = 30;

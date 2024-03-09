@@ -129,7 +129,7 @@ public class RobotContainer {
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
 
         // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
-        positionChooser.addDefaultOption("Position 1", PositionConstants.POSE1);
+        positionChooser.addDefaultOption("Red Amp", PositionConstants.RED_AMP);
 
         // Placeholders until autos are coded.
         autoChooser.addDefaultOption("Three Note Auto", new PathPlannerAuto("Three Note Auto"));
@@ -140,8 +140,11 @@ public class RobotContainer {
         autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
 
         // Placeholders until positions are configured.
-        positionChooser.addOption("Position 2", PositionConstants.POSE2);
-        positionChooser.addOption("Position 3", PositionConstants.POSE3);
+        positionChooser.addOption("Red Stage", PositionConstants.RED_STAGE);
+        positionChooser.addOption("Red Source", PositionConstants.RED_SOURCE);
+        positionChooser.addOption("Blue Amp", PositionConstants.BLUE_AMP);
+        positionChooser.addOption("Blue Stage", PositionConstants.BLUE_STAGE);
+        positionChooser.addOption("Blue Source", PositionConstants.BLUE_SOURCE);
 
         manualIntake = new LoggedDashboardBoolean("manual intake");
         disableArm = new LoggedDashboardBoolean("disable arm");

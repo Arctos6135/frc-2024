@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Part A"
+            "pathName": "Source Part A"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Part B"
+            "pathName": "Source Part B"
           }
         },
         {

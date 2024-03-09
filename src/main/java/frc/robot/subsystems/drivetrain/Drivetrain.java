@@ -87,8 +87,8 @@ public class Drivetrain extends SubsystemBase {
             speeds -> {
                 arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
             },
-            //new Vector<N3>(new SimpleMatrix(new double[] {})),
-            //new Vector<N2>(new SimpleMatrix(new double[] {})),
+            new Vector<N3>(new SimpleMatrix(new double[] {0.0625, 0.125, 2})),
+            new Vector<N2>(new SimpleMatrix(new double[] {1, 2})),
             0.02,
             new ReplanningConfig(),
             () -> true, 

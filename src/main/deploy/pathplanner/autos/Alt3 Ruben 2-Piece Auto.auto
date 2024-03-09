@@ -8,7 +8,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Backwards test"
+            "pathName": "Alt2 Ruben 2-Piece part 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ruben 2-Piece part 3"
           }
         }
       ]

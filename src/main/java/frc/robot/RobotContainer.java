@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -85,6 +86,9 @@ public class RobotContainer {
     // Named Commands (for autos)
     public NamedCommands scoreSpeaker;
     public NamedCommands runIntake;
+
+    //start time
+    public double startTime = Timer.getFPGATimestamp();
 
     public RobotContainer() {
         // Creates a real robot.
@@ -223,7 +227,7 @@ public class RobotContainer {
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
         operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.2)));
-        operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController));
+        operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 20);
     }
 
     /**

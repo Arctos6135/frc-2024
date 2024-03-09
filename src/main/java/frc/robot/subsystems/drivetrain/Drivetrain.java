@@ -32,6 +32,7 @@ import frc.robot.commands.characterization.LoggedMechanism;
 import frc.robot.commands.characterization.LoggedMechanismGroup;
 import frc.robot.commands.characterization.Mechanism;
 import frc.robot.commands.characterization.VelocityRoutine;
+import frc.robot.util.MathUtils;
 
 /**
  * A subsystem that controls the drivey bit of the robot.
@@ -43,10 +44,10 @@ public class Drivetrain extends SubsystemBase {
     private final DrivetrainInputsAutoLogged inputs = new DrivetrainInputsAutoLogged();
 
     // PIDControllers that control the drivetrain motor voltage output
-    private final PIDController leftController = new PIDController(1, 0, 0.0);
+    private final PIDController leftController = new PIDController(5, 1, 0.0);
     //private final PIDController leftController = new PIDController(0, 0, 0.0);
     //private final PIDController rightController = new PIDController(0, 0, 0.0);
-    private final PIDController rightController = new PIDController(1, 0, 0.0);
+    private final PIDController rightController = new PIDController(5, 1, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
     //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
@@ -109,6 +110,20 @@ public class Drivetrain extends SubsystemBase {
         var pose = odometry.update(gyroAngle, inputs.leftPosition, inputs.rightPosition);
         Logger.recordOutput("Odometry", pose);
 
+
+        leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
+        rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
+
+        leftAcceleration = MathUtils.clamp(leftAcceleration, -1, 1);
+        rightAcceleration = MathUtils.clamp(rightAcceleration, -1, 1);
+
+        previousTargetVelocityLeft = targetVelocityLeft;
+        previousTargetVelocityRight = targetVelocityRight;
+
+        Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
+        Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
+        
+
         double leftVelocity = inputs.leftVelocity;
 
         double leftFeedforwardEffort = leftForward.calculate(targetVelocityLeft, leftAcceleration);
@@ -153,17 +168,8 @@ public class Drivetrain extends SubsystemBase {
         Logger.recordOutput("DT Left Velocity Target", speedLeft);
         Logger.recordOutput("DT Right Velocity Target", speedRight);
 
-        previousTargetVelocityLeft = targetVelocityLeft;
-        previousTargetVelocityRight = targetVelocityRight;
-
         targetVelocityLeft = speedLeft;
         targetVelocityRight = speedRight;
-
-        leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
-        rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
-
-        Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
-        Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
     }
 
     public Pose2d getPose() {

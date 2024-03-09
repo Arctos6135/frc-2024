@@ -3,7 +3,10 @@
   "robotLength": 0.92,
   "holonomicMode": false,
   "pathFolders": [
-    "Position 1"
+    "Amp",
+    "Stage",
+    "Position 1",
+    "Source"
   ],
   "autoFolders": [
     "New Folder"

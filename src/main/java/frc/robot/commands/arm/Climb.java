@@ -39,7 +39,7 @@ public class Climb extends Command {
     @Override
     public void execute() {
         toRumble.setRumble(RumbleType.kBothRumble, 1);
-        arm.setVoltage(0);//-12);
+        arm.setVoltage(-12);
 
         if (Math.abs(startWinchAngle - winch.getPosition()) <= WinchConstants.CORD_LENGTH) {
             winch.setVoltage(8);

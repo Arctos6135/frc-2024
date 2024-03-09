@@ -17,7 +17,7 @@ public class ShooterConstants {
     public static final double AMP_RPS = 15;
 
     // Limits current through motor to limit brownouts.
-    public static final int CURRENT_LIMIT = 60;
+    public static final int CURRENT_LIMIT = 50;
 
     // These constants need to be tuned.
     // Static gain in volts (volts needed to make the flywheel barely move).

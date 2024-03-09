@@ -125,15 +125,33 @@ public class RobotContainer {
         drivingIntake = new DrivingIntake(intake, operatorController);
         intake.setDefaultCommand(drivingIntake);
 
+        configureAuto();
+        configureBindings();
+    }
+
+    private void configureAuto() {
         autoChooser = new LoggedDashboardChooser<Command>("auto chooser");
         positionChooser = new LoggedDashboardChooser<Pose2d>("position chooser");
+
+        // Named commands for autos.
+        NamedCommands.registerCommand("scoreSpeaker", Score.scoreSpeaker(arm, armPID, shooter, intake));
+        NamedCommands.registerCommand("scoreAmp", Score.scoreAmp(arm, armPID, shooter, intake));
+
+        // Shouldn't need stopScoring.
+        NamedCommands.registerCommand("stopScoring", new InstantCommand(() -> Score.stop(arm, shooter, intake)));
+        NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
+        NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
+        //NamedCommands.registerCommand("spin180", new ProfiledPIDSetAngle(drivetrain, Units.degreesToRadians(120)));
+        NamedCommands.registerCommand("invertPose", new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(drivetrain.getPose().getTranslation(), drivetrain.getPose().getRotation().plus(Rotation2d.fromDegrees(180))))));
+
 
         // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
         positionChooser.addDefaultOption("Red Amp", PositionConstants.RED_AMP);
 
         // Placeholders until autos are coded.
-        autoChooser.addDefaultOption("Three Note Auto", new PathPlannerAuto("Three Note Auto"));
-        autoChooser.addOption("1 Meter Forward", new PathPlannerAuto("1 Meter Forward"));
+        autoChooser.addDefaultOption("2 Note Amp", new PathPlannerAuto("2 Note Amp"));
+        autoChooser.addOption("2 Note Stage", new PathPlannerAuto("2 Note Stage"));
+        autoChooser.addOption("2 Note Source", new PathPlannerAuto("2 Note Source"));
 
         // Characterization routines.
         autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
@@ -150,17 +168,6 @@ public class RobotContainer {
         disableArm = new LoggedDashboardBoolean("disable arm");
         resetArmEncoder = new LoggedDashboardBoolean("reset arm encoder");
 
-        // Named commands for autos.
-        NamedCommands.registerCommand("scoreSpeaker", Score.scoreSpeaker(arm, armPID, shooter, intake));
-        NamedCommands.registerCommand("scoreAmp", Score.scoreAmp(arm, armPID, shooter, intake));
-
-        // Shouldn't need stopScoring.
-        NamedCommands.registerCommand("stopScoring", new InstantCommand(() -> Score.stop(arm, shooter, intake)));
-        NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
-        NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
-        //NamedCommands.registerCommand("spin180", new ProfiledPIDSetAngle(drivetrain, Units.degreesToRadians(120)));
-        NamedCommands.registerCommand("invertPose", new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(drivetrain.getPose().getTranslation(), drivetrain.getPose().getRotation().plus(Rotation2d.fromDegrees(180))))));
-
         PathPlannerLogging.setLogTargetPoseCallback(pose -> {
             Logger.recordOutput("Target Pose", pose);
         });
@@ -172,9 +179,6 @@ public class RobotContainer {
         PathPlannerLogging.setLogActivePathCallback(path -> {
             Logger.recordOutput("Trajectory", path.toArray(new Pose2d[path.size()]));
         });
-
-
-        configureBindings();
     }
 
     private void configureBindings() {
@@ -210,7 +214,7 @@ public class RobotContainer {
         Trigger operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
         Trigger operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
         Trigger operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
-        Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kY.value);
+        Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
         // operatorLeftBumper.onTrue(new InstantCommand(() -> intake.setVoltage(12)));
@@ -253,7 +257,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
         //return new IntakePieceSpeed(intake);
-        return new PathPlannerAuto("2 Note All Forwards Auto");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
-        //return autoChooser.get();
+        //return new PathPlannerAuto("2 Note Source");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
+        return autoChooser.get();
     }
 }

@@ -52,10 +52,10 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController rightController = new PIDController(5, 1, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
-    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.577, 0.26);
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.5, 0.4);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.5, 0.4);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.577, 0.26);
+    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.5, 0.4);
+    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.5, 0.4);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 

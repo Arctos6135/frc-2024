@@ -1,5 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.List;
+
+import org.ejml.simple.SimpleMatrix;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -12,11 +15,17 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.Vector;
 import frc.robot.commands.characterization.AccelerationRoutine;
 import frc.robot.commands.characterization.FeedforwardLog;
 import frc.robot.commands.characterization.LoggedMechanism;
@@ -71,13 +80,16 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
 
-        AutoBuilder.configureRamsete(
+        AutoBuilder.configureLTV(
             this::getPose, 
             this::resetOdometry,
             () -> getSpeeds(), 
             speeds -> {
                 arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
             },
+            //new Vector<N3>(new SimpleMatrix(new double[] {})),
+            //new Vector<N2>(new SimpleMatrix(new double[] {})),
+            0.02,
             new ReplanningConfig(),
             () -> true, 
             this
@@ -98,21 +110,22 @@ public class Drivetrain extends SubsystemBase {
         Logger.recordOutput("Odometry", pose);
 
         double leftVelocity = inputs.leftVelocity;
-        double rightVelocity = inputs.rightVelocity;
 
         double leftFeedforwardEffort = leftForward.calculate(targetVelocityLeft, leftAcceleration);
         double leftFeedbackEffort = leftController.calculate(leftVelocity, targetVelocityLeft);
 
-        double left = leftFeedforwardEffort + leftFeedbackEffort;
+        double left =  leftFeedforwardEffort + leftFeedbackEffort;
 
         Logger.recordOutput("DT Left Feedback", leftFeedbackEffort);
         Logger.recordOutput("DT Left Feedforward", leftFeedforwardEffort);
         Logger.recordOutput("DT Left Voltage", left);
 
+        double rightVelocity = inputs.rightVelocity;
+
         double rightFeedforwardEffort = rightForward.calculate(targetVelocityRight, rightAcceleration);
         double rightFeedbackEffort = rightController.calculate(rightVelocity, targetVelocityRight);
 
-        double right = rightFeedforwardEffort + rightFeedbackEffort;
+        double right =  rightFeedforwardEffort + rightFeedbackEffort;
 
         Logger.recordOutput("DT Right Feedback", rightFeedbackEffort);
         Logger.recordOutput("DT Right Feedforward", rightFeedforwardEffort);

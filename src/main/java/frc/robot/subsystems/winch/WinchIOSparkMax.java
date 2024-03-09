@@ -27,6 +27,12 @@ public class WinchIOSparkMax extends WinchIO {
         encoder.setVelocityConversionFactor(WinchConstants.VELOCITY_CONVERSION_FACTOR);
     }
 
+    @Override
+    public void updateInputs(WinchInputs inputs) {
+        inputs.position = encoder.getPosition();
+        System.out.printf("Position %s\n", inputs.position);
+    }
+
     public void setIdleMode(IdleMode idleMode) {
         motor.setIdleMode(idleMode);
     }

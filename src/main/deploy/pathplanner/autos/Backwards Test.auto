@@ -16,6 +16,12 @@
           "data": {
             "pathName": "Backwards test"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of Backwards test"
+          }
         }
       ]
     }

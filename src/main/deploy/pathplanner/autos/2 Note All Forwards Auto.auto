@@ -38,12 +38,6 @@
         {
           "type": "named",
           "data": {
-            "name": "spin180"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "scoreSpeaker"
           }
         }

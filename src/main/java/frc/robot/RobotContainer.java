@@ -18,6 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -150,7 +151,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("stopScoring", new InstantCommand(() -> Score.stop(arm, shooter, intake)));
         NamedCommands.registerCommand("runIntake", new InstantCommand(() -> intake.setVoltage(12)));
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
-        NamedCommands.registerCommand("spin180", new ProfiledPIDSetAngle(drivetrain, Units.degreesToRadians(120)));
+        //NamedCommands.registerCommand("spin180", new ProfiledPIDSetAngle(drivetrain, Units.degreesToRadians(120)));
         NamedCommands.registerCommand("invertPose", new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(drivetrain.getPose().getTranslation(), drivetrain.getPose().getRotation().plus(Rotation2d.fromDegrees(180))))));
 
         PathPlannerLogging.setLogTargetPoseCallback(pose -> {
@@ -217,11 +218,11 @@ public class RobotContainer {
         // }, () -> {
         // }));
 
-        operatorA.onTrue(new Feed(intake).withTimeout(6));
+        operatorA.onTrue(new RaceFeed(shooter, intake).withTimeout(6));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
-        operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION)));
+        operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.2)));
         operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController));
     }
 
@@ -245,7 +246,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
         //return new IntakePieceSpeed(intake);
-        return new PathPlannerAuto("2 Note All Backwards Auto");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
+        return Commands.none();//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
     }
 }

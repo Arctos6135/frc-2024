@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.79,
-        "y": 6.653973877748326
+        "x": 0.92,
+        "y": 6.91
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2113954113282963,
-        "y": 7.38385214024532
+        "x": 1.4617354983611828,
+        "y": 7.555615226407754
       },
       "isLocked": false,
       "linkedName": "2 Note Start"

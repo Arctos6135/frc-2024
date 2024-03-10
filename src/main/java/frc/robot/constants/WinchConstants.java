@@ -13,5 +13,5 @@ public class WinchConstants {
 
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 
-    public static final double CORD_LENGTH = Units.inchesToMeters(28.75);
+    public static final double CORD_LENGTH = Units.inchesToMeters(31);
 }

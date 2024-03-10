@@ -79,22 +79,22 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         inputs.yaw = Units.degreesToRadians(gyro.getAngle(gyro.getYawAxis()));
         inputs.yawRate = Units.degreesToRadians(gyro.getRate(gyro.getYawAxis()));
 
-        // Current
-        inputs.leftMasterCurrent = leftMaster.getOutputCurrent();
-        inputs.rightMasterCurrent = rightMaster.getOutputCurrent();
-        inputs.leftFollowerCurrent = leftMaster.getOutputCurrent();
-        inputs.rightFollowerCurrent = rightMaster.getOutputCurrent();
+        // // Current
+        // inputs.leftMasterCurrent = leftMaster.getOutputCurrent();
+        // inputs.rightMasterCurrent = rightMaster.getOutputCurrent();
+        // inputs.leftFollowerCurrent = leftMaster.getOutputCurrent();
+        // inputs.rightFollowerCurrent = rightMaster.getOutputCurrent();
 
-        // Temperature
-        inputs.leftMasterTemperature = leftMaster.getMotorTemperature();
-        inputs.rightMasterTemperature = rightMaster.getMotorTemperature();
-        inputs.leftFollowerTemperature = leftMaster.getMotorTemperature();
-        inputs.rightFollowerTemperature = rightMaster.getMotorTemperature();
+        // // Temperature
+        // inputs.leftMasterTemperature = leftMaster.getMotorTemperature();
+        // inputs.rightMasterTemperature = rightMaster.getMotorTemperature();
+        // inputs.leftFollowerTemperature = leftMaster.getMotorTemperature();
+        // inputs.rightFollowerTemperature = rightMaster.getMotorTemperature();
 
-        // Voltage
-        inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.getAppliedOutput();
-        inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.getAppliedOutput();
-        inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.getAppliedOutput();
-        inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.getAppliedOutput();
+        // // Voltage
+        // inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.getAppliedOutput();
+        // inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.getAppliedOutput();
+        // inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.getAppliedOutput();
+        // inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.getAppliedOutput();
     }
 }

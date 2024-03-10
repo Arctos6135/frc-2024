@@ -23,6 +23,8 @@ public class WinchIOSparkMax extends WinchIO {
 
         encoder = motor.getEncoder();
 
+        motor.setInverted(false);
+
         encoder.setPositionConversionFactor(WinchConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(WinchConstants.VELOCITY_CONVERSION_FACTOR);
     }

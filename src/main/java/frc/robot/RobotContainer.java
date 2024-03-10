@@ -234,8 +234,8 @@ public class RobotContainer {
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
-        operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.2)));
-        operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 20);
+        operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
+        operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 30);
     }
 
     /**

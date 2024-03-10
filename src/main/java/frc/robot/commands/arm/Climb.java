@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +18,7 @@ public class Climb extends Command {
     private final Arm arm;
     private final Winch winch;
     private final XboxController toRumble;
+    private double startTime;
 
     private double startWinchAngle;
 
@@ -34,19 +36,17 @@ public class Climb extends Command {
         winch.setIdleMode(IdleMode.kBrake);
 
         startWinchAngle = winch.getPosition();
+        startTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public void execute() {
         toRumble.setRumble(RumbleType.kBothRumble, 1);
-        arm.setVoltage(-12);
 
-        if (Math.abs(startWinchAngle - winch.getPosition()) <= WinchConstants.CORD_LENGTH) {
-            winch.setVoltage(8);
-        } else {
-            winch.setVoltage(0);
-            System.out.printf("Stopped at %s, started at %s\n", winch.getPosition(), startWinchAngle);
+        if (Timer.getFPGATimestamp() > (startTime + 0.5)) {
+            arm.setVoltage(-12);
         }
+winch.setVoltage(-8);
     }
     
     @Override

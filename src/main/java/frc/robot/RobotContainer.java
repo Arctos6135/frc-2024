@@ -152,6 +152,7 @@ public class RobotContainer {
         autoChooser.addDefaultOption("2 Note Amp", new PathPlannerAuto("2 Note Amp"));
         autoChooser.addOption("2 Note Stage", new PathPlannerAuto("2 Note Stage"));
         autoChooser.addOption("2 Note Source", new PathPlannerAuto("2 Note Source"));
+        autoChooser.addOption("1 Note", new PathPlannerAuto("1 Note"));
 
         // Characterization routines.
         autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
@@ -229,7 +230,7 @@ public class RobotContainer {
         // }, () -> {
         // }));
 
-        operatorA.onTrue(new RaceFeed(shooter, intake).withTimeout(6));
+        operatorA.onTrue(new RaceFeed(shooter, intake).withTimeout(3));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));

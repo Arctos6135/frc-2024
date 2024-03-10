@@ -46,10 +46,10 @@ public class Drivetrain extends SubsystemBase {
     private final DrivetrainInputsAutoLogged inputs = new DrivetrainInputsAutoLogged();
 
     // PIDControllers that control the drivetrain motor voltage output
-    private final PIDController leftController = new PIDController(5, 1, 0.0);
+    private final PIDController leftController = new PIDController(2, 0.5, 0.0);
     //private final PIDController leftController = new PIDController(0, 0, 0.0);
     //private final PIDController rightController = new PIDController(0, 0, 0.0);
-    private final PIDController rightController = new PIDController(5, 1, 0.0);
+    private final PIDController rightController = new PIDController(2, 0.5, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
     private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);

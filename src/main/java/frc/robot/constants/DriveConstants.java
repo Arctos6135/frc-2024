@@ -20,7 +20,7 @@ public class DriveConstants {
 
     public static final double MAX_TELEOP_SPEED = 2.5;
 
-    public static final double MAX_TURN_SPEED_FACTOR = 1.8;
+    public static final double MAX_TURN_SPEED_FACTOR = 1.5;
 
     // Current limits for drivetrain motors.
     public static final int CURRENT_LIMIT = 30;

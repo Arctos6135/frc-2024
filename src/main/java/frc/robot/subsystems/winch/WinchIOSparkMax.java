@@ -30,7 +30,6 @@ public class WinchIOSparkMax extends WinchIO {
     @Override
     public void updateInputs(WinchInputs inputs) {
         inputs.position = encoder.getPosition();
-        System.out.printf("Position %s\n", inputs.position);
     }
 
     public void setIdleMode(IdleMode idleMode) {

@@ -28,4 +28,6 @@ public class ArmConstants {
 
     // Current limit for arm motor.
     public static final int CURRENT_LIMIT = 30;
+
+    public static final double CLIMB_SENSITIVITY = 0.05;
 }

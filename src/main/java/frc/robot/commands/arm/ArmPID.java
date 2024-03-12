@@ -26,19 +26,13 @@ public class ArmPID extends Command {
 
     private final TunableNumber maxVelocity = new TunableNumber("Arm/Max Velocity", 2);
     private final TunableNumber maxAcceleration = new TunableNumber("Arm/Max Acceleration", 2);
-    private final TunableNumber kS = new TunableNumber("Arm/kS", 0);
-    private final TunableNumber kG = new TunableNumber("Arm/kG", 0.25);
-    private final TunableNumber kV = new TunableNumber("Arm/kV", 3.8);
-    private final TunableNumber kA = new TunableNumber("Arm/kA", 0.01);
-    private final TunableNumber kP = new TunableNumber("Arm/kP", 7);
-    private final TunableNumber kI = new TunableNumber("Arm/kI", 14);
-    private final TunableNumber kD = new TunableNumber("Arm/kD", 7);
 
     private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 2);
     private TrapezoidProfile profile = new TrapezoidProfile(constraints);
-    private ArmFeedforward feedforward = new ArmFeedforward(0, 0.21, 3.5, 0.01);
+    private ArmFeedforward feedforward = new ArmFeedforward(0, 0.2, 3.7, 0.03);
     // NOTE: the integral control here used to be 0.2, if the arm is overshooting weirdly set it back
-    private final PIDController controller = new PIDController(0.5, 0.4, 0);
+    //private final PIDController controller = new PIDController(0.5, 0.4, 0);
+    private final PIDController controller = new PIDController(0.6, 0.3, 0.05);
 
     private State targetState;
     private State initialState;
@@ -65,25 +59,6 @@ public class ArmPID extends Command {
             },
             maxVelocity,
             maxAcceleration
-        );
-
-        TunableNumber.ifChanged(
-            () -> {
-                feedforward = new ArmFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
-            },
-            kS,
-            kG,
-            kV,
-            kA
-        );
-
-        TunableNumber.ifChanged(
-            () -> {
-                controller.setPID(kP.get(), kI.get(), kD.get());
-            },
-            kP,
-            kI,
-            kD
         );
 
         addRequirements(arm);
@@ -146,8 +121,6 @@ public class ArmPID extends Command {
     }
 
     public boolean atTarget() {
-        var good = Math.abs(arm.getArmPosition() - targetState.position) < Units.degreesToRadians(10) && Math.abs(arm.getArmVelocity()) < Units.degreesToRadians(10);
-        System.out.printf("Arm at %s wants %s, at target %s\n", arm.getArmPosition(), targetState.position, good);
         return Math.abs(arm.getArmPosition() - targetState.position) < Units.degreesToRadians(10) && Math.abs(arm.getArmVelocity()) < Units.degreesToRadians(10);
     }
 }

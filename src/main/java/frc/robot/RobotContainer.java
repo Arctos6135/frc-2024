@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import astrolabe.FollowPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -256,9 +257,10 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
+        //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2); 
         //return new IntakePieceSpeed(intake);
         //return new PathPlannerAuto("2 Note Source");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
-        return autoChooser.get();
+        //return autoChooser.get();
+        return new FollowPath(null);
     }
 }

@@ -12,7 +12,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import astrolabe.AutoBuilder;
 import astrolabe.FollowPath;
+import astrolabe.AstrolabeLogger;
+import astrolabe.GlobalConfig;
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -147,7 +151,7 @@ public class RobotContainer {
 
 
         // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
-        positionChooser.addDefaultOption("Red Amp", PositionConstants.RED_AMP);
+        //positionChooser.addDefaultOption("Red Amp", PositionConstants.RED_AMP);
 
         // Placeholders until autos are coded.
         autoChooser.addDefaultOption("2 Note Amp", new PathPlannerAuto("2 Note Amp"));
@@ -162,7 +166,7 @@ public class RobotContainer {
         // Placeholders until positions are configured.
         positionChooser.addOption("Red Stage", PositionConstants.RED_STAGE);
         positionChooser.addOption("Red Source", PositionConstants.RED_SOURCE);
-        positionChooser.addOption("Blue Amp", PositionConstants.BLUE_AMP);
+        positionChooser.addDefaultOption("Blue Amp", PositionConstants.BLUE_AMP);
         positionChooser.addOption("Blue Stage", PositionConstants.BLUE_STAGE);
         positionChooser.addOption("Blue Source", PositionConstants.BLUE_SOURCE);
 
@@ -181,6 +185,23 @@ public class RobotContainer {
         PathPlannerLogging.setLogActivePathCallback(path -> {
             Logger.recordOutput("Trajectory", path.toArray(new Pose2d[path.size()]));
         });
+
+        AutoBuilder.configureRamseteRefine(
+            new RamseteController(), 
+            drivetrain::getPose, 
+            drivetrain::getSpeeds, 
+            drivetrain::resetOdometry, 
+            speeds -> {
+                drivetrain.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+                System.out.printf("Setting speeds %s\n", speeds);
+            }, 
+            new GlobalConfig(1.5, 3, 3, drivetrain.kinematics), 
+            drivetrain
+        );
+
+        AstrolabeLogger.targetPoseLogger = pose -> Logger.recordOutput("Target Pose", pose);
+        AstrolabeLogger.stateLogger = state -> Logger.recordOutput("Pathing State", state);
+        AstrolabeLogger.trajectoryLogger = t -> Logger.recordOutput("Astrolabe Trajectory", t);
     }
 
     private void configureBindings() {
@@ -261,6 +282,8 @@ public class RobotContainer {
         //return new IntakePieceSpeed(intake);
         //return new PathPlannerAuto("2 Note Source");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
-        return new FollowPath(null);
+        return new FollowPath("Source Part A").andThen(new FollowPath("Source Part B"));
+        //return new PathPlannerAuto("Forwards Back");
+        //return new PathPlannerAuto("1 Meter Forward");
     }
 }

@@ -41,7 +41,7 @@ public class Arm extends SubsystemBase {
 
         // Log all the sensor data.
         Logger.processInputs("Arm", inputs);
-        Logger.recordOutput("Arm Mechanism", mechanism);
+        Logger.recordOutput("Arm/Mechanism", mechanism);
     }
 
     public double getArmPosition() {
@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Arm Voltage", voltage);
+        Logger.recordOutput("Arm/Voltage", voltage);
         io.setVoltage(voltage);
     }
 

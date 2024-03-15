@@ -32,7 +32,7 @@ public class IntakeIOSparkMax extends IntakeIO{
     }
     
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Intake Voltage", voltage);
+        Logger.recordOutput("Intake/Voltage", voltage);
         motor.setVoltage(voltage);
     }
 

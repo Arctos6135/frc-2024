@@ -91,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
             speeds -> {
                 arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
 
-                Logger.recordOutput("PathPlanner command speeds", speeds);
+                Logger.recordOutput("PathPlanner/command speeds", speeds);
             },
             new Vector<N3>(new SimpleMatrix(new double[] {0.0625, 0.125, 2})),
             new Vector<N2>(new SimpleMatrix(new double[] {1, 2})),
@@ -125,8 +125,8 @@ public class Drivetrain extends SubsystemBase {
         previousTargetVelocityLeft = targetVelocityLeft;
         previousTargetVelocityRight = targetVelocityRight;
 
-        Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
-        Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
+        Logger.recordOutput("DT/Left Acceleration Target", leftAcceleration);
+        Logger.recordOutput("DT/Right Acceleration Target", rightAcceleration);
         
 
         double leftVelocity = inputs.leftVelocity;
@@ -136,9 +136,9 @@ public class Drivetrain extends SubsystemBase {
 
         double left =  leftFeedforwardEffort + leftFeedbackEffort;
 
-        Logger.recordOutput("DT Left Feedback", leftFeedbackEffort);
-        Logger.recordOutput("DT Left Feedforward", leftFeedforwardEffort);
-        Logger.recordOutput("DT Left Voltage", left);
+        Logger.recordOutput("DT/Left Feedback", leftFeedbackEffort);
+        Logger.recordOutput("DT/Left Feedforward", leftFeedforwardEffort);
+        Logger.recordOutput("DT/Left Voltage", left);
 
         double rightVelocity = inputs.rightVelocity;
 
@@ -147,9 +147,9 @@ public class Drivetrain extends SubsystemBase {
 
         double right =  rightFeedforwardEffort + rightFeedbackEffort;
 
-        Logger.recordOutput("DT Right Feedback", rightFeedbackEffort);
-        Logger.recordOutput("DT Right Feedforward", rightFeedforwardEffort);
-        Logger.recordOutput("DT Right Voltage", right);
+        Logger.recordOutput("DT/Right Feedback", rightFeedbackEffort);
+        Logger.recordOutput("DT/Right Feedforward", rightFeedforwardEffort);
+        Logger.recordOutput("DT/Right Voltage", right);
 
         io.setVoltages(left, right);
     }
@@ -170,8 +170,8 @@ public class Drivetrain extends SubsystemBase {
      * @param speedRight the target speed of the right side in m/s
      */
     public void setSpeed(double speedLeft, double speedRight) {
-        Logger.recordOutput("DT Left Velocity Target", speedLeft);
-        Logger.recordOutput("DT Right Velocity Target", speedRight);
+        Logger.recordOutput("DT/Left Velocity Target", speedLeft);
+        Logger.recordOutput("DT/Right Velocity Target", speedRight);
 
         targetVelocityLeft = speedLeft;
         targetVelocityRight = speedRight;

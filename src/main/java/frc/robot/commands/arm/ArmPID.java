@@ -90,20 +90,20 @@ public class ArmPID extends Command {
          */
         double currentPosition = arm.getArmPosition();
 
-        Logger.recordOutput("Arm PID Target Position", targetState.position);
+        Logger.recordOutput("Arm PID/Target Position", targetState.position);
 
         //State setpoint = targetState;
         //State setpoint = profile.calculate(0.02, new State(currentPosition, arm.getArmVelocity()), targetState);
         State setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, initialState, targetState);
 
-        Logger.recordOutput("Arm PID Setpoint Position", setpoint.position);
-        Logger.recordOutput("Arm PID Setpoint Velocity", setpoint.velocity);
+        Logger.recordOutput("Arm PID/Setpoint Position", setpoint.position);
+        Logger.recordOutput("Arm PID/Setpoint Velocity", setpoint.velocity);
 
         double feedbackEffort = controller.calculate(currentPosition, setpoint.position);
         double feedforwardEffort = feedforward.calculate(setpoint.position, setpoint.velocity);
 
-        Logger.recordOutput("Arm PID Feedback", feedbackEffort);
-        Logger.recordOutput("Arm PID Feedforward", feedforwardEffort);
+        Logger.recordOutput("Arm/PID Feedback", feedbackEffort);
+        Logger.recordOutput("Arm/PID Feedforward", feedforwardEffort);
 
 
         if (!new XboxController(0).getYButton())

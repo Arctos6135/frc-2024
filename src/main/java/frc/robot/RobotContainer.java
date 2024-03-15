@@ -193,15 +193,16 @@ public class RobotContainer {
             drivetrain::resetOdometry, 
             speeds -> {
                 drivetrain.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
-                System.out.printf("Setting speeds %s\n", speeds);
             }, 
-            new GlobalConfig(1.5, 3, 3, drivetrain.kinematics), 
+            new GlobalConfig(3, 3, 3, drivetrain.kinematics), 
             drivetrain
         );
 
         AstrolabeLogger.targetPoseLogger = pose -> Logger.recordOutput("Target Pose", pose);
         AstrolabeLogger.stateLogger = state -> Logger.recordOutput("Pathing State", state);
         AstrolabeLogger.trajectoryLogger = t -> Logger.recordOutput("Astrolabe Trajectory", t);
+        AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe Angle Error", error);
+        AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe Distance Error", error);
     }
 
     private void configureBindings() {

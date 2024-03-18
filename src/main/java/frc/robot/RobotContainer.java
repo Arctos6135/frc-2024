@@ -164,6 +164,7 @@ public class RobotContainer {
         autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
 
         // Placeholders until positions are configured.
+        positionChooser.addOption("Red Amp", PositionConstants.RED_AMP);
         positionChooser.addOption("Red Stage", PositionConstants.RED_STAGE);
         positionChooser.addOption("Red Source", PositionConstants.RED_SOURCE);
         positionChooser.addDefaultOption("Blue Amp", PositionConstants.BLUE_AMP);

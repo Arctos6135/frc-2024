@@ -213,14 +213,6 @@ public class RobotContainer {
         Trigger driverX = new JoystickButton(driverController, XboxController.Button.kY.value);
         Trigger driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
 
-        driverA.onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
-        driverB.onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI));
-
-        // Binds precision drive toggling to driver's right bumper.
-        // driverRightBumper
-        //     .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
-        //     .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
-
         // Binds macros for orienting robot turning to driver's dpad.
         // new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
         // new Trigger(() -> driverController.getPOV() == 45).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI / 4));
@@ -231,9 +223,6 @@ public class RobotContainer {
         // new Trigger(() -> driverController.getPOV() == 270).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 2));
         // new Trigger(() -> driverController.getPOV() == 315).onTrue(new ProfiledPIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
-        // Changed the intake triggers to driver controller for testing.
-        // TODO change back to the operator controller.
-
         Trigger operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
         Trigger operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
         Trigger operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
@@ -241,37 +230,12 @@ public class RobotContainer {
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        // operatorLeftBumper.onTrue(new InstantCommand(() -> intake.setVoltage(12)));
-        // operatorLeftBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
-
-        // operatorRightBumper.onTrue(new InstantCommand(() -> intake.setVoltage(-12)));
-        // operatorRightBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
-
-        // // Climb Command
-        // new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new StartEndCommand(() -> {
-        //     arm.setVoltage(-9);
-        // }, () -> {
-        // }));
-
         operatorA.onTrue(new RaceFeed(shooter, intake).withTimeout(3));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
         operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
         operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 60);
-    }
-
-    /**
-     * Runs on a periodic loop. Check Robot.java.
-     */
-    public void updateButtons() {
-        // if (operatorController.getYButton()) {
-        //     //armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
-        //     arm.setVoltage(-12);
-        // } else {
-        //     arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
-        //     System.out.println("Not pressing X");
-        // }
     }
 
     public void startMatch() {

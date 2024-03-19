@@ -37,8 +37,10 @@ import frc.robot.commands.Intake.AltImprovedFeed;
 import frc.robot.commands.Intake.DrivingIntake;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
+import frc.robot.commands.shooter.ReverseFeed;
 import frc.robot.commands.scoring.Score;
 import frc.robot.commands.arm.Climb;
+import frc.robot.commands.arm.RaiseArm;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.ControllerConstants;
 import frc.robot.constants.PositionConstants;
@@ -224,6 +226,8 @@ public class RobotContainer {
         // new Trigger(() -> driverController.getPOV() == 270).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 2));
         // new Trigger(() -> driverController.getPOV() == 315).onTrue(new ProfiledPIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
+        Trigger operatorLeftStickButton = new JoystickButton(operatorController, XboxController.Button.kLeftStick.value);
+        Trigger operatorRightStickButton = new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
         Trigger operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
         Trigger operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
         Trigger operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
@@ -235,8 +239,17 @@ public class RobotContainer {
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
-        operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
-        operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 60);
+
+        // Left bumper hands off to the shooter, while right bumper reverse-handoffs back to the intake.
+        operatorLeftBumper.onTrue(new RaceFeed(shooter, intake).withTimeout(3));
+        operatorRightBumper.onTrue(new ReverseFeed(shooter, intake, 1)); // Meters is a complete guess.
+
+        // Climbing commands.
+        operatorLeftStickButton.toggleOnTrue(new RaiseArm(arm, operatorController, ArmConstants.STARTING_POSITION + 1.35, armPID));
+        operatorRightStickButton.onTrue(new Climb(arm, winch, operatorController));
+
+        // operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
+        // operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 60);
     }
 
     public void startMatch() {

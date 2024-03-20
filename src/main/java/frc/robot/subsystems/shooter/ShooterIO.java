@@ -19,7 +19,7 @@ public class ShooterIO {
         public double leftTemperature;
         public double rightTemperature;
 
-        // % Max Voltage
+        // Voltage
         public double leftVoltage;
         public double rightVoltage;
     }

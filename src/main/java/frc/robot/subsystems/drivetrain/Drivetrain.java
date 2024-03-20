@@ -1,27 +1,40 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.List;
+
+import org.ejml.simple.SimpleMatrix;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.Vector;
 import frc.robot.commands.characterization.AccelerationRoutine;
 import frc.robot.commands.characterization.FeedforwardLog;
 import frc.robot.commands.characterization.LoggedMechanism;
 import frc.robot.commands.characterization.LoggedMechanismGroup;
 import frc.robot.commands.characterization.Mechanism;
 import frc.robot.commands.characterization.VelocityRoutine;
+import frc.robot.util.MathUtils;
 
 /**
  * A subsystem that controls the drivey bit of the robot.
@@ -33,12 +46,17 @@ public class Drivetrain extends SubsystemBase {
     private final DrivetrainInputsAutoLogged inputs = new DrivetrainInputsAutoLogged();
 
     // PIDControllers that control the drivetrain motor voltage output
-    private final PIDController leftController = new PIDController(0, 5, 0.0);
-    private final PIDController rightController = new PIDController(0, 5, 0.0);
+    private final PIDController leftController = new PIDController(2, 0.5, 0.0);
+    //private final PIDController leftController = new PIDController(0, 0, 0.0);
+    //private final PIDController rightController = new PIDController(0, 0, 0.0);
+    private final PIDController rightController = new PIDController(2, 0.5, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.213, 0.2);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.235, 0.26);
+    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
+    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.577, 0.26);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.2, 0.5);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.2, 0.5);
+
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -57,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
      */
     private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromRadians(inputs.yaw), inputs.leftPosition, inputs.rightPosition);
 
-    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(21.83));
+    public final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(23.2));
 
     /**
      * Construct a new drivetrain.
@@ -66,23 +84,29 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
 
-        AutoBuilder.configureRamsete(
-            () -> odometry.getPoseMeters(), 
-            (pose) -> {
-                odometry.resetPosition(Rotation2d.fromRadians(inputs.yaw), new DifferentialDriveWheelPositions(inputs.leftPosition, inputs.rightPosition), pose);
-            }, 
-            () -> new ChassisSpeeds((inputs.leftVelocity + inputs.rightVelocity) / 2, 0, inputs.yawRate), 
-            speeds -> arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond), 
-            new ReplanningConfig(), 
-            () -> false, 
+        AutoBuilder.configureLTV(
+            this::getPose, 
+            this::resetOdometry,
+            () -> getSpeeds(), 
+            speeds -> {
+                arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+
+                Logger.recordOutput("PathPlanner/command speeds", speeds);
+            },
+            new Vector<N3>(new SimpleMatrix(new double[] {0.0625, 0.125, 2})),
+            new Vector<N2>(new SimpleMatrix(new double[] {1, 2})),
+            0.02,
+            new ReplanningConfig(true, true),
+            () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red, 
             this
         );
     }
 
-    @Override
+    // @Override
     public void periodic() {
-        // This tells our drivetrain-like-thing (either real or simulated) to update our class with all the sensor data.
         io.updateInputs(inputs);
+
+        // This tells our drivetrain-like-thing (either real or simulated) to update our class with all the sensor data.
         // Log all the sensor data.
         Logger.processInputs("Drivetrain", inputs);
         // Get the rotation of the robot from the gyro.
@@ -91,26 +115,41 @@ public class Drivetrain extends SubsystemBase {
         var pose = odometry.update(gyroAngle, inputs.leftPosition, inputs.rightPosition);
         Logger.recordOutput("Odometry", pose);
 
+
+        leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
+        rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
+
+        leftAcceleration = MathUtils.clamp(leftAcceleration, -1, 1);
+        rightAcceleration = MathUtils.clamp(rightAcceleration, -1, 1);
+
+        previousTargetVelocityLeft = targetVelocityLeft;
+        previousTargetVelocityRight = targetVelocityRight;
+
+        Logger.recordOutput("DT/Left Acceleration Target", leftAcceleration);
+        Logger.recordOutput("DT/Right Acceleration Target", rightAcceleration);
+        
+
         double leftVelocity = inputs.leftVelocity;
-        double rightVelocity = inputs.rightVelocity;
 
         double leftFeedforwardEffort = leftForward.calculate(targetVelocityLeft, leftAcceleration);
         double leftFeedbackEffort = leftController.calculate(leftVelocity, targetVelocityLeft);
 
-        double left = leftFeedforwardEffort + leftFeedbackEffort;
+        double left =  leftFeedforwardEffort + leftFeedbackEffort;
 
-        Logger.recordOutput("DT Left Feedback", leftFeedbackEffort);
-        Logger.recordOutput("DT Left Feedforward", leftFeedforwardEffort);
-        Logger.recordOutput("DT Left Voltage", left);
+        Logger.recordOutput("DT/Left Feedback", leftFeedbackEffort);
+        Logger.recordOutput("DT/Left Feedforward", leftFeedforwardEffort);
+        Logger.recordOutput("DT/Left Voltage", left);
+
+        double rightVelocity = inputs.rightVelocity;
 
         double rightFeedforwardEffort = rightForward.calculate(targetVelocityRight, rightAcceleration);
         double rightFeedbackEffort = rightController.calculate(rightVelocity, targetVelocityRight);
 
-        double right = rightFeedforwardEffort + rightFeedbackEffort;
+        double right =  rightFeedforwardEffort + rightFeedbackEffort;
 
-        Logger.recordOutput("DT Right Feedback", rightFeedbackEffort);
-        Logger.recordOutput("DT Right Feedforward", rightFeedforwardEffort);
-        Logger.recordOutput("DT Right Voltage", right);
+        Logger.recordOutput("DT/Right Feedback", rightFeedbackEffort);
+        Logger.recordOutput("DT/Right Feedforward", rightFeedforwardEffort);
+        Logger.recordOutput("DT/Right Voltage", right);
 
         io.setVoltages(left, right);
     }
@@ -131,20 +170,20 @@ public class Drivetrain extends SubsystemBase {
      * @param speedRight the target speed of the right side in m/s
      */
     public void setSpeed(double speedLeft, double speedRight) {
-        Logger.recordOutput("DT Left Velocity Target", speedLeft);
-        Logger.recordOutput("DT Right Velocity Target", speedRight);
-
-        previousTargetVelocityLeft = targetVelocityLeft;
-        previousTargetVelocityRight = targetVelocityRight;
+        Logger.recordOutput("DT/Left Velocity Target", speedLeft);
+        Logger.recordOutput("DT/Right Velocity Target", speedRight);
 
         targetVelocityLeft = speedLeft;
         targetVelocityRight = speedRight;
+    }
 
-        leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
-        rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
 
-        Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
-        Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
+    public ChassisSpeeds getSpeeds() {
+        return kinematics.toChassisSpeeds(
+            new DifferentialDriveWheelSpeeds(inputs.leftVelocity, inputs.rightVelocity));
     }
 
     /**
@@ -156,6 +195,14 @@ public class Drivetrain extends SubsystemBase {
 
     public double getYaw() {
         return inputs.yaw;
+    }
+
+    public double getYawRate() {
+        return inputs.yawRate;
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(Rotation2d.fromRadians(inputs.yaw), new DifferentialDriveWheelPositions(inputs.leftPosition, inputs.rightPosition), pose);
     }
 
     // The drivetrain needs 3m of clearance in front of it when running this command.
@@ -171,7 +218,7 @@ public class Drivetrain extends SubsystemBase {
             new LoggedMechanism(rightLog, rightMechanism)
         );
 
-        return new VelocityRoutine(group, 2.5, 0.25, this).finallyDo(() -> {
+        return new VelocityRoutine(group, 3.5, 0.25, this).finallyDo(() -> {
             leftLog.logCSV("DrivetrainVelocityLeft");
             rightLog.logCSV("DrivetrainVelocityRight");
         });

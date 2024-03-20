@@ -1,0 +1,3 @@
+[submodule "astrolabe"]
+	path = astrolabe
+	url = https://github.com/arctos6135/astrolabe

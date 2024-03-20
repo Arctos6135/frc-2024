@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.0,
-      "y": 0.0
-    },
-    "rotation": 0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -14,7 +8,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Quarter Circle"
+            "pathName": "Alt Ruben 2-Piece part 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ruben 2-Piece part 3"
           }
         }
       ]

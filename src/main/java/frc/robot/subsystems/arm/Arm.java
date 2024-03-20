@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -35,26 +36,29 @@ public class Arm extends SubsystemBase {
         io.updateInputs(inputs);
 
         // Update mechanism
-        shortArm.setAngle(inputs.position);
+        shortArm.setAngle(inputs.leftPosition);
         longArm.setAngle(-60);
 
         // Log all the sensor data.
         Logger.processInputs("Arm", inputs);
-        Logger.recordOutput("Arm Mechanism", mechanism);
-
+        Logger.recordOutput("Arm/Mechanism", mechanism);
     }
 
     public double getArmPosition() {
-        return inputs.position;
+        return inputs.leftPosition;
     }
 
     public double getArmVelocity() {
-        return inputs.velocity;
+        return inputs.leftVelocity;
     }
 
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Arm Voltage", voltage);
+        Logger.recordOutput("Arm/Voltage", voltage);
         io.setVoltage(voltage);
+    }
+
+    public void setIdleMode(IdleMode idleMode) {
+        io.setIdleMode(idleMode);
     }
 
 
@@ -63,7 +67,7 @@ public class Arm extends SubsystemBase {
         FeedforwardLog log = new FeedforwardLog();
         LoggedMechanism mechanism = new LoggedMechanism(
             log,
-            new Mechanism(this::setVoltage, () -> inputs.position, () -> inputs.velocity)
+            new Mechanism(this::setVoltage, () -> inputs.leftPosition, () -> inputs.leftVelocity)
         );
         return new VelocityRoutine(new LoggedMechanismGroup(mechanism), 1, 0.25).finallyDo(() -> log.logCSV("ArmVelocity"));
     }

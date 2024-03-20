@@ -1,12 +1,16 @@
 package frc.robot.commands.arm;
 
+// import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.TunableNumber;
@@ -20,11 +24,15 @@ import frc.robot.util.TunableNumber;
 public class ArmPID extends Command {
     private final Arm arm;
 
-    // TODO caluclate the proper values for each of these!!
-    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 8);
-    private final TrapezoidProfile profile = new TrapezoidProfile(constraints);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0, 0.25, 3.8, 0.01);
-    private final PIDController controller = new PIDController(7, 10, 0);
+    private final TunableNumber maxVelocity = new TunableNumber("Arm/Max Velocity", 2);
+    private final TunableNumber maxAcceleration = new TunableNumber("Arm/Max Acceleration", 2);
+
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 2);
+    private TrapezoidProfile profile = new TrapezoidProfile(constraints);
+    private ArmFeedforward feedforward = new ArmFeedforward(0, 0.2, 3.7, 0.03);
+    // NOTE: the integral control here used to be 0.2, if the arm is overshooting weirdly set it back
+    //private final PIDController controller = new PIDController(0.5, 0.4, 0);
+    private final PIDController controller = new PIDController(0.6, 0.3, 0.05);
 
     private State targetState;
     private State initialState;
@@ -42,6 +50,16 @@ public class ArmPID extends Command {
         this.arm = arm;
         this.targetState = new State(targetAngle, 0);
         controller.setIntegratorRange(-6, 6);
+
+        TunableNumber.ifChanged(
+            () -> {
+                constraints = new TrapezoidProfile.Constraints(maxVelocity.get(), maxAcceleration.get());
+                profile = new TrapezoidProfile(constraints);
+                initialize();
+            },
+            maxVelocity,
+            maxAcceleration
+        );
 
         addRequirements(arm);
     }
@@ -72,22 +90,24 @@ public class ArmPID extends Command {
          */
         double currentPosition = arm.getArmPosition();
 
-        Logger.recordOutput("Arm PID Target Position", targetState.position);
+        Logger.recordOutput("Arm PID/Target Position", targetState.position);
 
         //State setpoint = targetState;
         //State setpoint = profile.calculate(0.02, new State(currentPosition, arm.getArmVelocity()), targetState);
         State setpoint = profile.calculate(Timer.getFPGATimestamp() - startTime, initialState, targetState);
 
-        Logger.recordOutput("Arm PID Setpoint Position", setpoint.position);
-        Logger.recordOutput("Arm PID Setpoint Velocity", setpoint.velocity);
+        Logger.recordOutput("Arm PID/Setpoint Position", setpoint.position);
+        Logger.recordOutput("Arm PID/Setpoint Velocity", setpoint.velocity);
 
         double feedbackEffort = controller.calculate(currentPosition, setpoint.position);
         double feedforwardEffort = feedforward.calculate(setpoint.position, setpoint.velocity);
 
-        Logger.recordOutput("Arm PID Feedback", feedbackEffort);
-        Logger.recordOutput("Arm PID Feedforward", feedforwardEffort);
+        Logger.recordOutput("Arm/PID Feedback", feedbackEffort);
+        Logger.recordOutput("Arm/PID Feedforward", feedforwardEffort);
 
-        arm.setVoltage(feedforwardEffort + feedbackEffort);
+
+        if (!new XboxController(0).getYButton())
+            arm.setVoltage(feedforwardEffort + feedbackEffort);
     }
 
     @Override
@@ -98,5 +118,9 @@ public class ArmPID extends Command {
     @Override
     public void end(boolean interrupted) {
         arm.setVoltage(0);
+    }
+
+    public boolean atTarget() {
+        return Math.abs(arm.getArmPosition() - targetState.position) < Units.degreesToRadians(10) && Math.abs(arm.getArmVelocity()) < Units.degreesToRadians(10);
     }
 }

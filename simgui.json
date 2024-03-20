@@ -3,13 +3,11 @@
     "types": {
       "/AdvantageKit/RealOutputs/Arm Mechanism": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/SendableChooser[0]": "String Chooser",
-      "/SmartDashboard/SendableChooser[1]": "String Chooser",
       "/SmartDashboard/auto chooser": "String Chooser",
       "/SmartDashboard/position chooser": "String Chooser"
     },
     "windows": {
-      "/SmartDashboard/SendableChooser[0]": {
+      "/SmartDashboard/position chooser": {
         "window": {
           "visible": true
         }
@@ -20,12 +18,16 @@
     "transitory": {
       "AdvantageKit": {
         "Drivetrain": {
-          "open": true
+          "open": false
         },
         "Shooter": {
-          "open": true
-        },
-        "open": true
+          "open": false
+        }
+      },
+      "SmartDashboard": {
+        "position chooser": {
+          "open": false
+        }
       }
     }
   },

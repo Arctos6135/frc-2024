@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ruben 2-Piece part 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Alt Ruben 2-Piece part 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ruben 2-Piece part 3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

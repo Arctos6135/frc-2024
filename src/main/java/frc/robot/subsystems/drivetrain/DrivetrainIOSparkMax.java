@@ -64,14 +64,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
     @Override
     public void setVoltages(double left, double right) {
-        if (Math.abs(left) < 0.5) {
-            left = 0;
-        }
-
-        if (Math.abs(right) < 0.5) {
-            right = 0;
-        }
-
         leftMaster.setVoltage(left);
         rightMaster.setVoltage(right);
     }
@@ -84,25 +76,25 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         inputs.leftVelocity = leftEncoder.getVelocity();
         inputs.rightVelocity = rightEncoder.getVelocity();
 
-        inputs.yaw = gyro.getAngle(gyro.getYawAxis());
-        inputs.yawRate = gyro.getRate(gyro.getYawAxis());
+        inputs.yaw = Units.degreesToRadians(gyro.getAngle(gyro.getYawAxis()));
+        inputs.yawRate = Units.degreesToRadians(gyro.getRate(gyro.getYawAxis()));
 
-        // Current
-        inputs.leftMasterCurrent = leftMaster.getOutputCurrent();
-        inputs.rightMasterCurrent = rightMaster.getOutputCurrent();
-        inputs.leftFollowerCurrent = leftMaster.getOutputCurrent();
-        inputs.rightFollowerCurrent = rightMaster.getOutputCurrent();
+        // // Current
+        // inputs.leftMasterCurrent = leftMaster.getOutputCurrent();
+        // inputs.rightMasterCurrent = rightMaster.getOutputCurrent();
+        // inputs.leftFollowerCurrent = leftMaster.getOutputCurrent();
+        // inputs.rightFollowerCurrent = rightMaster.getOutputCurrent();
 
-        // Temperature
-        inputs.leftMasterTemperature = leftMaster.getMotorTemperature();
-        inputs.rightMasterTemperature = rightMaster.getMotorTemperature();
-        inputs.leftFollowerTemperature = leftMaster.getMotorTemperature();
-        inputs.rightFollowerTemperature = rightMaster.getMotorTemperature();
+        // // Temperature
+        // inputs.leftMasterTemperature = leftMaster.getMotorTemperature();
+        // inputs.rightMasterTemperature = rightMaster.getMotorTemperature();
+        // inputs.leftFollowerTemperature = leftMaster.getMotorTemperature();
+        // inputs.rightFollowerTemperature = rightMaster.getMotorTemperature();
 
-        // Voltage
-        inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.get();
-        inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.get();
-        inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.get();
-        inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.get();
+        // // Voltage
+        // inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.getAppliedOutput();
+        // inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.getAppliedOutput();
+        // inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.getAppliedOutput();
+        // inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.getAppliedOutput();
     }
 }

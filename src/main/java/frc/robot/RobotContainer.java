@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import frc.robot.commands.*;
 // import frc.robot.commands.Intake.ShooterPositionFeed;
 // import frc.robot.commands.arm.ArmPID;
 // import frc.robot.commands.driving.ProfiledPIDSetAngle;
@@ -40,9 +39,13 @@ import frc.robot.commands.Intake.DrivingIntake;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.shooter.ReverseFeed;
+import frc.robot.commands.arm.ArmPID;
+import frc.robot.commands.arm.Climb;
 // import frc.robot.commands.scoring.Score;
 // import frc.robot.commands.arm.Climb;
 import frc.robot.commands.arm.RaiseArm;
+import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.scoring.Score;
 import frc.robot.constants.*;
 // import frc.robot.constants.ArmConstants;
 // import frc.robot.constants.ControllerConstants;
@@ -124,6 +127,7 @@ public class RobotContainer {
             arm = new Arm(new ArmIOSim());
             intake = new Intake(new IntakeIOSim());
             shooter = new Shooter(new ShooterIOSim());
+            vision = new Vision();
             winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
@@ -132,6 +136,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIO());
             arm = new Arm(new ArmIO());
             shooter = new Shooter(new ShooterIO());
+            vision = new Vision();
             winch = new Winch(new WinchIO());
         }
 

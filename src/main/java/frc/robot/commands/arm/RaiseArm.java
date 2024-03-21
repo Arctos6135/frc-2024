@@ -12,11 +12,11 @@ public class RaiseArm extends Command{
     private double targetAngle;
     private ArmPID armPID;
 
-    public RaiseArm(Arm arm, XboxController operatorController, double targetAngle, ArmPID armPID){
+    public RaiseArm(Arm arm, XboxController operatorController, ArmPID armPID){
         this.arm = arm;
         this.operatorController = operatorController;
-        this.targetAngle = targetAngle;
-        this.armPID = new ArmPID(arm, targetAngle);
+        this.armPID = armPID;
+        this.targetAngle = ArmConstants.STARTING_POSITION + 1.35;
     }
 
     @Override
@@ -26,8 +26,8 @@ public class RaiseArm extends Command{
 
     @Override
     public void execute(){
-        if(this.armPID.atTarget()){
-            this.targetAngle += operatorController.getRawAxis(XboxController.Axis.kLeftY.value) * ArmConstants.CLIMB_SENSITIVITY;
+        if (this.armPID.atTarget()){
+            this.targetAngle += operatorController.getLeftY() * ArmConstants.CLIMB_SENSITIVITY;
             armPID.setTarget(targetAngle);
         }
     }
@@ -38,7 +38,5 @@ public class RaiseArm extends Command{
     }
     
     @Override
-    public void end(boolean interrupted){
-        armPID.end(true);
-    }
+    public void end(boolean interrupted){}
 }

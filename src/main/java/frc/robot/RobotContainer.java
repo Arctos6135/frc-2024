@@ -251,6 +251,8 @@ public class RobotContainer {
         Trigger operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+        Trigger DPadDown = new Trigger(() -> operatorController.getPOV() == 180);
+        Trigger DPadUp = new Trigger(() -> operatorController.getPOV() == 0);
 
         operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
@@ -262,11 +264,11 @@ public class RobotContainer {
         operatorRightBumper.onTrue(new ReverseFeed(shooter, intake, 1)); // Meters is a complete guess.
 
         // Climbing commands.
-        operatorLeftStickButton.toggleOnTrue(new RaiseArm(arm, operatorController, ArmConstants.STARTING_POSITION + 1.35, armPID));
-        operatorRightStickButton.onTrue(new Climb(arm, winch, operatorController));
+        operatorLeftStickButton.onTrue(new RaiseArm(arm, operatorController, armPID));
+        // operatorRightStickButton.onTrue(new Climb(arm, winch, operatorController));
 
-        // operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
-        // operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 60);
+        DPadUp.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
+        DPadDown.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 60);
     }
 
     public void startMatch() {

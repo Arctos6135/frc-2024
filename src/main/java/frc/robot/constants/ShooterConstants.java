@@ -5,7 +5,7 @@ import edu.wpi.first.math.util.Units;
 public class ShooterConstants {
     // these numbers are copied from drive constants and are temporary
     public static final double GEARBOX_RATIO = 1;
-    public static final double WHEEL_DIAMETER = Units.inchesToMeters(6);
+    public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI; 
     public static final double POSITION_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO;
     public static final double VELOCITY_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO / 60.0;
@@ -15,6 +15,7 @@ public class ShooterConstants {
     // This is a placeholder, need to be tuned.
     public static final double SPEAKER_RPS = 20;
     public static final double AMP_RPS = 15;
+    public static final double FERRY_RPS = 10; // random choice, needs tuning.
 
     // Limits current through motor to limit brownouts.
     public static final int CURRENT_LIMIT = 50;

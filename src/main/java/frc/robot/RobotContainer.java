@@ -12,6 +12,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import astrolabe.follow.AutoBuilder;
+import astrolabe.follow.FollowPath;
+import astrolabe.follow.AstrolabeLogger;
+import astrolabe.follow.GlobalConfig;
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -23,39 +28,54 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Intake.ShooterPositionFeed;
-import frc.robot.commands.arm.ArmPID;
-import frc.robot.commands.driving.ProfiledPIDSetAngle;
+
+// import frc.robot.commands.Intake.ShooterPositionFeed;
+// import frc.robot.commands.arm.ArmPID;
+// import frc.robot.commands.driving.ProfiledPIDSetAngle;
 //import frc.robot.commands.driving.ProfiledPIDSetAngle;
-import frc.robot.commands.driving.TeleopDrive;
+// import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.Intake.AltImprovedFeed;
 import frc.robot.commands.Intake.DrivingIntake;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
-import frc.robot.commands.scoring.Score;
+import frc.robot.commands.shooter.ReverseFeed;
+import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.arm.Climb;
-import frc.robot.constants.ArmConstants;
-import frc.robot.constants.ControllerConstants;
-import frc.robot.constants.PositionConstants;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.ArmIOSim;
-import frc.robot.subsystems.arm.ArmIOSparkMax;
-import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainIO;
-import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
-import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeIO;
-import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeIOSparkMax;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.subsystems.shooter.ShooterIOSparkMax;
+// import frc.robot.commands.scoring.Score;
+// import frc.robot.commands.arm.Climb;
+import frc.robot.commands.arm.RaiseArm;
+import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.scoring.Score;
+import frc.robot.constants.*;
+// import frc.robot.constants.ArmConstants;
+// import frc.robot.constants.ControllerConstants;
+// // import frc.robot.constants.PositionConstants;
+// import frc.robot.constants.VisionConstants;
+import frc.robot.subsystems.arm.*;
+import frc.robot.subsystems.drivetrain.*;
+import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.shooter.*;
+import frc.robot.subsystems.vision.*;
+// import frc.robot.subsystems.arm.Arm;
+// import frc.robot.subsystems.arm.ArmIO;
+// import frc.robot.subsystems.arm.ArmIOSim;
+// import frc.robot.subsystems.arm.ArmIOSparkMax;
+// import frc.robot.subsystems.drivetrain.Drivetrain;
+// import frc.robot.subsystems.drivetrain.DrivetrainIO;
+// import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
+// import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
+// import frc.robot.subsystems.intake.Intake;
+// import frc.robot.subsystems.intake.IntakeIO;
+// import frc.robot.subsystems.intake.IntakeIOSim;
+// import frc.robot.subsystems.intake.IntakeIOSparkMax;
+// import frc.robot.subsystems.shooter.Shooter;
+// import frc.robot.subsystems.shooter.ShooterIO;
+// import frc.robot.subsystems.shooter.ShooterIOSim;
+// import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.winch.Winch;
 import frc.robot.subsystems.winch.WinchIO;
 import frc.robot.subsystems.winch.WinchIOSparkMax;
+// import frc.robot.subsystems.vision.Vision;
 
 public class RobotContainer {
     // Xbox controllers
@@ -67,6 +87,7 @@ public class RobotContainer {
     private final Intake intake;
     private final Arm arm;
     private final Shooter shooter;
+    private final Vision vision;
     private final Winch winch;
 
     // Sendable choosers (for driveteam to select autos and positions)
@@ -85,7 +106,7 @@ public class RobotContainer {
 
     // Named Commands (for autos)
     public NamedCommands scoreSpeaker;
-    public NamedCommands runIntake;
+    public NamedCommands runIntake;    
 
     //start time
     public double startTime = Timer.getFPGATimestamp();
@@ -97,6 +118,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
+            vision = new Vision();
             winch = new Winch(new WinchIOSparkMax());
         }
         // Creates a simulated robot.
@@ -105,6 +127,7 @@ public class RobotContainer {
             arm = new Arm(new ArmIOSim());
             intake = new Intake(new IntakeIOSim());
             shooter = new Shooter(new ShooterIOSim());
+            vision = new Vision();
             winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
@@ -113,6 +136,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIO());
             arm = new Arm(new ArmIO());
             shooter = new Shooter(new ShooterIO());
+            vision = new Vision();
             winch = new Winch(new WinchIO());
         }
 
@@ -146,7 +170,7 @@ public class RobotContainer {
 
 
         // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
-        positionChooser.addDefaultOption("Red Amp", PositionConstants.RED_AMP);
+        //positionChooser.addDefaultOption("Red Amp", PositionConstants.RED_AMP);
 
         // Placeholders until autos are coded.
         autoChooser.addDefaultOption("2 Note Amp", new PathPlannerAuto("2 Note Amp"));
@@ -159,9 +183,10 @@ public class RobotContainer {
         autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
 
         // Placeholders until positions are configured.
+        positionChooser.addOption("Red Amp", PositionConstants.RED_AMP);
         positionChooser.addOption("Red Stage", PositionConstants.RED_STAGE);
         positionChooser.addOption("Red Source", PositionConstants.RED_SOURCE);
-        positionChooser.addOption("Blue Amp", PositionConstants.BLUE_AMP);
+        positionChooser.addDefaultOption("Blue Amp", PositionConstants.BLUE_AMP);
         positionChooser.addOption("Blue Stage", PositionConstants.BLUE_STAGE);
         positionChooser.addOption("Blue Source", PositionConstants.BLUE_SOURCE);
 
@@ -180,6 +205,24 @@ public class RobotContainer {
         PathPlannerLogging.setLogActivePathCallback(path -> {
             Logger.recordOutput("Trajectory", path.toArray(new Pose2d[path.size()]));
         });
+
+        AutoBuilder.configureRamseteRefine(
+            new RamseteController(), 
+            drivetrain::getPose, 
+            drivetrain::getSpeeds, 
+            drivetrain::resetOdometry, 
+            speeds -> {
+                drivetrain.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+            }, 
+            new GlobalConfig(3, 3, 3, drivetrain.kinematics), 
+            drivetrain
+        );
+
+        AstrolabeLogger.targetPoseLogger = pose -> Logger.recordOutput("Target Pose", pose);
+        AstrolabeLogger.stateLogger = state -> Logger.recordOutput("Pathing State", state);
+        AstrolabeLogger.trajectoryLogger = t -> Logger.recordOutput("Astrolabe Trajectory", t);
+        AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe Angle Error", error);
+        AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe Distance Error", error);
     }
 
     private void configureBindings() {
@@ -189,14 +232,6 @@ public class RobotContainer {
         Trigger driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
         Trigger driverX = new JoystickButton(driverController, XboxController.Button.kY.value);
         Trigger driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
-
-        driverA.onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
-        driverB.onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI));
-
-        // Binds precision drive toggling to driver's right bumper.
-        // driverRightBumper
-        //     .onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)))
-        //     .onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
         // Binds macros for orienting robot turning to driver's dpad.
         // new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
@@ -208,47 +243,32 @@ public class RobotContainer {
         // new Trigger(() -> driverController.getPOV() == 270).onTrue(new ProfiledPIDSetAngle(drivetrain, (3 * Math.PI) / 2));
         // new Trigger(() -> driverController.getPOV() == 315).onTrue(new ProfiledPIDSetAngle(drivetrain, (7 * Math.PI) / 4));
 
-        // Changed the intake triggers to driver controller for testing.
-        // TODO change back to the operator controller.
-
+        Trigger operatorLeftStickButton = new JoystickButton(operatorController, XboxController.Button.kLeftStick.value);
+        Trigger operatorRightStickButton = new JoystickButton(operatorController, XboxController.Button.kRightStick.value);
         Trigger operatorLeftBumper = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
         Trigger operatorRightBumper = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
         Trigger operatorA = new JoystickButton(operatorController, XboxController.Button.kA.value);
         Trigger operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
+        Trigger DPadDown = new Trigger(() -> operatorController.getPOV() == 180);
+        Trigger DPadUp = new Trigger(() -> operatorController.getPOV() == 0);
 
-        // operatorLeftBumper.onTrue(new InstantCommand(() -> intake.setVoltage(12)));
-        // operatorLeftBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
-
-        // operatorRightBumper.onTrue(new InstantCommand(() -> intake.setVoltage(-12)));
-        // operatorRightBumper.onFalse(new InstantCommand(() -> intake.setVoltage(0)));
-
-        // // Climb Command
-        // new Trigger(() -> driverController.getYButtonPressed()).whileTrue(new StartEndCommand(() -> {
-        //     arm.setVoltage(-9);
-        // }, () -> {
-        // }));
-
-        operatorA.onTrue(new RaceFeed(shooter, intake).withTimeout(3));
+        operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
-        operatorLeftBumper.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
-        operatorRightBumper.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 60);
-    }
 
-    /**
-     * Runs on a periodic loop. Check Robot.java.
-     */
-    public void updateButtons() {
-        // if (operatorController.getYButton()) {
-        //     //armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION);
-        //     arm.setVoltage(-12);
-        // } else {
-        //     arm.setVoltage(0); //armPID.setTarget(ArmConstants.STARTING_POSITION);
-        //     System.out.println("Not pressing X");
-        // }
+        // Left bumper hands off to the shooter, while right bumper reverse-handoffs back to the intake.
+        operatorLeftBumper.onTrue(new RaceFeed(shooter, intake).withTimeout(3));
+        operatorRightBumper.onTrue(new ReverseFeed(shooter, intake, 1)); // Meters is a complete guess.
+
+        // Climbing commands.
+        operatorLeftStickButton.onTrue(new RaiseArm(arm, operatorController, armPID));
+        // operatorRightStickButton.onTrue(new Climb(arm, winch, operatorController));
+
+        DPadUp.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
+        DPadDown.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 60);
     }
 
     public void startMatch() {
@@ -256,9 +276,12 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2);
+        //return new ProfiledPIDSetAngle(drivetrain, Math.PI / 2); 
         //return new IntakePieceSpeed(intake);
         //return new PathPlannerAuto("2 Note Source");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
-        return autoChooser.get();
+        //return autoChooser.get();
+        return new FollowPath("Source Part A").andThen(new FollowPath("Source Part B"));
+        //return new PathPlannerAuto("Forwards Back");
+        //return new PathPlannerAuto("1 Meter Forward");
     }
 }

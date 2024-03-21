@@ -5,6 +5,13 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/auto chooser": "String Chooser",
       "/SmartDashboard/position chooser": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/position chooser": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {

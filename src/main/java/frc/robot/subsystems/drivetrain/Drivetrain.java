@@ -52,10 +52,11 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController rightController = new PIDController(2, 0.5, 0.0);
 
     // Simple feedforward controllers that determine how the drivetrain should behave
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.577, 0.26);
-    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.5, 0.4);
-    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.5, 0.4);
+    //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.565, 0.2);
+    //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.577, 0.26);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.2, 0.5);
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.2, 0.5);
+
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -74,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
      */
     private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromRadians(inputs.yaw), inputs.leftPosition, inputs.rightPosition);
 
-    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(23.2));
+    public final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(23.2));
 
     /**
      * Construct a new drivetrain.
@@ -89,11 +90,13 @@ public class Drivetrain extends SubsystemBase {
             () -> getSpeeds(), 
             speeds -> {
                 arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+
+                Logger.recordOutput("PathPlanner/command speeds", speeds);
             },
             new Vector<N3>(new SimpleMatrix(new double[] {0.0625, 0.125, 2})),
             new Vector<N2>(new SimpleMatrix(new double[] {1, 2})),
             0.02,
-            new ReplanningConfig(),
+            new ReplanningConfig(true, true),
             () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red, 
             this
         );
@@ -122,8 +125,8 @@ public class Drivetrain extends SubsystemBase {
         previousTargetVelocityLeft = targetVelocityLeft;
         previousTargetVelocityRight = targetVelocityRight;
 
-        Logger.recordOutput("DT Left Acceleration Target", leftAcceleration);
-        Logger.recordOutput("DT Right Acceleration Target", rightAcceleration);
+        Logger.recordOutput("DT/Left Acceleration Target", leftAcceleration);
+        Logger.recordOutput("DT/Right Acceleration Target", rightAcceleration);
         
 
         double leftVelocity = inputs.leftVelocity;
@@ -133,9 +136,9 @@ public class Drivetrain extends SubsystemBase {
 
         double left =  leftFeedforwardEffort + leftFeedbackEffort;
 
-        Logger.recordOutput("DT Left Feedback", leftFeedbackEffort);
-        Logger.recordOutput("DT Left Feedforward", leftFeedforwardEffort);
-        Logger.recordOutput("DT Left Voltage", left);
+        Logger.recordOutput("DT/Left Feedback", leftFeedbackEffort);
+        Logger.recordOutput("DT/Left Feedforward", leftFeedforwardEffort);
+        Logger.recordOutput("DT/Left Voltage", left);
 
         double rightVelocity = inputs.rightVelocity;
 
@@ -144,9 +147,9 @@ public class Drivetrain extends SubsystemBase {
 
         double right =  rightFeedforwardEffort + rightFeedbackEffort;
 
-        Logger.recordOutput("DT Right Feedback", rightFeedbackEffort);
-        Logger.recordOutput("DT Right Feedforward", rightFeedforwardEffort);
-        Logger.recordOutput("DT Right Voltage", right);
+        Logger.recordOutput("DT/Right Feedback", rightFeedbackEffort);
+        Logger.recordOutput("DT/Right Feedforward", rightFeedforwardEffort);
+        Logger.recordOutput("DT/Right Voltage", right);
 
         io.setVoltages(left, right);
     }
@@ -167,8 +170,8 @@ public class Drivetrain extends SubsystemBase {
      * @param speedRight the target speed of the right side in m/s
      */
     public void setSpeed(double speedLeft, double speedRight) {
-        Logger.recordOutput("DT Left Velocity Target", speedLeft);
-        Logger.recordOutput("DT Right Velocity Target", speedRight);
+        Logger.recordOutput("DT/Left Velocity Target", speedLeft);
+        Logger.recordOutput("DT/Right Velocity Target", speedRight);
 
         targetVelocityLeft = speedLeft;
         targetVelocityRight = speedRight;

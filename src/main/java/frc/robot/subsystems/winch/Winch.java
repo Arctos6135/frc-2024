@@ -31,7 +31,7 @@ public class Winch extends SubsystemBase {
     }
 
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Winch Voltage", voltage);
+        Logger.recordOutput("Winch/Voltage", voltage);
         io.setVoltage(voltage);
     }
 

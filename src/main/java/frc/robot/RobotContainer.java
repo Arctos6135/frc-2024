@@ -12,10 +12,10 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
-import astrolabe.AutoBuilder;
-import astrolabe.FollowPath;
-import astrolabe.AstrolabeLogger;
-import astrolabe.GlobalConfig;
+import astrolabe.follow.AutoBuilder;
+import astrolabe.follow.FollowPath;
+import astrolabe.follow.AstrolabeLogger;
+import astrolabe.follow.GlobalConfig;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;

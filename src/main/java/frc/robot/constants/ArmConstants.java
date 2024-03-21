@@ -23,6 +23,7 @@ public class ArmConstants {
     
     public static final double AMP_SCORING_POSITION = STARTING_POSITION + 1.2; // Binded to X
     public static final double SPEAKER_SCORING_POSITION = STARTING_POSITION; // Binded to Y
+    public static final double FERRY_POSITION = STARTING_POSITION; // subject to change.
 
     public static final double ARM_TOLERANCE = 5 * Math.PI / 180;
 

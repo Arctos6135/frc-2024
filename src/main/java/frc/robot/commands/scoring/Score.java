@@ -32,6 +32,13 @@ public class Score {
             .andThen(new InstantCommand(() -> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION)));
     }
 
+    public static Command ferryNote(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {
+        return new InstantCommand(() -> armPID.setTarget(ArmConstants.FERRY_POSITION))
+        .andThen(new WaitUntilCommand(armPID::atTarget))
+        .andThen(new Launch(shooter, ShooterConstants.FERRY_RPS).withTimeout(1))
+        .andThen(new InstantCommand(()-> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION)));
+    }
+
     public static void stop(Arm arm, Shooter shooter, Intake intake) {
         arm.setVoltage(0);
         shooter.stop();

@@ -15,6 +15,7 @@ public class ShooterConstants {
     // This is a placeholder, need to be tuned.
     public static final double SPEAKER_RPS = 20;
     public static final double AMP_RPS = 15;
+    public static final double FERRY_RPS = 10; // random choice, needs tuning.
 
     // Limits current through motor to limit brownouts.
     public static final int CURRENT_LIMIT = 50;

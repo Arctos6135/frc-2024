@@ -26,7 +26,7 @@ public class AdvanceShooter extends Command{
 
     @Override
     public void execute(){
-        shooter.setVoltages(ShooterConstants.ADVANCE_VOLTAGE, ShooterConstants.ADVANCE_VOLTAGE);
+        shooter.setVoltages(ShooterConstants.ADVANCE_VOLTAGE);
     }
 
     @Override

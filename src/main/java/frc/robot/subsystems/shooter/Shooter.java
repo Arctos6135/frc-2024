@@ -27,30 +27,29 @@ public class Shooter extends SubsystemBase {
         Logger.processInputs("Shooter", inputs);
     }
 
-    public void setVoltages(double leftVoltage, double rightVoltage) {
-        Logger.recordOutput("Shooter Left Voltage", leftVoltage);
-        Logger.recordOutput("Shooter Right Voltage", rightVoltage);
-        io.setVoltages(leftVoltage, rightVoltage);
-    }
-
     public void setVoltages(double voltage) {
         Logger.recordOutput("Shooter Left Voltage", voltage);
         Logger.recordOutput("Shooter Right Voltage", voltage);
-        io.setVoltages(voltage, voltage);
+        io.setVoltages(voltage);
     }
 
     public void setRPS(double rps) {
         double feedforwardOutput = feedforward.calculate(rps);
         Logger.recordOutput("Shoot Velocity Target", rps);
 
-        double leftOutput = feedforwardOutput;
-        double rightOutput = feedforwardOutput;
-
-        setVoltages(leftOutput, rightOutput);
+        setVoltages(feedforwardOutput);
     }
 
     public void stop() {
-        setVoltages(0, 0);
+        setVoltages(0);
+    }
+
+    public void calibratePIDController(double kP, double kI, double kD, double kFF) {
+        io.calibratePIDController(kP, kI, kD, kFF);
+    }
+
+    public void setPIDTargetVelocity(double targetVelocity) {
+        io.setPIDTargetVelocity(targetVelocity);
     }
 
     public double getVelocity() {

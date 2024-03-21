@@ -7,6 +7,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 
 import frc.robot.constants.CANBus;
 import frc.robot.constants.ShooterConstants;
@@ -18,13 +19,15 @@ public class ShooterIOSparkMax extends ShooterIO {
     private final RelativeEncoder rightEncoder;
     private final RelativeEncoder leftEncoder;
 
+    private final SparkPIDController PIDController = right.getPIDController();
+
     public ShooterIOSparkMax() {
         // Set current limits.
         right.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
         left.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
-        
-        right.setInverted(false);
-        left.setInverted(true);
+
+        // Left motor is following the right one
+        left.follow(right, true);
 
         right.setIdleMode(IdleMode.kBrake);
         left.setIdleMode(IdleMode.kBrake);
@@ -39,11 +42,20 @@ public class ShooterIOSparkMax extends ShooterIO {
         leftEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
     }
     
-    public void setVoltages(double leftVoltage, double rightVoltage) {
-        Logger.recordOutput("Left Shooter Voltage", leftVoltage);
-        Logger.recordOutput("Right Shooter Voltage", rightVoltage);
-        left.setVoltage(leftVoltage);
-        right.setVoltage(rightVoltage);
+    public void setVoltages(double shooterVoltage) {
+        Logger.recordOutput("Shooter Voltage", shooterVoltage);
+        right.setVoltage(shooterVoltage);
+    }
+
+    public void setPIDTargetVelocity(double targetVelocity) {
+        PIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity);
+    }
+
+    public void calibratePIDController(double kP, double kI, double kD, double kFF) {
+        PIDController.setP(kP);
+        PIDController.setI(kI);
+        PIDController.setD(kD);
+        PIDController.setFF(kFF);
     }
 
     public void updateInputs(ShooterInputs inputs) {
@@ -62,4 +74,5 @@ public class ShooterIOSparkMax extends ShooterIO {
         inputs.leftVoltage = left.getBusVoltage() * left.getAppliedOutput();
         inputs.rightVoltage = right.getBusVoltage() * right.getAppliedOutput();
     }
+
 }

@@ -12,10 +12,10 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
-import astrolabe.follow.AutoBuilder;
-import astrolabe.follow.FollowPath;
-import astrolabe.follow.AstrolabeLogger;
-import astrolabe.follow.GlobalConfig;
+import astrolabe.AutoBuilder;
+import astrolabe.FollowPath;
+import astrolabe.AstrolabeLogger;
+import astrolabe.GlobalConfig;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -252,7 +252,7 @@ public class RobotContainer {
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
 
-        operatorA.onTrue(new RaceFeed(shooter, intake).withTimeout(3));
+        operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));

@@ -28,41 +28,54 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Intake.ShooterPositionFeed;
-import frc.robot.commands.arm.ArmPID;
-import frc.robot.commands.driving.ProfiledPIDSetAngle;
+
+// import frc.robot.commands.Intake.ShooterPositionFeed;
+// import frc.robot.commands.arm.ArmPID;
+// import frc.robot.commands.driving.ProfiledPIDSetAngle;
 //import frc.robot.commands.driving.ProfiledPIDSetAngle;
-import frc.robot.commands.driving.TeleopDrive;
+// import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.Intake.AltImprovedFeed;
 import frc.robot.commands.Intake.DrivingIntake;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.shooter.ReverseFeed;
-import frc.robot.commands.scoring.Score;
+import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.arm.Climb;
+// import frc.robot.commands.scoring.Score;
+// import frc.robot.commands.arm.Climb;
 import frc.robot.commands.arm.RaiseArm;
-import frc.robot.constants.ArmConstants;
-import frc.robot.constants.ControllerConstants;
-import frc.robot.constants.PositionConstants;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.ArmIOSim;
-import frc.robot.subsystems.arm.ArmIOSparkMax;
-import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainIO;
-import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
-import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeIO;
-import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeIOSparkMax;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.subsystems.shooter.ShooterIOSparkMax;
+import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.scoring.Score;
+import frc.robot.constants.*;
+// import frc.robot.constants.ArmConstants;
+// import frc.robot.constants.ControllerConstants;
+// // import frc.robot.constants.PositionConstants;
+// import frc.robot.constants.VisionConstants;
+import frc.robot.subsystems.arm.*;
+import frc.robot.subsystems.drivetrain.*;
+import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.shooter.*;
+import frc.robot.subsystems.vision.*;
+// import frc.robot.subsystems.arm.Arm;
+// import frc.robot.subsystems.arm.ArmIO;
+// import frc.robot.subsystems.arm.ArmIOSim;
+// import frc.robot.subsystems.arm.ArmIOSparkMax;
+// import frc.robot.subsystems.drivetrain.Drivetrain;
+// import frc.robot.subsystems.drivetrain.DrivetrainIO;
+// import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
+// import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
+// import frc.robot.subsystems.intake.Intake;
+// import frc.robot.subsystems.intake.IntakeIO;
+// import frc.robot.subsystems.intake.IntakeIOSim;
+// import frc.robot.subsystems.intake.IntakeIOSparkMax;
+// import frc.robot.subsystems.shooter.Shooter;
+// import frc.robot.subsystems.shooter.ShooterIO;
+// import frc.robot.subsystems.shooter.ShooterIOSim;
+// import frc.robot.subsystems.shooter.ShooterIOSparkMax;
 import frc.robot.subsystems.winch.Winch;
 import frc.robot.subsystems.winch.WinchIO;
 import frc.robot.subsystems.winch.WinchIOSparkMax;
+// import frc.robot.subsystems.vision.Vision;
 
 public class RobotContainer {
     // Xbox controllers
@@ -74,6 +87,7 @@ public class RobotContainer {
     private final Intake intake;
     private final Arm arm;
     private final Shooter shooter;
+    private final Vision vision;
     private final Winch winch;
 
     // Sendable choosers (for driveteam to select autos and positions)
@@ -92,7 +106,7 @@ public class RobotContainer {
 
     // Named Commands (for autos)
     public NamedCommands scoreSpeaker;
-    public NamedCommands runIntake;
+    public NamedCommands runIntake;    
 
     //start time
     public double startTime = Timer.getFPGATimestamp();
@@ -104,6 +118,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
+            vision = new Vision();
             winch = new Winch(new WinchIOSparkMax());
         }
         // Creates a simulated robot.
@@ -112,6 +127,7 @@ public class RobotContainer {
             arm = new Arm(new ArmIOSim());
             intake = new Intake(new IntakeIOSim());
             shooter = new Shooter(new ShooterIOSim());
+            vision = new Vision();
             winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
@@ -120,6 +136,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIO());
             arm = new Arm(new ArmIO());
             shooter = new Shooter(new ShooterIO());
+            vision = new Vision();
             winch = new Winch(new WinchIO());
         }
 

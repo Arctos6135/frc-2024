@@ -26,7 +26,7 @@ public class Launch extends Command {
 
     @Override
     public void execute() {
-        shooter.setVoltages(-12);//setRPS(speed);
+        shooter.setVoltages(12);//setRPS(speed);
     }
 
     @Override

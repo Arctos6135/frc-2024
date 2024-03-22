@@ -19,7 +19,8 @@ public class ShooterIOSparkMax extends ShooterIO {
     private final RelativeEncoder rightEncoder;
     private final RelativeEncoder leftEncoder;
 
-    private final SparkPIDController PIDController = right.getPIDController();
+    private final SparkPIDController rightPIDController = right.getPIDController();
+    private final SparkPIDController leftPIDController = left.getPIDController();
 
     public ShooterIOSparkMax() {
         // Set current limits.
@@ -27,7 +28,10 @@ public class ShooterIOSparkMax extends ShooterIO {
         left.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
 
         // Left motor is following the right one
-        left.follow(right, true);
+        // left.follow(right, true);
+
+        left.setInverted(false);
+        right.setInverted(true);
 
         right.setIdleMode(IdleMode.kBrake);
         left.setIdleMode(IdleMode.kBrake);
@@ -42,20 +46,39 @@ public class ShooterIOSparkMax extends ShooterIO {
         leftEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
     }
     
-    public void setVoltages(double shooterVoltage) {
-        Logger.recordOutput("Shooter Voltage", shooterVoltage);
+    public void setVoltage(double shooterVoltage) {
+        Logger.recordOutput("Left Shooter Voltage", shooterVoltage);
+        Logger.recordOutput("Right Shooter Voltage", shooterVoltage);
         right.setVoltage(shooterVoltage);
+        left.setVoltage(shooterVoltage);
+    }
+
+    public void setVoltages(double leftShooterVoltage, double rightShooterVoltage) {
+        Logger.recordOutput("Left Shooter Voltage", leftShooterVoltage);
+        Logger.recordOutput("Right Shooter Voltage", rightShooterVoltage);
+        right.setVoltage(rightShooterVoltage);
+        left.setVoltage(leftShooterVoltage);
     }
 
     public void setPIDTargetVelocity(double targetVelocity) {
-        PIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity);
+        rightPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity);
+        leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity);
+    }
+
+    public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
+        rightPIDController.setReference(rightTargetVelocity, CANSparkMax.ControlType.kVelocity);
+        leftPIDController.setReference(leftTargetVelocity, CANSparkMax.ControlType.kVelocity);
     }
 
     public void calibratePIDController(double kP, double kI, double kD, double kFF) {
-        PIDController.setP(kP);
-        PIDController.setI(kI);
-        PIDController.setD(kD);
-        PIDController.setFF(kFF);
+        leftPIDController.setP(kP);
+        leftPIDController.setI(kI);
+        leftPIDController.setD(kD);
+        leftPIDController.setFF(kFF);
+        rightPIDController.setP(kP);
+        rightPIDController.setI(kI);
+        rightPIDController.setD(kD);
+        rightPIDController.setFF(kFF);
     }
 
     public void updateInputs(ShooterInputs inputs) {

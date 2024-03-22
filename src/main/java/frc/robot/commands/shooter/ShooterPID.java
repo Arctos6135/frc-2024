@@ -14,11 +14,13 @@ public class ShooterPID extends Command{
     private final TunableNumber kI = new TunableNumber("Shooter/kI", 0);
     private final TunableNumber kD = new TunableNumber("Shooter/kD", 0);
 
-    private double targetSpeed;
+    private double leftTargetSpeed;
+    private double rightTargetSpeed;
     
-    public ShooterPID(Shooter shooter, double targetSpeed) {
+    public ShooterPID(Shooter shooter, double leftTargetSpeed, double rightTargetSpeed) {
         this.shooter = shooter;
-        this.targetSpeed = targetSpeed;
+        this.leftTargetSpeed = leftTargetSpeed;
+        this.rightTargetSpeed = rightTargetSpeed;
 
         TunableNumber.ifChanged(
             () -> {
@@ -33,12 +35,13 @@ public class ShooterPID extends Command{
 
     @Override
     public void execute(){
-        shooter.setPIDTargetVelocity(targetSpeed);
+        shooter.setPIDTargetVelocities(leftTargetSpeed, rightTargetSpeed);
     }
 
-    public boolean atTarget() {
-        // NOTE: 0.1 is totally arbitrary, we need to come up with a reasonale value
-        return Math.abs(shooter.getVelocity() - targetSpeed) < 0.1;
-    }
+    // public boolean atTarget() {
+    //     // NOTE: 0.1 is totally arbitrary, we need to come up with a reasonale value
+    //     // although we currently arent using atTarget() so not urgent
+    //     return Math.abs(shooter.getVelocity() - targetSpeed) < 0.1;
+    // }
         
 }

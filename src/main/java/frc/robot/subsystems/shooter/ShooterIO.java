@@ -26,9 +26,13 @@ public class ShooterIO {
 
     public void updateInputs(ShooterInputs inputs) {}
 
-    public void setVoltages(double shooterVoltage) {}
+    public void setVoltage(double shooterVoltage) {}
+
+    public void setVoltages(double leftShooterVoltage, double rightShooterVoltage) {}
 
     public void setPIDTargetVelocity(double targetVelocity) {}
+
+    public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {}
 
     public void calibratePIDController(double kP, double kI, double kD, double kFF) {}
 }

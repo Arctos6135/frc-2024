@@ -12,7 +12,8 @@ public class ShooterIOSim extends ShooterIO {
     private final FlywheelSim right = new FlywheelSim(DCMotor.getNEO(1), 1, ShooterConstants.MOMENT_OF_INERTIA);
 
     @Override
-    public void setVoltages(double shooterVoltage) {
+    public void setVoltage(double shooterVoltage) {
+        left.setInputVoltage(shooterVoltage);
         right.setInputVoltage(shooterVoltage);
     }
 

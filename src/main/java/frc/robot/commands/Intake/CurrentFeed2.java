@@ -36,7 +36,7 @@ public class CurrentFeed2 extends Command{
     @Override
     public void initialize() {
         intake.setVoltage(IntakeConstants.FEED_VOLTAGE);
-        shooter.setVoltages(ShooterConstants.FEED_VOLTAGE);
+        shooter.setVoltage(ShooterConstants.FEED_VOLTAGE);
         startTime = Timer.getFPGATimestamp();
         shooterCurrent = shooter.getCurrent();
     }

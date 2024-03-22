@@ -30,7 +30,7 @@ public class ReverseFeed extends Command{
 
     @Override
     public void execute(){
-        shooter.setVoltages(-ShooterConstants.ADVANCE_VOLTAGE);
+        shooter.setVoltage(-ShooterConstants.ADVANCE_VOLTAGE);
         intake.setVoltage(-IntakeConstants.FEED_VOLTAGE);
     }
 

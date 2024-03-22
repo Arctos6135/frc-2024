@@ -26,7 +26,7 @@ public class ReverseHandoff extends Command{
 
     @Override
     public void execute(){
-        shooter.setVoltages(-ShooterConstants.ADVANCE_VOLTAGE);
+        shooter.setVoltage(-ShooterConstants.ADVANCE_VOLTAGE);
     }
 
     @Override

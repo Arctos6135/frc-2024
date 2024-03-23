@@ -16,6 +16,7 @@ import astrolabe.follow.AutoBuilder;
 import astrolabe.follow.FollowPath;
 import astrolabe.follow.AstrolabeLogger;
 import astrolabe.follow.GlobalConfig;
+import astrolabe.follow.FollowTrajectory;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -280,7 +281,8 @@ public class RobotContainer {
         //return new IntakePieceSpeed(intake);
         //return new PathPlannerAuto("2 Note Source");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
-        return new FollowPath("Source Part A").andThen(new FollowPath("Source Part B"));
+        //return new FollowPath("Source Part A").andThen(new FollowPath("Source Part B"));
+        return new FollowTrajectory("Stage Part A");
         //return new PathPlannerAuto("Forwards Back");
         //return new PathPlannerAuto("1 Meter Forward");
     }

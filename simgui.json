@@ -8,6 +8,11 @@
       "/SmartDashboard/position chooser": "String Chooser"
     },
     "windows": {
+      "/SmartDashboard/auto chooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/position chooser": {
         "window": {
           "visible": true
@@ -26,9 +31,10 @@
         }
       },
       "SmartDashboard": {
-        "position chooser": {
-          "open": false
-        }
+        "Shooter": {
+          "open": true
+        },
+        "open": true
       }
     }
   },

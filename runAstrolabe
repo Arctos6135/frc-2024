@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd astrolabe
+# TO_DEPLOY='Source Part B'
+DEPLOY_RELATIVE='../' ./gradlew simulateJava
+cd ..

@@ -57,6 +57,8 @@ import frc.robot.subsystems.drivetrain.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 // import frc.robot.subsystems.arm.Arm;
 // import frc.robot.subsystems.arm.ArmIO;
 // import frc.robot.subsystems.arm.ArmIOSim;
@@ -216,6 +218,7 @@ public class RobotContainer {
                 drivetrain.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
             }, 
             new GlobalConfig(3, 3, 3, drivetrain.kinematics), 
+            () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red,
             drivetrain
         );
 

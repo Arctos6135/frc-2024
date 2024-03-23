@@ -33,9 +33,9 @@ public class Shooter extends SubsystemBase {
         io.setVoltage(voltage);
     }
 
-    public void setVoltages(double leftVoltage, double rightVoltage) {
-        io.setVoltages(leftVoltage, rightVoltage);
-    }
+    // public void setVoltages(double leftVoltage, double rightVoltage) {
+    //     io.setVoltages(leftVoltage, rightVoltage);
+    // }
 
     public void setRPS(double rps) {
         double feedforwardOutput = feedforward.calculate(rps);
@@ -56,9 +56,9 @@ public class Shooter extends SubsystemBase {
         io.setPIDTargetVelocity(targetVelocity);
     }
 
-    public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
-        io.setPIDTargetVelocities(leftTargetVelocity, rightTargetVelocity);
-    }
+    // public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
+    //     io.setPIDTargetVelocities(leftTargetVelocity, rightTargetVelocity);
+    // }
 
     public double getVelocity() {
         return (inputs.leftVelocity + inputs.rightVelocity) / 2;

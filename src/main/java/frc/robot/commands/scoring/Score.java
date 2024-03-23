@@ -18,7 +18,7 @@ import frc.robot.commands.shooter.ShooterPID;
 
 public class Score {
     public static Command scoreSpeaker(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {
-        ShooterPID shooterPID = new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS, ShooterConstants.SPEAKER_RPS);
+        ShooterPID shooterPID = new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS);
         
         return new InstantCommand(() -> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION))
             .andThen(new WaitUntilCommand(armPID::atTarget))
@@ -31,14 +31,14 @@ public class Score {
     public static Command scoreAmp(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {
         return new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION))
             .andThen(new WaitUntilCommand(armPID::atTarget))
-            .andThen(new ShooterPID(shooter, ShooterConstants.AMP_RPS, ShooterConstants.AMP_RPS).withTimeout(0.5))
+            .andThen(new ShooterPID(shooter, ShooterConstants.AMP_RPS).withTimeout(0.5))
             .andThen(new InstantCommand(() -> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION)));
     }
 
     public static Command ferryNote(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {
         return new InstantCommand(() -> armPID.setTarget(ArmConstants.FERRY_POSITION))
         .andThen(new WaitUntilCommand(armPID::atTarget))
-        .andThen(new ShooterPID(shooter, ShooterConstants.FERRY_RPS, ShooterConstants.FERRY_RPS).withTimeout(1))
+        .andThen(new ShooterPID(shooter, ShooterConstants.FERRY_RPS).withTimeout(1))
         .andThen(new InstantCommand(()-> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION)));
     }
 

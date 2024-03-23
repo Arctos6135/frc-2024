@@ -46,6 +46,11 @@ public class ShooterIOSim extends ShooterIO {
         rightPIDController.setSetpoint(rightTargetVelocity);
     }
 
+    public void setPIDTargetVelocity(double targetVelocity) {
+        leftPIDController.setSetpoint(targetVelocity);
+        rightPIDController.setSetpoint(targetVelocity);
+    }
+
     public void calibratePIDController(double kP, double kI, double kD) {
         leftPIDController.setPID(kP, kP, kD);
         rightPIDController.setPID(kP, kI, kD);

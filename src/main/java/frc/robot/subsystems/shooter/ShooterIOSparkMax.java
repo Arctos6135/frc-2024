@@ -22,7 +22,7 @@ public class ShooterIOSparkMax extends ShooterIO {
     private final RelativeEncoder leftEncoder;
 
     private final SparkPIDController rightPIDController = right.getPIDController();
-    private final SparkPIDController leftPIDController = left.getPIDController();
+    // private final SparkPIDController leftPIDController = left.getPIDController();
 
     // TODO: calibrate Feedforward values
     private final SimpleMotorFeedforward rightFeedForward = new SimpleMotorFeedforward(0, ShooterConstants.kV, 0);
@@ -34,10 +34,10 @@ public class ShooterIOSparkMax extends ShooterIO {
         left.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
 
         // Left motor is following the right one
-        // left.follow(right, true);
+        left.follow(right, true);
 
-        left.setInverted(false);
-        right.setInverted(true);
+        // left.setInverted(false);
+        // right.setInverted(true);
 
         right.setIdleMode(IdleMode.kBrake);
         left.setIdleMode(IdleMode.kBrake);
@@ -56,39 +56,38 @@ public class ShooterIOSparkMax extends ShooterIO {
         Logger.recordOutput("Left Shooter Voltage", shooterVoltage);
         Logger.recordOutput("Right Shooter Voltage", shooterVoltage);
         right.setVoltage(shooterVoltage);
-        left.setVoltage(shooterVoltage);
     }
 
-    public void setVoltages(double leftShooterVoltage, double rightShooterVoltage) {
-        Logger.recordOutput("Left Shooter Voltage", leftShooterVoltage);
-        Logger.recordOutput("Right Shooter Voltage", rightShooterVoltage);
-        right.setVoltage(rightShooterVoltage);
-        left.setVoltage(leftShooterVoltage);
-    }
+    // public void setVoltages(double leftShooterVoltage, double rightShooterVoltage) {
+    //     Logger.recordOutput("Left Shooter Voltage", leftShooterVoltage);
+    //     Logger.recordOutput("Right Shooter Voltage", rightShooterVoltage);
+    //     right.setVoltage(rightShooterVoltage);
+    //     left.setVoltage(leftShooterVoltage);
+    // }
 
     public void setPIDTargetVelocity(double targetVelocity) {
         rightPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(targetVelocity));
-        leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(targetVelocity));
+        // leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(targetVelocity));
 
         throw new ArithmeticException();
     }
 
-    public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
-        rightPIDController.setReference(rightTargetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(rightTargetVelocity));
-        leftPIDController.setReference(leftTargetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(leftTargetVelocity));
+    // public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
+    //     rightPIDController.setReference(rightTargetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(rightTargetVelocity));
+    //     leftPIDController.setReference(leftTargetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(leftTargetVelocity));
 
-        Logger.recordOutput("Shooter/Left Target Velocity", leftTargetVelocity);
-        Logger.recordOutput("Shooter/Right Target Velocity", rightTargetVelocity);
+    //     Logger.recordOutput("Shooter/Left Target Velocity", leftTargetVelocity);
+    //     Logger.recordOutput("Shooter/Right Target Velocity", rightTargetVelocity);
 
 
-        Logger.recordOutput("Shooter/Left Feedforward", leftFeedForward.calculate(leftTargetVelocity));
-        Logger.recordOutput("Shooter/Right Feedforward", rightFeedForward.calculate(rightTargetVelocity));
-    }
+    //     Logger.recordOutput("Shooter/Left Feedforward", leftFeedForward.calculate(leftTargetVelocity));
+    //     Logger.recordOutput("Shooter/Right Feedforward", rightFeedForward.calculate(rightTargetVelocity));
+    // }
 
     public void calibratePIDController(double kP, double kI, double kD) {
-        leftPIDController.setP(kP);
-        leftPIDController.setI(kI);
-        leftPIDController.setD(kD);
+        // leftPIDController.setP(kP);
+        // leftPIDController.setI(kI);
+        // leftPIDController.setD(kD);
         rightPIDController.setP(kP);
         rightPIDController.setI(kI);
         rightPIDController.setD(kD);

@@ -289,6 +289,8 @@ public class RobotContainer {
     private void configureBindings() {
         Trigger driverLeftBumper = new JoystickButton(driverController, XboxController.Button.kLeftBumper.value);
         Trigger driverRightBumper = new JoystickButton(driverController, XboxController.Button.kRightBumper.value);
+        Trigger driverLeftTrigger = new JoystickButton(driverController, XboxController.Axis.kLeftTrigger.value);
+        Trigger driverRightTrigger = new JoystickButton(driverController, XboxController.Axis.kRightTrigger.value);
         Trigger driverA = new JoystickButton(driverController, XboxController.Button.kA.value);
         Trigger driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
         Trigger driverX = new JoystickButton(driverController, XboxController.Button.kY.value);
@@ -296,6 +298,8 @@ public class RobotContainer {
 
         driverLeftBumper.onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)));
         driverLeftBumper.onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
+        driverRightBumper.onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)));
+        driverRightBumper.onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
         // Binds macros for orienting robot turning to driver's dpad.
         // new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));

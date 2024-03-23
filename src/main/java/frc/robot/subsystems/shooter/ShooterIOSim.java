@@ -26,7 +26,7 @@ public class ShooterIOSim extends ShooterIO {
         inputs.rightVelocity = right.getAngularVelocityRPM() / 60;
     }
 
-
+ 
     public void setPIDTargetVelocity(double targetVelocity) {
         io.setPIDTargetVelocity(targetVelocity);
     }

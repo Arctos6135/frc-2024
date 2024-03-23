@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.70383902591167,
+        "x": 0.6924444618120005,
         "y": 4.397002070357417
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1481534513920915,
-        "y": 4.41923952503395
+        "x": 1.1924444618120007,
+        "y": 3.530976666572979
       },
       "isLocked": false,
-      "linkedName": "2 Note Source Start"
+      "linkedName": "Source Part C Start"
     },
     {
       "anchor": {
-        "x": 0.6924444618120005,
-        "y": 4.397002070357417
+        "x": 4.060360941234703,
+        "y": 2.315442579603108
       },
       "prevControl": {
-        "x": 1.3707054194735173,
-        "y": 3.1808100083436646
+        "x": 2.483346074063943,
+        "y": 2.8750946063337066
+      },
+      "nextControl": {
+        "x": 5.637375808405463,
+        "y": 1.7557905528725102
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.457363011592118,
+        "y": 1.122638826474236
+      },
+      "prevControl": {
+        "x": 7.457363011592118,
+        "y": 1.122638826474236
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Source Part C Start"
+      "linkedName": "Source Part D Start"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +58,7 @@
     "rotation": 0,
     "rotateFast": false
   },
-  "reversed": true,
+  "reversed": false,
   "folder": "Source",
   "previewStartingState": {
     "rotation": 0,

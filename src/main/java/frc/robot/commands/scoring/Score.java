@@ -17,19 +17,21 @@ import frc.robot.commands.shooter.ShooterPID;
 
 
 public class Score {
-    public static Command scoreSpeaker(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {       
+    public static Command scoreSpeaker(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {
+        ShooterPID shooterPID = new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS, ShooterConstants.SPEAKER_RPS);
+        
         return new InstantCommand(() -> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION))
             .andThen(new WaitUntilCommand(armPID::atTarget))
-            .andThen(new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS, ShooterConstants.SPEAKER_RPS)
+            .andThen(shooterPID)
             .raceWith(
-                new WaitCommand(1.2).andThen(new Feed(intake).withTimeout(2))
-            ));
+                new WaitUntilCommand(() -> shooterPID.atTarget()).andThen(new Feed(intake).withTimeout(1))
+            );
     }
 
     public static Command scoreAmp(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {
         return new InstantCommand(() -> armPID.setTarget(ArmConstants.AMP_SCORING_POSITION))
             .andThen(new WaitUntilCommand(armPID::atTarget))
-            .andThen(new ShooterPID(shooter, ShooterConstants.AMP_RPS, ShooterConstants.AMP_RPS).withTimeout(1))
+            .andThen(new ShooterPID(shooter, ShooterConstants.AMP_RPS, ShooterConstants.AMP_RPS).withTimeout(0.5))
             .andThen(new InstantCommand(() -> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION)));
     }
 

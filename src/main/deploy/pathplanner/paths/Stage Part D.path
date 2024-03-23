@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.70383902591167,
-        "y": 4.397002070357417
+        "x": 8.270256540513081,
+        "y": 7.437482225391801
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1481534513920915,
-        "y": 4.41923952503395
+        "x": 7.270256540513081,
+        "y": 7.437482225391801
       },
       "isLocked": false,
-      "linkedName": "2 Note Source Start"
+      "linkedName": "Stage Part D Start"
     },
     {
       "anchor": {
-        "x": 0.6924444618120005,
-        "y": 4.397002070357417
+        "x": 1.35,
+        "y": 5.6
       },
       "prevControl": {
-        "x": 1.3707054194735173,
-        "y": 3.1808100083436646
+        "x": 2.813659474327496,
+        "y": 5.575712920086808
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Source Part C Start"
+      "linkedName": "Stage Part A Start"
     }
   ],
   "rotationTargets": [],
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": true,
-  "folder": "Source",
+  "folder": "Stage",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

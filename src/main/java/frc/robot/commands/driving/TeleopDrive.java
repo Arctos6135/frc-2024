@@ -1,5 +1,6 @@
 package frc.robot.commands.driving;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ControllerConstants;
@@ -14,6 +15,7 @@ public class TeleopDrive extends Command {
 
     private Dampener xDampener = new Dampener(0.5);
     private Dampener yDampener = new Dampener(0.5);
+    private SlewRateLimiter limitter = new SlewRateLimiter(4);
 
     private boolean precisionDrive = false;
 
@@ -37,6 +39,8 @@ public class TeleopDrive extends Command {
 
         y1 *= DriveConstants.MAX_TELEOP_SPEED;
         x1 *= DriveConstants.MAX_TURN_SPEED_FACTOR;
+
+        y1 = limitter.calculate(y1);
 
         drivetrain.setSpeed(y1 + x1, y1 - x1);
     }

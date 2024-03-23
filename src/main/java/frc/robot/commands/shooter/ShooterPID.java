@@ -36,11 +36,11 @@ public class ShooterPID extends Command{
         shooter.setPIDTargetVelocities(leftTargetSpeed, rightTargetSpeed);
     }
 
-    // public boolean atTarget() {
-    //     // NOTE: 0.1 is totally arbitrary, we need to come up with a reasonale value
-    //     // although we currently arent using atTarget() so not urgent
-    //     return Math.abs(shooter.getVelocity() - targetSpeed) < 0.1;
-    // }
+    public boolean atTarget() {
+        // NOTE: 0.1 is totally arbitrary, we need to come up with a reasonale value
+        // although we currently arent using atTarget() so not urgent
+        return Math.abs(shooter.getVelocity() - leftTargetSpeed) < 0.5 && Math.abs(shooter.getVelocity() - rightTargetSpeed) < 0.5;
+    }
 
     @Override
     public void end(boolean i) {

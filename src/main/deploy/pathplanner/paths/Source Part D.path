@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.70383902591167,
-        "y": 4.397002070357417
+        "x": 8.457363011592118,
+        "y": 1.122638826474236
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1481534513920915,
-        "y": 4.41923952503395
+        "x": 7.457363011592118,
+        "y": 1.122638826474236
       },
       "isLocked": false,
-      "linkedName": "2 Note Source Start"
+      "linkedName": "Source Part D Start"
     },
     {
       "anchor": {
-        "x": 0.6924444618120005,
-        "y": 4.397002070357417
+        "x": 4.048666786792263,
+        "y": 2.4206899695850677
       },
       "prevControl": {
-        "x": 1.3707054194735173,
-        "y": 3.1808100083436646
+        "x": 5.506722854742492,
+        "y": 1.8505742761657047
+      },
+      "nextControl": {
+        "x": 2.5906107188420346,
+        "y": 2.990805663004431
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.6690561529271205,
+        "y": 4.3385312981452175
+      },
+      "prevControl": {
+        "x": 1.4701697487699517,
+        "y": 2.950961847511233
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Source Part C Start"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],

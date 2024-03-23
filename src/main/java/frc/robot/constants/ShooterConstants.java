@@ -24,7 +24,7 @@ public class ShooterConstants {
     // Static gain in volts (volts needed to make the flywheel barely move).
     public static final double kS = 0;
     // Velocity gain in volts/ radians per second (voltage required to "cruise" at a given constant velocity).
-    public static final double kV = 0.0019 * 60 * 3.5;
+    public static final double kV = 0.0019 * 60 * 3.8;
     // Acceleration gain in volts/ radians per second^2.
     public static final double kA = 0.001;
 

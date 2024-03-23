@@ -6,8 +6,8 @@ import edu.wpi.first.math.util.Units;
  * Constants related to the dimensioning and control of the drivetrain. Units are in meters, kilograms, seconds.
  */
 public class DriveConstants {
-    public static double PRECISION_FWD_REV = 0.1;
-    public static double PRECISION_TURN = 0.1;
+    public static double PRECISION_FWD_REV = 0.3;
+    public static double PRECISION_TURN = 0.5;
 
     public static double GEARBOX_RATIO = 1 / 8.458;
     public static double WHEEL_DIAMETER = Units.inchesToMeters(6);
@@ -23,7 +23,7 @@ public class DriveConstants {
     public static final double MAX_TURN_SPEED_FACTOR = 1.5;
 
     // Current limits for drivetrain motors.
-    public static final int CURRENT_LIMIT = 30;
+    public static final int CURRENT_LIMIT = 40;
     public static final double POSITION_CONVERSION_FACTOR = ENCODER_CONVERSION_FACTOR;
     public static final double VELOCITY_CONVERSION_FACTOR = ENCODER_CONVERSION_FACTOR / 60;
 }

@@ -170,20 +170,94 @@ public class RobotContainer {
         NamedCommands.registerCommand("stopIntake", new InstantCommand(() -> intake.setVoltage(0)));
         //NamedCommands.registerCommand("spin180", new ProfiledPIDSetAngle(drivetrain, Units.degreesToRadians(120)));
         NamedCommands.registerCommand("invertPose", new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(drivetrain.getPose().getTranslation(), drivetrain.getPose().getRotation().plus(Rotation2d.fromDegrees(180))))));
+        AutoBuilder.configureRamseteRefine(
+            new RamseteController(), 
+            drivetrain::getPose, 
+            drivetrain::getSpeeds, 
+            drivetrain::resetOdometry, 
+            speeds -> {
+                drivetrain.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+            }, 
+            new GlobalConfig(3, 3, 3, drivetrain.kinematics), 
+            () -> true,//DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red,
+            drivetrain
+        );
 
+        AstrolabeLogger.targetPoseLogger = pose -> Logger.recordOutput("Target Pose", pose);
+        AstrolabeLogger.stateLogger = state -> Logger.recordOutput("Pathing State", state);
+        AstrolabeLogger.trajectoryLogger = t -> Logger.recordOutput("Astrolabe Trajectory", t);
+        AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe Angle Error", error);
+        AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe Distance Error", error);
 
         // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
         //positionChooser.addDefaultOption("Red Amp", PositionConstants.RED_AMP);
 
-        // Placeholders until autos are coded.
-        autoChooser.addDefaultOption("2 Note Amp", new PathPlannerAuto("2 Note Amp"));
-        autoChooser.addOption("2 Note Stage", new PathPlannerAuto("2 Note Stage"));
-        autoChooser.addOption("2 Note Source", new PathPlannerAuto("2 Note Source"));
-        autoChooser.addOption("1 Note", new PathPlannerAuto("1 Note"));
+        // // Placeholders until autos are coded.
+        // autoChooser.addDefaultOption("2 Note Amp", new PathPlannerAuto("2 Note Amp"));
+        // autoChooser.addOption("2 Note Stage", new PathPlannerAuto("2 Note Stage"));
+        // autoChooser.addOption("2 Note Source", new PathPlannerAuto("2 Note Source"));
+        // autoChooser.addOption("1 Note", new PathPlannerAuto("1 Note"));
 
-        // Characterization routines.
-        autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
-        autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
+        // // Characterization routines.
+        // autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
+        // autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
+
+        autoChooser.addDefaultOption("2 Note Amp", 
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+                .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", true))
+                .andThen(new FollowTrajectory("2 Note Forward A"))
+                .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", false))
+                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+                .andThen(new FollowTrajectory("2 Note B Forward"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("2 Note Source", 
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+                .andThen(new FollowTrajectory("Source Part A"))
+                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+                .andThen(new FollowTrajectory("Source Part B"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("3 Note Source", 
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+                .andThen(new FollowTrajectory("Source Part A"))
+                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+                .andThen(new FollowTrajectory("Source Part B"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+                .andThen(new FollowTrajectory("Source Part C"))
+                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+                .andThen(new FollowTrajectory("Source Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("2 Note Stage", 
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+                .andThen(new FollowTrajectory("Stage Part A"))
+                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+                .andThen(new FollowTrajectory("Stage Part B"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("3 Note Stage", 
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+                .andThen(new FollowTrajectory("Stage Part A"))
+                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+                .andThen(new FollowTrajectory("Stage Part B"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+                .andThen(new FollowTrajectory("Stage Part C"))
+                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+                .andThen(new FollowTrajectory("Stage Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
 
         // Placeholders until positions are configured.
         positionChooser.addOption("Red Amp", PositionConstants.RED_AMP);
@@ -209,24 +283,7 @@ public class RobotContainer {
             Logger.recordOutput("Trajectory", path.toArray(new Pose2d[path.size()]));
         });
 
-        AutoBuilder.configureRamseteRefine(
-            new RamseteController(), 
-            drivetrain::getPose, 
-            drivetrain::getSpeeds, 
-            drivetrain::resetOdometry, 
-            speeds -> {
-                drivetrain.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
-            }, 
-            new GlobalConfig(3, 3, 3, drivetrain.kinematics), 
-            () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red,
-            drivetrain
-        );
-
-        AstrolabeLogger.targetPoseLogger = pose -> Logger.recordOutput("Target Pose", pose);
-        AstrolabeLogger.stateLogger = state -> Logger.recordOutput("Pathing State", state);
-        AstrolabeLogger.trajectoryLogger = t -> Logger.recordOutput("Astrolabe Trajectory", t);
-        AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe Angle Error", error);
-        AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe Distance Error", error);
+        
     }
 
     private void configureBindings() {
@@ -236,6 +293,9 @@ public class RobotContainer {
         Trigger driverB = new JoystickButton(driverController, XboxController.Button.kB.value);
         Trigger driverX = new JoystickButton(driverController, XboxController.Button.kY.value);
         Trigger driverY = new JoystickButton(driverController, XboxController.Button.kY.value);
+
+        driverLeftBumper.onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)));
+        driverLeftBumper.onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
         // Binds macros for orienting robot turning to driver's dpad.
         // new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
@@ -285,13 +345,23 @@ public class RobotContainer {
         //return new PathPlannerAuto("2 Note Source");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
         //return new FollowPath("Source Part A").andThen(new FollowPath("Source Part B"));
-        return Score.scoreSpeaker(arm, armPID, shooter, intake)
-            .andThen(new InstantCommand(() -> intake.setVoltage(12)))
-            .andThen(new FollowTrajectory("Source Part A"))
-            .andThen(new InstantCommand(() -> intake.setVoltage(0)))
-            .andThen(new FollowTrajectory("Source Part B"))
-            .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        // return Score.scoreSpeaker(arm, armPID, shooter, intake)
+        //     .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+        //     .andThen(new FollowTrajectory("Source Part A"))
+        //     .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+        //     .andThen(new FollowTrajectory("Source Part B"))
+        //     .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        // return Score.scoreSpeaker(arm, armPID, shooter, intake)
+        //     .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+        //     .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", true))
+        //     .andThen(new FollowTrajectory("2 Note Forward A"))
+        //     .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", false))
+        //     .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+        //     .andThen(new FollowTrajectory("2 Note B Forward"))
+        //     .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake));
         //return new PathPlannerAuto("Forwards Back");
         //return new PathPlannerAuto("1 Meter Forward");
+
+        return autoChooser.get();
     }
 }

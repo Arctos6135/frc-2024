@@ -282,7 +282,7 @@ public class RobotContainer {
         //return new PathPlannerAuto("2 Note Source");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
         //return new FollowPath("Source Part A").andThen(new FollowPath("Source Part B"));
-        return new FollowTrajectory("Stage Part A");
+        return new FollowTrajectory("Source Part A");
         //return new PathPlannerAuto("Forwards Back");
         //return new PathPlannerAuto("1 Meter Forward");
     }

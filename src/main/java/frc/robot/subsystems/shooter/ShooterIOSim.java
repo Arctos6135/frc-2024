@@ -26,17 +26,15 @@ public class ShooterIOSim extends ShooterIO {
         inputs.rightVelocity = right.getAngularVelocityRPM() / 60;
     }
 
- 
-    public void setPIDTargetVelocity(double targetVelocity) {
-        io.setPIDTargetVelocity(targetVelocity);
-    }
+
 
     public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
-        io.setPIDTargetVelocities(leftTargetVelocity, rightTargetVelocity);
+        left.setTargetVelocity(leftTargetVelocity);
+        right.setTargetVelocity(rightTargetVelocity);
     }
 
     public void calibratePIDController(double kP, double kI, double kD, double kFF) {
-        io.calibratePIDController(kP, kI, kD, kFF);
+        calibratePIDController(kP.get(), kI.get(), kD.get(), kFF.get());
     }
 
   

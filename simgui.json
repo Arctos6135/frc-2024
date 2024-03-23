@@ -2,6 +2,7 @@
   "NTProvider": {
     "types": {
       "/AdvantageKit/RealOutputs/Arm Mechanism": "Mechanism2d",
+      "/AdvantageKit/RealOutputs/Arm/Mechanism": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/auto chooser": "String Chooser",
       "/SmartDashboard/position chooser": "String Chooser"

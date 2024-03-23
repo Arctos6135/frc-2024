@@ -34,5 +34,5 @@ public class ShooterIO {
 
     public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {}
 
-    public void calibratePIDController(double kP, double kI, double kD, double kFF) {}
+    public void calibratePIDController(double kP, double kI, double kD) {}
 }

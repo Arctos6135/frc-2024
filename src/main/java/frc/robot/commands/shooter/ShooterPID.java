@@ -9,7 +9,6 @@ import frc.robot.util.TunableNumber;
 public class ShooterPID extends Command{
     private final Shooter shooter;
 
-    private final TunableNumber kFF = new TunableNumber("Shooter/kFF", 0.000005);
     private final TunableNumber kP = new TunableNumber("Shooter/kP", 0.00002);
     private final TunableNumber kI = new TunableNumber("Shooter/kI", 0);
     private final TunableNumber kD = new TunableNumber("Shooter/kD", 0);
@@ -24,12 +23,11 @@ public class ShooterPID extends Command{
 
         TunableNumber.ifChanged(
             () -> {
-                shooter.calibratePIDController(kP.get(), kI.get(), kD.get(), kFF.get());
+                shooter.calibratePIDController(kP.get(), kI.get(), kD.get());
             },
             kP,
             kI,
-            kD,
-            kFF
+            kD
         );
     }
 

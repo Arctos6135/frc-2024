@@ -48,8 +48,8 @@ public class Shooter extends SubsystemBase {
         setVoltage(0);
     }
 
-    public void calibratePIDController(double kP, double kI, double kD, double kFF) {
-        io.calibratePIDController(kP, kI, kD, kFF);
+    public void calibratePIDController(double kP, double kI, double kD) {
+        io.calibratePIDController(kP, kI, kD);
     }
 
     public void setPIDTargetVelocity(double targetVelocity) {

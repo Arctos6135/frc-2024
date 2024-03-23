@@ -3,6 +3,8 @@ package frc.robot.subsystems.shooter;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax;
@@ -21,6 +23,10 @@ public class ShooterIOSparkMax extends ShooterIO {
 
     private final SparkPIDController rightPIDController = right.getPIDController();
     private final SparkPIDController leftPIDController = left.getPIDController();
+
+    // TODO: calibrate Feedforward values
+    private final SimpleMotorFeedforward rightFeedForward = new SimpleMotorFeedforward(0, 0, 0);
+    private final SimpleMotorFeedforward leftFeedForward = new SimpleMotorFeedforward(0, 0, 0);
 
     public ShooterIOSparkMax() {
         // Set current limits.
@@ -61,8 +67,8 @@ public class ShooterIOSparkMax extends ShooterIO {
     }
 
     public void setPIDTargetVelocity(double targetVelocity) {
-        rightPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity);
-        leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity);
+        rightPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(targetVelocity));
+        leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(targetVelocity));
     }
 
     public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
@@ -70,15 +76,13 @@ public class ShooterIOSparkMax extends ShooterIO {
         leftPIDController.setReference(leftTargetVelocity, CANSparkMax.ControlType.kVelocity);
     }
 
-    public void calibratePIDController(double kP, double kI, double kD, double kFF) {
+    public void calibratePIDController(double kP, double kI, double kD) {
         leftPIDController.setP(kP);
         leftPIDController.setI(kI);
         leftPIDController.setD(kD);
-        leftPIDController.setFF(kFF);
         rightPIDController.setP(kP);
         rightPIDController.setI(kI);
         rightPIDController.setD(kD);
-        rightPIDController.setFF(kFF);
     }
 
     public void updateInputs(ShooterInputs inputs) {

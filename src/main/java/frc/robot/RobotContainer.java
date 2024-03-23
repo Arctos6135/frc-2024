@@ -255,7 +255,7 @@ public class RobotContainer {
         Trigger DPadDown = new Trigger(() -> operatorController.getPOV() == 180);
         Trigger DPadUp = new Trigger(() -> operatorController.getPOV() == 0);
 
-        operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
+        operatorA.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.1)));//Score.ferryNote(arm, armPID, shooter, intake));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
@@ -282,7 +282,12 @@ public class RobotContainer {
         //return new PathPlannerAuto("2 Note Source");//new PathPlannerAuto("Backwards Test");//new InstantCommand(() -> armPID.setTarget(Units.degreesToRadians(30)));//
         //return autoChooser.get();
         //return new FollowPath("Source Part A").andThen(new FollowPath("Source Part B"));
-        return new FollowTrajectory("Source Part A").andThen(new FollowTrajectory("Source Part B"));
+        return Score.scoreSpeaker(arm, armPID, shooter, intake)
+            .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+            .andThen(new FollowTrajectory("Source Part A"))
+            .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+            .andThen(new FollowTrajectory("Source Part B"))
+            .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake));
         //return new PathPlannerAuto("Forwards Back");
         //return new PathPlannerAuto("1 Meter Forward");
     }

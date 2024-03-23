@@ -21,7 +21,7 @@ public class ArmConstants {
     public static final float MAX_POSITION = (float) Units.degreesToRadians(60); // Soft stop for max (farthest from floor) position
     public static final float MIN_POSITION = (float) Units.degreesToRadians(6); // Soft stop for min (closest to floor) position
     
-    public static final double AMP_SCORING_POSITION = STARTING_POSITION + 1.2; // Binded to X
+    public static final double AMP_SCORING_POSITION = STARTING_POSITION + 1.7; // Binded to X
     public static final double SPEAKER_SCORING_POSITION = STARTING_POSITION; // Binded to Y
     public static final double FERRY_POSITION = STARTING_POSITION; // subject to change.
 

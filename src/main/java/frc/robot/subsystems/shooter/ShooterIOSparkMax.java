@@ -25,8 +25,8 @@ public class ShooterIOSparkMax extends ShooterIO {
     private final SparkPIDController leftPIDController = left.getPIDController();
 
     // TODO: calibrate Feedforward values
-    private final SimpleMotorFeedforward rightFeedForward = new SimpleMotorFeedforward(0, 0, 0);
-    private final SimpleMotorFeedforward leftFeedForward = new SimpleMotorFeedforward(0, 0, 0);
+    private final SimpleMotorFeedforward rightFeedForward = new SimpleMotorFeedforward(0, ShooterConstants.kV, 0);
+    private final SimpleMotorFeedforward leftFeedForward = new SimpleMotorFeedforward(0, ShooterConstants.kV, 0);
 
     public ShooterIOSparkMax() {
         // Set current limits.
@@ -69,11 +69,20 @@ public class ShooterIOSparkMax extends ShooterIO {
     public void setPIDTargetVelocity(double targetVelocity) {
         rightPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(targetVelocity));
         leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(targetVelocity));
+
+        throw new ArithmeticException();
     }
 
     public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
-        rightPIDController.setReference(rightTargetVelocity, CANSparkMax.ControlType.kVelocity);
-        leftPIDController.setReference(leftTargetVelocity, CANSparkMax.ControlType.kVelocity);
+        rightPIDController.setReference(rightTargetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(rightTargetVelocity));
+        leftPIDController.setReference(leftTargetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(leftTargetVelocity));
+
+        Logger.recordOutput("Shooter/Left Target Velocity", leftTargetVelocity);
+        Logger.recordOutput("Shooter/Right Target Velocity", rightTargetVelocity);
+
+
+        Logger.recordOutput("Shooter/Left Feedforward", leftFeedForward.calculate(leftTargetVelocity));
+        Logger.recordOutput("Shooter/Right Feedforward", rightFeedForward.calculate(rightTargetVelocity));
     }
 
     public void calibratePIDController(double kP, double kI, double kD) {

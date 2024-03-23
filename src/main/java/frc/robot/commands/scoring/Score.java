@@ -17,7 +17,7 @@ import frc.robot.commands.shooter.ShooterPID;
 
 
 public class Score {
-    public static Command scoreSpeaker(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {        
+    public static Command scoreSpeaker(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {       
         return new InstantCommand(() -> armPID.setTarget(ArmConstants.SPEAKER_SCORING_POSITION))
             .andThen(new WaitUntilCommand(armPID::atTarget))
             .andThen(new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS, ShooterConstants.SPEAKER_RPS)

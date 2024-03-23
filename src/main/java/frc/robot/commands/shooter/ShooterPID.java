@@ -41,5 +41,10 @@ public class ShooterPID extends Command{
     //     // although we currently arent using atTarget() so not urgent
     //     return Math.abs(shooter.getVelocity() - targetSpeed) < 0.1;
     // }
+
+    @Override
+    public void end(boolean i) {
+        shooter.setPIDTargetVelocities(0, 0);
+    }
         
 }

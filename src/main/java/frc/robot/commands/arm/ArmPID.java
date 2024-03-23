@@ -29,7 +29,7 @@ public class ArmPID extends Command {
 
     private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 2);
     private TrapezoidProfile profile = new TrapezoidProfile(constraints);
-    private ArmFeedforward feedforward = new ArmFeedforward(0, 0.2, 3.7, 0.03);
+    private ArmFeedforward feedforward = new ArmFeedforward(0, 0.2, 3.75, 0.03);
     // NOTE: the integral control here used to be 0.2, if the arm is overshooting weirdly set it back
     //private final PIDController controller = new PIDController(0.5, 0.4, 0);
     private final PIDController controller = new PIDController(0.6, 0.3, 0.05);

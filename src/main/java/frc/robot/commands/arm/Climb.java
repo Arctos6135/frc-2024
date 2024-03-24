@@ -46,7 +46,7 @@ public class Climb extends Command {
         if (Timer.getFPGATimestamp() > (startTime + 0.5)) {
             arm.setVoltage(-12);
         }
-winch.setVoltage(-8);
+         winch.setVoltage(10);
     }
     
     @Override

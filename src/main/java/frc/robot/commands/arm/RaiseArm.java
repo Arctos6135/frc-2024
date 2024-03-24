@@ -27,7 +27,7 @@ public class RaiseArm extends Command{
     @Override
     public void execute(){
         if (this.armPID.atTarget()){
-            this.targetAngle += operatorController.getLeftY() * ArmConstants.CLIMB_SENSITIVITY;
+            this.targetAngle -= operatorController.getLeftY() * ArmConstants.CLIMB_SENSITIVITY;
             armPID.setTarget(targetAngle);
         }
     }

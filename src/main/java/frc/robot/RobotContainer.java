@@ -322,21 +322,21 @@ public class RobotContainer {
         Trigger DPadDown = new Trigger(() -> operatorController.getPOV() == 180);
         Trigger DPadUp = new Trigger(() -> operatorController.getPOV() == 0);
 
-        operatorA.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.1)));//Score.ferryNote(arm, armPID, shooter, intake));
+        operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
 
         // Left bumper hands off to the shooter, while right bumper reverse-handoffs back to the intake.
         operatorLeftBumper.onTrue(new RaceFeed(shooter, intake).withTimeout(3));
-        operatorRightBumper.onTrue(new ReverseFeed(shooter, intake, 1)); // Meters is a complete guess.
+        operatorRightBumper.onTrue(new ReverseFeed(shooter, intake, 0.1)); // Meters is a complete guess.
 
         // Climbing commands.
-        operatorLeftStickButton.onTrue(new RaiseArm(arm, operatorController, armPID));
+        operatorLeftStickButton.toggleOnTrue(new RaiseArm(arm, operatorController, armPID));
         // operatorRightStickButton.onTrue(new Climb(arm, winch, operatorController));
 
         DPadUp.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
-        DPadDown.whileTrue(new Climb(arm, winch, operatorController)).and(() -> Timer.getFPGATimestamp() - startTime < 60);
+        DPadDown.onTrue(new Climb(arm, winch, operatorController).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
     }
 
     public void startMatch() {
@@ -366,6 +366,6 @@ public class RobotContainer {
         //return new PathPlannerAuto("Forwards Back");
         //return new PathPlannerAuto("1 Meter Forward");
 
-        return autoChooser.get();
+        return new InstantCommand(() -> winch.setVoltage(-8));
     }
 }

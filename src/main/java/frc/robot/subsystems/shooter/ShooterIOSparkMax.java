@@ -21,8 +21,8 @@ public class ShooterIOSparkMax extends ShooterIO {
     private final RelativeEncoder rightEncoder;
     private final RelativeEncoder leftEncoder;
 
-    private final SparkPIDController rightPIDController = right.getPIDController();
-    // private final SparkPIDController leftPIDController = left.getPIDController();
+    // private final SparkPIDController rightPIDController = right.getPIDController();
+    private final SparkPIDController leftPIDController = left.getPIDController();
 
     // TODO: calibrate Feedforward values
     private final SimpleMotorFeedforward rightFeedForward = new SimpleMotorFeedforward(0, ShooterConstants.kV, 0);
@@ -33,8 +33,11 @@ public class ShooterIOSparkMax extends ShooterIO {
         right.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
         left.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
 
+        left.setInverted(false);
+        right.setInverted(false);
+
         // Left motor is following the right one
-        left.follow(right, true);
+        right.follow(left, true);
 
         // left.setInverted(false);
         // right.setInverted(true);
@@ -55,7 +58,7 @@ public class ShooterIOSparkMax extends ShooterIO {
     public void setVoltage(double shooterVoltage) {
         Logger.recordOutput("Left Shooter Voltage", shooterVoltage);
         Logger.recordOutput("Right Shooter Voltage", shooterVoltage);
-        right.setVoltage(shooterVoltage);
+        left.setVoltage(shooterVoltage);
     }
 
     // public void setVoltages(double leftShooterVoltage, double rightShooterVoltage) {
@@ -66,10 +69,8 @@ public class ShooterIOSparkMax extends ShooterIO {
     // }
 
     public void setPIDTargetVelocity(double targetVelocity) {
-        rightPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(targetVelocity));
-        // leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(targetVelocity));
-
-        throw new ArithmeticException();
+        // rightPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(targetVelocity));
+        leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(targetVelocity));
     }
 
     // public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
@@ -88,9 +89,9 @@ public class ShooterIOSparkMax extends ShooterIO {
         // leftPIDController.setP(kP);
         // leftPIDController.setI(kI);
         // leftPIDController.setD(kD);
-        rightPIDController.setP(kP);
-        rightPIDController.setI(kI);
-        rightPIDController.setD(kD);
+        leftPIDController.setP(kP);
+        leftPIDController.setI(kI);
+        leftPIDController.setD(kD);
     }
 
     public void updateInputs(ShooterInputs inputs) {

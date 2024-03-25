@@ -78,7 +78,7 @@ public class ArmIOSparkMax extends ArmIO {
 
         // Velocity
         inputs.leftVelocity = -leftEncoder.getVelocity();
-        inputs.rightPosition = rightEncoder.getVelocity();
+        inputs.rightVelocity = rightEncoder.getVelocity();
 
         // Current
         inputs.leftCurrent = armLeft.getOutputCurrent();

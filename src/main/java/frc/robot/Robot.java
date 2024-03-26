@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -49,7 +50,10 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.driverController.setRumble(RumbleType.kBothRumble, 0);
+    m_robotContainer.operatorController.setRumble(RumbleType.kBothRumble, 0);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -59,6 +63,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.startMatch();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -81,6 +86,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopPeriodic() {}
+
+  @Override
+  public void simulationPeriodic() {}
 
   @Override
   public void teleopExit() {}

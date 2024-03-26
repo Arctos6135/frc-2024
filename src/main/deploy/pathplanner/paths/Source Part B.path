@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 2.70383902591167,
+        "y": 4.397002070357417
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0,
-        "y": 0.0
+        "x": 2.1481534513920915,
+        "y": 4.41923952503395
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "2 Note Source Start"
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 1.5
+        "x": 0.6924444618120005,
+        "y": 4.397002070357417
       },
       "prevControl": {
-        "x": 1.5,
-        "y": 0.5
+        "x": 1.3707054194735173,
+        "y": 3.1808100083436646
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Source Part C Start"
     }
   ],
   "rotationTargets": [],
@@ -42,8 +42,8 @@
     "rotation": 0,
     "rotateFast": false
   },
-  "reversed": false,
-  "folder": null,
+  "reversed": true,
+  "folder": "Source",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

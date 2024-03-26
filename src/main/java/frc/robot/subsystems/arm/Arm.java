@@ -1,13 +1,13 @@
 package frc.robot.subsystems.arm;
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.ArmConstants;
 import frc.robot.commands.characterization.FeedforwardLog;
 import frc.robot.commands.characterization.LoggedMechanism;
 import frc.robot.commands.characterization.LoggedMechanismGroup;
@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
 
     private final Mechanism2d mechanism = new Mechanism2d(42, 42);
     private final MechanismRoot2d root = mechanism.getRoot("Arm", 21, 21);
-    private final MechanismLigament2d shortArm = new MechanismLigament2d("Short Arm", 8, 60, 10, new Color8Bit(255, 0, 0));
+    private final MechanismLigament2d shortArm = new MechanismLigament2d("Short Arm", 8, 0, 10, new Color8Bit(255, 0, 0));
     private final MechanismLigament2d longArm = new MechanismLigament2d("Long Arm", 15, -60);
 
     public Arm(ArmIO io) {
@@ -36,26 +36,29 @@ public class Arm extends SubsystemBase {
         io.updateInputs(inputs);
 
         // Update mechanism
-        shortArm.setAngle(inputs.position + 60);
+        shortArm.setAngle(inputs.leftPosition);
         longArm.setAngle(-60);
 
         // Log all the sensor data.
         Logger.processInputs("Arm", inputs);
-        Logger.recordOutput("Arm Mechanism", mechanism);
-
+        Logger.recordOutput("Arm/Mechanism", mechanism);
     }
 
     public double getArmPosition() {
-        return inputs.position;
+        return inputs.leftPosition;
     }
 
     public double getArmVelocity() {
-        return inputs.velocity;
+        return inputs.leftVelocity;
     }
 
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Arm Voltage", voltage);
+        Logger.recordOutput("Arm/Voltage", voltage);
         io.setVoltage(voltage);
+    }
+
+    public void setIdleMode(IdleMode idleMode) {
+        io.setIdleMode(idleMode);
     }
 
 
@@ -64,7 +67,7 @@ public class Arm extends SubsystemBase {
         FeedforwardLog log = new FeedforwardLog();
         LoggedMechanism mechanism = new LoggedMechanism(
             log,
-            new Mechanism(this::setVoltage, () -> inputs.position, () -> inputs.velocity)
+            new Mechanism(this::setVoltage, () -> inputs.leftPosition, () -> inputs.leftVelocity)
         );
         return new VelocityRoutine(new LoggedMechanismGroup(mechanism), 1, 0.25).finallyDo(() -> log.logCSV("ArmVelocity"));
     }

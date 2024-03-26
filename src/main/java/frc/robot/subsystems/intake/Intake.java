@@ -26,15 +26,22 @@ public class Intake extends SubsystemBase {
 
         medianCurrent = filter.calculate(inputs.current);
 
-        Logger.recordOutput("Intake Filtered Current", medianCurrent);
+        Logger.recordOutput("Intake/Filtered Current", medianCurrent);
     }
 
+    public double getVelocity() {
+        return inputs.speed;
+    }
+
+    /**
+     * @return position in meters
+     */
     public double getPosition() {
         return inputs.position;
     }
 
     public void setVoltage(double voltage) {
-        Logger.recordOutput("Intake Voltage", voltage);
+        Logger.recordOutput("Intake/Voltage", voltage);
         io.setVoltage(voltage);
     }
 

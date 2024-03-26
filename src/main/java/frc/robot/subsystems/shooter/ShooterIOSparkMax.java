@@ -3,8 +3,13 @@ package frc.robot.subsystems.shooter;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 
 import frc.robot.constants.CANBus;
 import frc.robot.constants.ShooterConstants;
@@ -16,12 +21,26 @@ public class ShooterIOSparkMax extends ShooterIO {
     private final RelativeEncoder rightEncoder;
     private final RelativeEncoder leftEncoder;
 
+    // private final SparkPIDController rightPIDController = right.getPIDController();
+    private final SparkPIDController leftPIDController = left.getPIDController();
+
+    // TODO: calibrate Feedforward values
+    private final SimpleMotorFeedforward rightFeedForward = new SimpleMotorFeedforward(0, ShooterConstants.kV, 0);
+    private final SimpleMotorFeedforward leftFeedForward = new SimpleMotorFeedforward(0, ShooterConstants.kV, 0);
+
     public ShooterIOSparkMax() {
         // Set current limits.
         right.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
         left.setSmartCurrentLimit(ShooterConstants.CURRENT_LIMIT);
-        
-        right.setInverted(true);
+
+        left.setInverted(false);
+        right.setInverted(false);
+
+        // Left motor is following the right one
+        right.follow(left, true);
+
+        // left.setInverted(false);
+        // right.setInverted(true);
 
         right.setIdleMode(IdleMode.kBrake);
         left.setIdleMode(IdleMode.kBrake);
@@ -29,20 +48,67 @@ public class ShooterIOSparkMax extends ShooterIO {
         rightEncoder = right.getEncoder();
         leftEncoder = left.getEncoder();
 
-        rightEncoder.setPositionConversionFactor(ShooterConstants.ENCODER_CONVERSION_FACTOR);
-        leftEncoder.setPositionConversionFactor(ShooterConstants.ENCODER_CONVERSION_FACTOR);
+        rightEncoder.setPositionConversionFactor(ShooterConstants.POSITION_CONVERSION_FACTOR);
+        leftEncoder.setPositionConversionFactor(ShooterConstants.POSITION_CONVERSION_FACTOR);
+    
+        rightEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
+        leftEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
     }
     
-    public void setVoltages(double leftVoltage, double rightVoltage) {
-        left.setVoltage(leftVoltage);
-        right.setVoltage(rightVoltage);
+    public void setVoltage(double shooterVoltage) {
+        Logger.recordOutput("Left Shooter Voltage", shooterVoltage);
+        Logger.recordOutput("Right Shooter Voltage", shooterVoltage);
+        left.setVoltage(shooterVoltage);
+    }
+
+    // public void setVoltages(double leftShooterVoltage, double rightShooterVoltage) {
+    //     Logger.recordOutput("Left Shooter Voltage", leftShooterVoltage);
+    //     Logger.recordOutput("Right Shooter Voltage", rightShooterVoltage);
+    //     right.setVoltage(rightShooterVoltage);
+    //     left.setVoltage(leftShooterVoltage);
+    // }
+
+    public void setPIDTargetVelocity(double targetVelocity) {
+        // rightPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(targetVelocity));
+        leftPIDController.setReference(targetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(targetVelocity));
+    }
+
+    // public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
+    //     rightPIDController.setReference(rightTargetVelocity, CANSparkMax.ControlType.kVelocity, 0, rightFeedForward.calculate(rightTargetVelocity));
+    //     leftPIDController.setReference(leftTargetVelocity, CANSparkMax.ControlType.kVelocity, 0, leftFeedForward.calculate(leftTargetVelocity));
+
+    //     Logger.recordOutput("Shooter/Left Target Velocity", leftTargetVelocity);
+    //     Logger.recordOutput("Shooter/Right Target Velocity", rightTargetVelocity);
+
+
+    //     Logger.recordOutput("Shooter/Left Feedforward", leftFeedForward.calculate(leftTargetVelocity));
+    //     Logger.recordOutput("Shooter/Right Feedforward", rightFeedForward.calculate(rightTargetVelocity));
+    // }
+
+    public void calibratePIDController(double kP, double kI, double kD) {
+        // leftPIDController.setP(kP);
+        // leftPIDController.setI(kI);
+        // leftPIDController.setD(kD);
+        leftPIDController.setP(kP);
+        leftPIDController.setI(kI);
+        leftPIDController.setD(kD);
     }
 
     public void updateInputs(ShooterInputs inputs) {
+        inputs.rightVelocity = rightEncoder.getVelocity();
+        inputs.leftVelocity = leftEncoder.getVelocity();
+
+        // Current
         inputs.rightCurrent = right.getOutputCurrent();
         inputs.leftCurrent = left.getOutputCurrent();
 
-        inputs.rightVelocity = rightEncoder.getVelocity();
-        inputs.leftVelocity = leftEncoder.getVelocity();
+        // Temperature
+        inputs.leftTemperature = left.getMotorTemperature();
+        inputs.rightTemperature = right.getMotorTemperature();
+
+        // Voltage
+        inputs.leftVoltage = left.getBusVoltage() * left.getAppliedOutput();
+        inputs.rightVoltage = right.getBusVoltage() * right.getAppliedOutput();
     }
+
 }

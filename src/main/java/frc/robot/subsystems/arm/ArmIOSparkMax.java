@@ -2,53 +2,99 @@ package frc.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkBase;
+
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 
-import frc.robot.constants.CANBus;
 import frc.robot.constants.ArmConstants;
+import frc.robot.constants.CANBus;
 
 public class ArmIOSparkMax extends ArmIO {
     // Motors that control the arm.
-    private final CANSparkMax armMaster = new CANSparkMax(CANBus.ARM_MASTER, MotorType.kBrushless);
-    private final CANSparkMax armFollower = new CANSparkMax(CANBus.ARM_FOLLOWER, MotorType.kBrushless);
+    private final CANSparkMax armLeft = new CANSparkMax(CANBus.ARM_LEFT, MotorType.kBrushless);
+    private final CANSparkMax armRight = new CANSparkMax(CANBus.ARM_RIGHT, MotorType.kBrushless);
 
     // Encoder to know the arm's position.
-    private final RelativeEncoder armEncoder;
+    private final RelativeEncoder leftEncoder;
+    private final RelativeEncoder rightEncoder;
 
     public ArmIOSparkMax() {
-        armFollower.setInverted(true);
+        armLeft.setInverted(false);
+        armRight.setInverted(false);
 
-        armFollower.follow(armMaster);
+        armLeft.follow(armRight, true);
 
         // Sets current limit to prevent brownouts.
-        armMaster.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
-        armFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+        armLeft.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+        armRight.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
 
-        armMaster.setIdleMode(IdleMode.kBrake);
+        armLeft.setIdleMode(IdleMode.kBrake);
+        armRight.setIdleMode(IdleMode.kBrake);
         
-        armEncoder = armMaster.getEncoder();
+        leftEncoder = armLeft.getEncoder();
 
-        armEncoder.setPositionConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
-        armEncoder.setVelocityConversionFactor(ArmConstants.ENCODER_CONVERSION_FACTOR);
-        armEncoder.setPosition(ArmConstants.STARTING_POSITION);
+        leftEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        leftEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
+        leftEncoder.setPosition(-ArmConstants.STARTING_POSITION);
+
+        rightEncoder = armRight.getEncoder();
+
+        rightEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        rightEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
+        rightEncoder.setPosition(-ArmConstants.STARTING_POSITION);
 
         // sets up soft limits
-        armMaster.enableSoftLimit(CANSparkBase.SoftLimitDirection.kForward, true);
-        armMaster.enableSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, true);
-        armMaster.setSoftLimit(CANSparkBase.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
-        armMaster.setSoftLimit(CANSparkBase.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
+        // we don't need tp enable soft stops on armLeft since it is following armRight
+        armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+        armLeft.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+ 
+         // sets up soft limits
+
+        // armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.MAX_POSITION); // need to make sure that max and min are in the right units and are the right value
+        // armRight.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, ArmConstants.MIN_POSITION);
+        armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+        armRight.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+
+        // new Trigger(() -> new XboxController(0).getXButtonPressed()).onTrue(new InstantCommand(() -> {
+        //     leftEncoder.setPosition(-ArmConstants.STARTING_POSITION);
+        //     rightEncoder.setPosition(-ArmConstants.STARTING_POSITION);
+        // }));
     }
 
     @Override
     public void setVoltage(double voltage) {
-        armMaster.setVoltage(voltage);
+        armRight.setVoltage(-voltage);
     }
 
     @Override
-    public void updateInputs(ArmInputs inputs) {
-        inputs.position = armEncoder.getPosition();
-        inputs.velocity = armEncoder.getVelocity();
+    public void updateInputs(ArmInputs inputs) {   
+        // Position
+        inputs.leftPosition = -leftEncoder.getPosition();
+        inputs.rightPosition = rightEncoder.getPosition();
+
+        // Velocity
+        inputs.leftVelocity = -leftEncoder.getVelocity();
+        inputs.rightVelocity = rightEncoder.getVelocity();
+
+        // Current
+        inputs.leftCurrent = armLeft.getOutputCurrent();
+        inputs.rightCurrent = armRight.getOutputCurrent();
+
+        // Temperature
+        inputs.leftTemperature = armLeft.getMotorTemperature();
+        inputs.rightTemperature = armRight.getMotorTemperature();
+
+        // Voltage
+        inputs.leftVoltage = armLeft.getBusVoltage() * armLeft.getAppliedOutput();
+        inputs.rightVoltage = armRight.getBusVoltage() * armRight.getAppliedOutput();
+    }
+
+    public void setIdleMode(IdleMode idleMode) {
+        armLeft.setIdleMode(idleMode);
+        armRight.setIdleMode(idleMode);
     }
 }

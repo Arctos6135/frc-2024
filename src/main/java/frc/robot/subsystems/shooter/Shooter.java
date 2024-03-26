@@ -27,27 +27,52 @@ public class Shooter extends SubsystemBase {
         Logger.processInputs("Shooter", inputs);
     }
 
-    private void setVoltages(double leftVoltage, double rightVoltage) {
-        Logger.recordOutput("Shooter Left Voltage", leftVoltage);
-        Logger.recordOutput("Shooter Right Voltage", rightVoltage);
-        io.setVoltages(leftVoltage, rightVoltage);
+    public void setVoltage(double voltage) {
+        Logger.recordOutput("Shooter Left Voltage", voltage);
+        Logger.recordOutput("Shooter Right Voltage", voltage);
+        io.setVoltage(voltage);
     }
+
+    // public void setVoltages(double leftVoltage, double rightVoltage) {
+    //     io.setVoltages(leftVoltage, rightVoltage);
+    // }
 
     public void setRPS(double rps) {
         double feedforwardOutput = feedforward.calculate(rps);
-        Logger.recordOutput("Shooter Target Velocity", rps);
+        Logger.recordOutput("Shoot Velocity Target", rps);
 
-        double leftOutput = feedforwardOutput;
-        double rightOutput = feedforwardOutput;
-
-        setVoltages(leftOutput, rightOutput);
+        setVoltage(feedforwardOutput);
     }
 
     public void stop() {
-        setVoltages(0, 0);
+        setVoltage(0);
     }
+
+    public void calibratePIDController(double kP, double kI, double kD) {
+        io.calibratePIDController(kP, kI, kD);
+    }
+
+    public void setPIDTargetVelocity(double targetVelocity) {
+        io.setPIDTargetVelocity(targetVelocity);
+    }
+
+    // public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
+    //     io.setPIDTargetVelocities(leftTargetVelocity, rightTargetVelocity);
+    // }
 
     public double getVelocity() {
         return (inputs.leftVelocity + inputs.rightVelocity) / 2;
+    }
+    
+    public double getPosition() {
+        return inputs.leftPosition;
+    }
+
+    public double getCurrent() {
+        return (inputs.leftCurrent + inputs.rightCurrent) / 2;
+    }
+
+    public double getVoltage(){
+        return (inputs.leftVoltage + inputs.rightVoltage) / 2;
     }
 }

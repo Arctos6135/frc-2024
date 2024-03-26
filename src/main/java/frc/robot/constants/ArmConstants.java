@@ -3,26 +3,32 @@ package frc.robot.constants;
 import edu.wpi.first.math.util.Units;
 
 public class ArmConstants {
-    // TODO Incredible Zero GEARBOX_RATIO
-    public static final double GEARBOX_RATIO = 1;
+    public static final double GEARBOX_RATIO = 1.0 / 170.0;
 
-    // The arm length in meters.
-    public static final double ARM_LENGTH = 1;
-    // In kg
-    public static final double ARM_WEIGHT = 1;
+    // The arm length in meters, measured in CAD.
+    public static final double ARM_LENGTH = Units.inchesToMeters(12.587);
+    // In kg (complete guess)
+    public static final double ARM_WEIGHT = 7;
     
-    // Undecided while design figures out what to do.
-    public static final double ENCODER_CONVERSION_FACTOR = 2 * Math.PI * GEARBOX_RATIO;
+    // Radians.
+    public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI * GEARBOX_RATIO;
+    // Radians per second.
+    public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI * GEARBOX_RATIO / 60.0;
 
-    public static final double STARTING_POSITION = Units.degreesToRadians(-55);
+    // Angles are measured from when the short part of the arm is horizontal, in radians, with negative numbers meaning the arm is below the horizontal.
 
-    // TODO implement and tune the following :)
-    public static final float MAX_POSITION = (float) Math.PI / 2; // Soft stop for max (farthest from floor) position
-    public static final float MIN_POSITION = 90; // Soft stop for min (closest to floor) position
+    public static final double STARTING_POSITION = Units.degreesToRadians(6);
+    public static final float MAX_POSITION = (float) Units.degreesToRadians(60); // Soft stop for max (farthest from floor) position
+    public static final float MIN_POSITION = (float) Units.degreesToRadians(6); // Soft stop for min (closest to floor) position
     
-    public static final double SPEAKER_SCORING_POSITION = Units.degreesToRadians(-55);
-    public static final double AMP_SCORING_POSITION = Units.degreesToRadians(-55);
+    public static final double AMP_SCORING_POSITION = STARTING_POSITION + 1.7; // Binded to X
+    public static final double SPEAKER_SCORING_POSITION = STARTING_POSITION; // Binded to Y
+    public static final double FERRY_POSITION = STARTING_POSITION; // subject to change.
+
+    public static final double ARM_TOLERANCE = 5 * Math.PI / 180;
 
     // Current limit for arm motor.
-    public static final int CURRENT_LIMIT = 15;
+    public static final int CURRENT_LIMIT = 30;
+
+    public static final double CLIMB_SENSITIVITY = 0.05;
 }

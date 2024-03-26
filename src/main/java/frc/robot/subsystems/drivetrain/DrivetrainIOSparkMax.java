@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
 import org.littletonrobotics.junction.Logger;
@@ -47,6 +48,10 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         leftMaster.setIdleMode(IdleMode.kBrake);
         rightMaster.setIdleMode(IdleMode.kBrake);
 
+
+        leftFollower.setIdleMode(IdleMode.kBrake);
+        rightFollower.setIdleMode(IdleMode.kBrake);
+
         leftMaster.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
         rightMaster.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
 
@@ -65,9 +70,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
     @Override
     public void setVoltages(double left, double right) {
-        Logger.recordOutput("Left Voltage", left);        
-        Logger.recordOutput("Right Voltage", right);
-
         leftMaster.setVoltage(left);
         rightMaster.setVoltage(right);
     }
@@ -80,7 +82,25 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         inputs.leftVelocity = leftEncoder.getVelocity();
         inputs.rightVelocity = rightEncoder.getVelocity();
 
-        inputs.yaw = gyro.getAngle(gyro.getYawAxis());
-        inputs.yawRate = gyro.getRate(gyro.getYawAxis());
+        inputs.yaw = Units.degreesToRadians(gyro.getAngle(gyro.getYawAxis()));
+        inputs.yawRate = Units.degreesToRadians(gyro.getRate(gyro.getYawAxis()));
+
+        // Current
+        inputs.leftMasterCurrent = leftMaster.getOutputCurrent();
+        inputs.rightMasterCurrent = rightMaster.getOutputCurrent();
+        inputs.leftFollowerCurrent = leftMaster.getOutputCurrent();
+        inputs.rightFollowerCurrent = rightMaster.getOutputCurrent();
+
+        // Temperature
+        inputs.leftMasterTemperature = leftMaster.getMotorTemperature();
+        inputs.rightMasterTemperature = rightMaster.getMotorTemperature();
+        inputs.leftFollowerTemperature = leftMaster.getMotorTemperature();
+        inputs.rightFollowerTemperature = rightMaster.getMotorTemperature();
+
+        // Voltage
+        inputs.leftMasterVoltage = leftMaster.getBusVoltage() * leftMaster.getAppliedOutput();
+        inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.getAppliedOutput();
+        inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.getAppliedOutput();
+        inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.getAppliedOutput();
     }
 }

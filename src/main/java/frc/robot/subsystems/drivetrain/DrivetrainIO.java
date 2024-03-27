@@ -52,4 +52,7 @@ public class DrivetrainIO {
      * @param right the voltage of the right side in the range [-12, 12]
      */
     public void setVoltages(double left, double right) {}
+
+    public void setSpeed(double left, double right, double leftFeedforward, double rightFeedforward) { }
+
 }

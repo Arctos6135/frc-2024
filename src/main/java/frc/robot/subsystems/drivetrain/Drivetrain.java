@@ -151,7 +151,9 @@ public class Drivetrain extends SubsystemBase {
         Logger.recordOutput("DT/Right Feedforward", rightFeedforwardEffort);
         Logger.recordOutput("DT/Right Voltage", right);
 
-        io.setVoltages((Math.abs(targetVelocityLeft) < 0.1) ? 0 : left, (Math.abs(targetVelocityRight) < 0.1) ? 0 : right);
+        //io.setVoltages((Math.abs(targetVelocityLeft) < 0.1) ? 0 : left, (Math.abs(targetVelocityRight) < 0.1) ? 0 : right);
+
+        io.setSpeed(leftVelocity, rightVelocity, (Math.abs(targetVelocityLeft) < 0.1) ? 0 : leftFeedforwardEffort, (Math.abs(targetVelocityRight) < 0.1) ? 0  : rightFeedforwardEffort);
     }
 
     /**

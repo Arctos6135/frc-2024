@@ -36,14 +36,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
     private final SparkPIDController leftController = leftMaster.getPIDController();
     private final SparkPIDController rightController = rightMaster.getPIDController();
 
-    TunableNumber kPLeft = new TunableNumber("DT/Left/kP", 0.00001);
-    TunableNumber kILeft = new TunableNumber("DT/Left/kI", 0);
-    TunableNumber kDLeft = new TunableNumber("DT/Left/kD", 0);
-
-    TunableNumber kPRight = new TunableNumber("DT/Right/kP", 0.00001);
-    TunableNumber kIRight = new TunableNumber("DT/Right/kI", 0);
-    TunableNumber kDRight = new TunableNumber("DT/Right/kD", 0);
-
     // Gyro.
     private final ADIS16470_IMU gyro = new ADIS16470_IMU();
     
@@ -82,13 +74,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         leftEncoder.setPosition(0);
         rightEncoder.setPosition(0);
 
-        leftController.setP(kPLeft.get());
-        leftController.setI(kILeft.get());
-        leftController.setD(kDLeft.get());
-
-        rightController.setP(kPLeft.get());
-        rightController.setI(kILeft.get());
-        rightController.setD(kDLeft.get());
     }   
 
     @Override
@@ -131,5 +116,18 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         inputs.rightMasterVoltage = rightMaster.getBusVoltage() * rightMaster.getAppliedOutput();
         inputs.leftFollowerVoltage = leftMaster.getBusVoltage() * leftFollower.getAppliedOutput();
         inputs.rightFollowerVoltage = rightMaster.getBusVoltage() * rightFollower.getAppliedOutput();
+
+        
+    }
+
+    @Override
+    public void configurePID(double kPLeft, double kILeft, double kDLeft, double kPRight, double kIRight, double kDRight) {
+        leftController.setP(kPLeft);
+        leftController.setI(kILeft);
+        leftController.setD(kDLeft);
+
+        rightController.setP(kPRight);
+        rightController.setI(kIRight);
+        rightController.setD(kDRight);
     }
 }

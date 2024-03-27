@@ -35,6 +35,7 @@ import frc.robot.commands.characterization.LoggedMechanismGroup;
 import frc.robot.commands.characterization.Mechanism;
 import frc.robot.commands.characterization.VelocityRoutine;
 import frc.robot.util.MathUtils;
+import frc.robot.util.TunableNumber;
 
 /**
  * A subsystem that controls the drivey bit of the robot.
@@ -69,6 +70,14 @@ public class Drivetrain extends SubsystemBase {
     private double leftAcceleration = 0;
     private double rightAcceleration = 0;
 
+    TunableNumber kPLeft = new TunableNumber("DT/Left/kP", 0.00001);
+    TunableNumber kILeft = new TunableNumber("DT/Left/kI", 0);
+    TunableNumber kDLeft = new TunableNumber("DT/Left/kD", 0);
+
+    TunableNumber kPRight = new TunableNumber("DT/Right/kP", 0.00001);
+    TunableNumber kIRight = new TunableNumber("DT/Right/kI", 0);
+    TunableNumber kDRight = new TunableNumber("DT/Right/kD", 0);
+
 
     /**
      * Construct a new odometry object.
@@ -83,6 +92,8 @@ public class Drivetrain extends SubsystemBase {
      */
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
+
+        io.configurePID(kPLeft.get(), kILeft.get(), kDLeft.get(), kPRight.get(), kIRight.get(), kDRight.get());
 
         AutoBuilder.configureLTV(
             this::getPose, 
@@ -154,6 +165,13 @@ public class Drivetrain extends SubsystemBase {
         //io.setVoltages((Math.abs(targetVelocityLeft) < 0.1) ? 0 : left, (Math.abs(targetVelocityRight) < 0.1) ? 0 : right);
 
         io.setSpeed(leftVelocity, rightVelocity, (Math.abs(targetVelocityLeft) < 0.1) ? 0 : leftFeedforwardEffort, (Math.abs(targetVelocityRight) < 0.1) ? 0  : rightFeedforwardEffort);
+    
+        TunableNumber.ifChanged(
+            () -> {
+                io.configurePID(kPLeft.get(), kILeft.get(), kDLeft.get(), kPRight.get(), kIRight.get(), kDRight.get());
+            },
+            kPLeft, kILeft, kDLeft, kPRight, kIRight, kDRight
+        );
     }
 
     /**

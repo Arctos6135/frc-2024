@@ -22,7 +22,7 @@ public class VisionIO {
         double noteArea;
     }
 
-    private boolean hasTarget() {
+    public boolean hasTarget() {
         PhotonPipelineResult result = photonCamera.getLatestResult();
         if(result.hasTargets()) {
             return true;
@@ -31,7 +31,7 @@ public class VisionIO {
     }
     
     // in meters
-    private double getNoteDistance() {
+    public double getNoteDistance() {
         PhotonPipelineResult result = photonCamera.getLatestResult();
         if (result.hasTargets()) {
             return PhotonUtils.calculateDistanceToTargetMeters(
@@ -45,7 +45,7 @@ public class VisionIO {
     }
     
     // in radians
-    private double getNoteAngle() {//Pose2d targetPose, double cameraToRobot) {
+    public double getNoteAngle() {//Pose2d targetPose, double cameraToRobot) {
         PhotonPipelineResult result = photonCamera.getLatestResult();
         if (result.hasTargets()) {
             // return PhotonUtils.estimateFieldToRobot(

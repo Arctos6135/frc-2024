@@ -3,6 +3,8 @@ package frc.robot.subsystems.vision;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VisionConstants;
 
@@ -24,5 +26,13 @@ public class Vision extends SubsystemBase {
 
     public Vision() {
 	    this.io = new VisionIO();
+    }
+
+    public boolean hasTarget() {
+        return io.hasTarget();
+    }
+
+    public Translation2d getTarget() {
+        return new Translation2d(io.getNoteDistance(), Rotation2d.fromRadians(io.getNoteAngle()));
     }
 }

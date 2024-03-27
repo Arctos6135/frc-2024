@@ -20,7 +20,7 @@ public class NoteLocalizer extends Command {
     private final Vision vision;
     private final Supplier<Pose2d> odometry;
 
-    private final RingBuffer<Translation2d> buffer = new RingBuffer<>(128);
+    private final RingBuffer<Pose2d> buffer = new RingBuffer<>(128);
 
     // x' = Ax + Bu
     // y = Cx + Du
@@ -58,6 +58,8 @@ public class NoteLocalizer extends Command {
 
     @Override
     public void execute() {
-        
+        buffer.add(odometry.get());
+
+        vision.get
     }
 }

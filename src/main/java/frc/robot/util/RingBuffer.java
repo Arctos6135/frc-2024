@@ -23,4 +23,10 @@ public class RingBuffer<T> {
             return Optional.of(buffer[i % buffer.length]);
         }
     }
+
+    public void add(T element) {
+        buffer[next] = element;
+        next = (next + 1) % buffer.length;
+        totalWrites += 1;
+    }
 }

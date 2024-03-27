@@ -74,6 +74,19 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         leftEncoder.setPosition(0);
         rightEncoder.setPosition(0);
 
+        leftEncoder.setAverageDepth(4);
+        rightEncoder.setAverageDepth(4);
+
+        leftEncoder.setMeasurementPeriod(16);
+        rightEncoder.setMeasurementPeriod(16);
+
+        leftController.setP(0.5);
+        leftController.setI(0);
+        leftController.setD(0);
+
+        rightController.setP(0.5);
+        rightController.setI(0);
+        rightController.setD(0);
     }   
 
     @Override
@@ -86,6 +99,7 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
     public void setSpeed(double left, double right, double leftFeedforward, double rightFeedforward) {
         leftController.setReference(left, ControlType.kVelocity, 0, leftFeedforward, ArbFFUnits.kVoltage);
         rightController.setReference(right, ControlType.kVelocity, 0, rightFeedforward, ArbFFUnits.kVoltage);
+
     }
 
     @Override
@@ -122,12 +136,6 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
 
     @Override
     public void configurePID(double kPLeft, double kILeft, double kDLeft, double kPRight, double kIRight, double kDRight) {
-        leftController.setP(kPLeft);
-        leftController.setI(kILeft);
-        leftController.setD(kDLeft);
-
-        rightController.setP(kPRight);
-        rightController.setI(kIRight);
-        rightController.setD(kDRight);
+        
     }
 }

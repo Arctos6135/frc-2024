@@ -82,4 +82,9 @@ public class VisionIO {
         inputs.isConnected = photonCamera.isConnected();
         inputs.noteArea = getNoteArea();
     }
+
+    // in seconds
+    public double latency() {
+        return photonCamera.getLatestResult().getLatencyMillis() / 1000;
+    }
 }

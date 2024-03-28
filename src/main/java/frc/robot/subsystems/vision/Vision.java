@@ -35,4 +35,8 @@ public class Vision extends SubsystemBase {
     public Translation2d getTarget() {
         return new Translation2d(io.getNoteDistance(), Rotation2d.fromRadians(io.getNoteAngle()));
     }
+
+    public double latency() {
+        return io.latency();
+    }
 }

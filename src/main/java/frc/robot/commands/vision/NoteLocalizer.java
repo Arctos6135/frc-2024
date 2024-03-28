@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision;
+package frc.robot.commands.vision;
 
 import java.util.function.Supplier;
 
@@ -14,6 +14,7 @@ import edu.wpi.first.math.numbers.N0;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.RingBuffer;
 
 public class NoteLocalizer extends Command {

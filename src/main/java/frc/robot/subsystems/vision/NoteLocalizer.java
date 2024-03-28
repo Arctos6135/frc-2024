@@ -59,7 +59,5 @@ public class NoteLocalizer extends Command {
     @Override
     public void execute() {
         buffer.add(odometry.get());
-
-        vision.get
     }
 }

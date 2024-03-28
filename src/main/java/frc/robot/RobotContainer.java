@@ -204,7 +204,7 @@ public class RobotContainer {
         // autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
 
         autoChooser.addDefaultOption("2 Note Amp", 
-            Commands.none()//Score.scoreSpeaker(arm, armPID, shooter, intake)
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", true))
                 .andThen(new FollowTrajectory("2 Note Forward A"))
@@ -224,17 +224,17 @@ public class RobotContainer {
         );
 
         autoChooser.addOption("3 Note Source", 
-            Commands.none()//Score.scoreSpeaker(arm, armPID, shooter, intake)
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Source Part A"))
                 .andThen(new InstantCommand(() -> intake.setVoltage(0)))
                 .andThen(new FollowTrajectory("Source Part B"))
-                //.andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Source Part C"))
                 .andThen(new InstantCommand(() -> intake.setVoltage(0)))
                 .andThen(new FollowTrajectory("Source Part D"))
-                //.andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
         autoChooser.addOption("2 Note Stage", 

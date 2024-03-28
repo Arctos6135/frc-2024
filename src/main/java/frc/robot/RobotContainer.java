@@ -282,8 +282,6 @@ public class RobotContainer {
         PathPlannerLogging.setLogActivePathCallback(path -> {
             Logger.recordOutput("Trajectory", path.toArray(new Pose2d[path.size()]));
         });
-
-        
     }
 
     private void configureBindings() {

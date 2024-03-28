@@ -105,7 +105,7 @@ public class ArmPID extends Command {
         Logger.recordOutput("Arm/PID Feedback", feedbackEffort);
         Logger.recordOutput("Arm/PID Feedforward", feedforwardEffort);
 
-
+        // TODO: Use a global XboxController object instead of creating one every execute cycle
         if (!new XboxController(0).getYButton())
             arm.setVoltage(feedforwardEffort + feedbackEffort);
     }

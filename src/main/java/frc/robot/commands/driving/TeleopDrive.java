@@ -15,7 +15,8 @@ public class TeleopDrive extends Command {
 
     private Dampener xDampener = new Dampener(0.5);
     private Dampener yDampener = new Dampener(0.5);
-    private SlewRateLimiter limitter = new SlewRateLimiter(4);
+    private SlewRateLimiter limitter = new SlewRateLimiter(5);
+    private SlewRateLimiter turnLimit = new SlewRateLimiter(5);
 
     private boolean precisionDrive = false;
 
@@ -41,6 +42,7 @@ public class TeleopDrive extends Command {
         x1 *= DriveConstants.MAX_TURN_SPEED_FACTOR;
 
         y1 = limitter.calculate(y1);
+        x1 = turnLimit.calculate(x1);
 
         drivetrain.setSpeed(y1 + x1, y1 - x1);
     }

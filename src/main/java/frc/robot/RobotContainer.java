@@ -180,7 +180,7 @@ public class RobotContainer {
                 drivetrain.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
             }, 
             new GlobalConfig(3, 3, 3, drivetrain.kinematics), 
-            () -> false,//DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red,
+            () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red,
             drivetrain
         );
 

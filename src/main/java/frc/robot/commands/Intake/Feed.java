@@ -1,14 +1,11 @@
 package frc.robot.commands.Intake;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.TunableNumber;
 
 public class Feed extends Command {
     private final Intake intake;
+    TunableNumber voltage = new TunableNumber("Voltage", 12);
 
     public Feed(Intake intake) {
         this.intake = intake;
@@ -18,7 +15,7 @@ public class Feed extends Command {
 
     @Override
     public void initialize() {
-        intake.setVoltage(12);
+        intake.setVoltage(voltage.get());
     }
 
     @Override

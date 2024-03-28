@@ -39,7 +39,7 @@ import frc.robot.commands.Intake.AltImprovedFeed;
 import frc.robot.commands.Intake.DrivingIntake;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
-import frc.robot.commands.shooter.ReverseFeed;
+import frc.robot.commands.Intake.ReverseFeed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.arm.Climb;
 // import frc.robot.commands.scoring.Score;
@@ -328,8 +328,8 @@ public class RobotContainer {
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
 
         // Left bumper hands off to the shooter, while right bumper reverse-handoffs back to the intake.
-        operatorLeftBumper.onTrue(new RaceFeed(shooter, intake).withTimeout(3));
-        operatorRightBumper.onTrue(new ReverseFeed(shooter, intake, 0.1)); // Meters is a complete guess.
+        operatorLeftBumper.whileTrue(new RaceFeed(shooter, intake));
+        operatorRightBumper.onTrue(new ReverseFeed(shooter, intake, Units.inchesToMeters(14))); // Meters is a complete guess.
 
         // Climbing commands.
         operatorLeftStickButton.toggleOnTrue(new RaiseArm(arm, operatorController, armPID));

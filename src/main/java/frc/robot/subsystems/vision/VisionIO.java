@@ -23,5 +23,10 @@ public class VisionIO {
 
     public VisionIO() {}
 
+    public boolean hasTargets() { return false; }
+    public double getNoteDistance() { return 0.0; }
+    public double getNoteAngle() { return 0.0; }
+    public double getLatency() { return 0.0; }
+
     public void updateInputs(VisionInputs inputs) {}
 }

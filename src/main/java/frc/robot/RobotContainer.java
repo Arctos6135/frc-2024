@@ -20,6 +20,7 @@ import astrolabe.follow.FollowTrajectory;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -124,7 +125,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
-            vision = new Vision();
+            vision = new Vision(new VisionIOLimelight());
             winch = new Winch(new WinchIOSparkMax());
         }
         // Creates a simulated robot.
@@ -133,7 +134,9 @@ public class RobotContainer {
             arm = new Arm(new ArmIOSim());
             intake = new Intake(new IntakeIOSim());
             shooter = new Shooter(new ShooterIOSim());
-            vision = new Vision();
+            vision = new Vision(new VisionIOSim(new Translation2d(4, 4), () -> {
+                return drivetrain.getPose();
+            }));
             winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
@@ -142,7 +145,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIO());
             arm = new Arm(new ArmIO());
             shooter = new Shooter(new ShooterIO());
-            vision = new Vision();
+            vision = new Vision(new VisionIO());
             winch = new Winch(new WinchIO());
         }
 
@@ -374,6 +377,7 @@ public class RobotContainer {
         //return new PathPlannerAuto("Forwards Back");
         //return new PathPlannerAuto("1 Meter Forward");
 
-        return autoChooser.get();
+        //return autoChooser.get();
+        return new DrivePosition(drivetrain, noteLocalizer::getNotePosition);
     }
 }

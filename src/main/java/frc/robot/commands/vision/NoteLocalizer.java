@@ -69,6 +69,7 @@ public class NoteLocalizer extends Command {
 
     @Override
     public void execute() {
+        /*
         buffer.add(odometry.get());
 
         if (vision.hasTarget()) {
@@ -85,15 +86,19 @@ public class NoteLocalizer extends Command {
 
                     Logger.recordOutput("Vision/Old position", oldPosition.get());
                     Logger.recordOutput("Vision/Note position", notePosition);
+                } else {
+                    System.out.println("No odoemtry");
                 }
 
                 lastVisionReading = newVisionReading;
 
                 Logger.recordOutput("Vision/New Reading", true);
             } else {
+                System.out.println("Vision target is old");
                 Logger.recordOutput("Vision/New Reading", false);
             }
         } else {
+            System.out.println("Vision doesn't have target");
             Logger.recordOutput("Vision/New Reading", false);
         }
 
@@ -105,6 +110,20 @@ public class NoteLocalizer extends Command {
         Logger.recordOutput("Vision/Uncertainty matrix/y", uncertaintyMatrix.get(1, 1));
         Logger.recordOutput("Vision/Uncertainty matrix/xy", uncertaintyMatrix.get(1, 0));
         Logger.recordOutput("Vision/Uncertainty matrix/yx", uncertaintyMatrix.get(0, 1));
+        */
+
+        Pose2d currentRobotPose = odometry.get();
+        Translation2d robotRelativeTarget = vision.getTarget();
+        
+        Translation2d notePosition = currentRobotPose.getTranslation().plus(robotRelativeTarget.rotateBy(currentRobotPose.getRotation()));
+
+        Logger.recordOutput("Vision/Calculated Note Position", notePosition);
+
+        Matrix<N2, N1> y = new Matrix<>(Nat.N2(), Nat.N1());
+        y.set(0, 0, notePosition.getX());
+        y.set(1, 0, notePosition.getY());
+
+        filter.setXhat(y);
     }
 
     public Translation2d getNotePosition() {

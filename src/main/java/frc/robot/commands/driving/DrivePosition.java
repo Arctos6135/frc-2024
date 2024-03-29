@@ -18,8 +18,8 @@ public class DrivePosition extends Command {
     private final Drivetrain drivetrain;
     private final Supplier<Translation2d> getTargetPosition;
 
-    private final PIDController orientationController = new PIDController(0.5, 0, 0);
-    private final PIDController translationController = new PIDController(0.5, 0, 0);
+    private final PIDController orientationController = new PIDController(50, 0, 0);
+    private final PIDController translationController = new PIDController(0.3, 0, 0);
 
     private final Constraints orientationConstarints = new Constraints(2, 2);
     private final TrapezoidProfile orientationProfile = new TrapezoidProfile(orientationConstarints);
@@ -27,11 +27,20 @@ public class DrivePosition extends Command {
     private final Constraints translationConstarints = new Constraints(2, 2);
     private final TrapezoidProfile translationProfile = new TrapezoidProfile(translationConstarints);
 
+    private double startTime;
+
     public DrivePosition(Drivetrain drivetrain, Supplier<Translation2d> getTargetPosition) {
         this.drivetrain = drivetrain;
         this.getTargetPosition = getTargetPosition;
 
+        orientationController.enableContinuousInput(-Math.PI, Math.PI);
+
         addRequirements(drivetrain);
+    }
+
+    @Override
+    public void initialize() {
+        startTime = Timer.getFPGATimestamp();
     }
 
     @Override
@@ -39,50 +48,56 @@ public class DrivePosition extends Command {
         Translation2d currentPosition = drivetrain.getPose().getTranslation();
         Translation2d targetPosition = getTargetPosition.get();
         double currentHeading = drivetrain.getYaw();
-        double targetHeading = Math.atan2(targetPosition.getY() - currentPosition.getY(), targetPosition.getX() - currentPosition.getX());
+        double targetHeading = targetPosition.minus(currentPosition).getAngle().getRadians();//Math.atan2(targetPosition.getY() - currentPosition.getY(), targetPosition.getX() - currentPosition.getX());
 
-        double translationSpeed = 0;
-        double orientationSpeed = 0;
 
-        // As long as the difference between the current and target heading
-        // is greater than 5 degrees, we orient our drivetrain
-        if (Math.abs(targetHeading - currentHeading) < Math.toRadians(20)) {
+        double distance = targetPosition.getDistance(currentPosition);
+
+        Logger.recordOutput("DT/Orientation Control", orientationController.calculate(currentHeading, targetHeading));
+        drivetrain.arcadeDrive(translationController.calculate(0, distance), orientationController.calculate(currentHeading, targetHeading));
+
+        // double translationSpeed = 0;
+        // double orientationSpeed = 0;
+
+        // // As long as the difference between the current and target heading
+        // // is greater than 5 degrees, we orient our drivetrain
+        // if (Math.abs(targetHeading - currentHeading) < Math.toRadians(20)) {
            
-            // Only move forward if we do not need to turn
-            State translationSetpoint = translationProfile.calculate(
-                0.02,
-                getCurrentTranslationState(),
-                new State(0, 0)
-            );
+        //     // Only move forward if we do not need to turn
+        //     State translationSetpoint = translationProfile.calculate(
+        //         Timer.getFPGATimestamp() - startTime,
+        //         getCurrentTranslationState(),
+        //         new State(0, 0)
+        //     );
 
-            Logger.recordOutput("DrivePosition/translationSetpoint/position", translationSetpoint.position);
-            Logger.recordOutput("DrivePosition/translationSetpoint/velocity", translationSetpoint.velocity);
+        //     Logger.recordOutput("DrivePosition/translationSetpoint/position", translationSetpoint.position);
+        //     Logger.recordOutput("DrivePosition/translationSetpoint/velocity", translationSetpoint.velocity);
 
-            translationSpeed = translationController.calculate(currentPosition.getDistance(targetPosition), translationSetpoint.position) + translationSetpoint.velocity;
-        }
+        //     translationSpeed = translationController.calculate(currentPosition.getDistance(targetPosition), translationSetpoint.position) + translationSetpoint.velocity;
+        // }
 
-        State orientationSetpoint = orientationProfile.calculate(
-            0.02,
-            new State(drivetrain.getYaw(), drivetrain.getYawRate()),
-            new State(targetHeading, 0)
-        );
-
-
-        Logger.recordOutput("DrivePosition/orientationSetpoint/position", orientationSetpoint.position);
-        Logger.recordOutput("DrivePosition/orientationSetpoint/velocity", orientationSetpoint.velocity);
+        // State orientationSetpoint = orientationProfile.calculate(
+        //     Timer.getFPGATimestamp() - startTime,
+        //     new State(drivetrain.getYaw(), drivetrain.getYawRate()),
+        //     new State(targetHeading, 0)
+        // );
 
 
-        orientationSpeed = orientationController.calculate(currentHeading, orientationSetpoint.position) + orientationSetpoint.velocity;
+        // Logger.recordOutput("DrivePosition/orientationSetpoint/position", orientationSetpoint.position);
+        // Logger.recordOutput("DrivePosition/orientationSetpoint/velocity", orientationSetpoint.velocity);
 
-        drivetrain.arcadeDrive(translationSpeed, orientationSpeed);
 
-        Logger.recordOutput("DrivePosition/currentPosition", currentPosition);
-        Logger.recordOutput("DrivePosition/targetPosition", targetPosition);
+        // orientationSpeed = orientationController.calculate(currentHeading, orientationSetpoint.position) + orientationSetpoint.velocity;
+
+        // drivetrain.arcadeDrive(translationSpeed, orientationSpeed);
+
+        // Logger.recordOutput("DrivePosition/currentPosition", currentPosition);
+        // Logger.recordOutput("DrivePosition/targetPosition", targetPosition);
         Logger.recordOutput("DrivePosition/currentHeading", currentHeading);
         Logger.recordOutput("DrivePosition/targetHeading", targetHeading);
-        Logger.recordOutput("DrivePosition/currentPosition", currentPosition);
-        Logger.recordOutput("DrivePosition/translationSpeed", translationSpeed);
-        Logger.recordOutput("DrivePosition/orientationSpeed", orientationSpeed);
+        // Logger.recordOutput("DrivePosition/currentPosition", currentPosition);
+        // Logger.recordOutput("DrivePosition/translationSpeed", translationSpeed);
+        // Logger.recordOutput("DrivePosition/orientationSpeed", orientationSpeed);
     }
 
     /**
@@ -101,5 +116,10 @@ public class DrivePosition extends Command {
      */
     public State getCurrentTranslationState() {
         return new State(getTargetDistance(), drivetrain.getSpeeds().vxMetersPerSecond);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return drivetrain.getPose().getTranslation().getDistance(getTargetPosition.get()) < 0.05;
     }
 }

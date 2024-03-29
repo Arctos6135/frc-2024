@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -13,12 +15,12 @@ import frc.robot.constants.VisionConstants;
 public class VisionIOLimelight extends VisionIO {
     private PhotonCamera photonCamera;
 
+    public VisionIOLimelight() {
+        photonCamera = new PhotonCamera(VisionConstants.cameraName);
+    }
+
     public boolean hasTarget() {
-        PhotonPipelineResult result = photonCamera.getLatestResult();
-        if(result.hasTargets()) {
-            return true;
-        }
-        return false;
+        return photonCamera.getLatestResult().hasTargets();
     }
     
     // in meters
@@ -62,10 +64,6 @@ public class VisionIOLimelight extends VisionIO {
         return 0;
     }
 
-    public VisionIOLimelight() {
-        photonCamera = new PhotonCamera(VisionConstants.cameraName);
-    }
-
     public void updateInputs(VisionInputs inputs) {
         inputs.hasTarget = hasTarget();
         inputs.noteAngle = getNoteAngle();
@@ -75,7 +73,7 @@ public class VisionIOLimelight extends VisionIO {
     }
 
     // in seconds
-    public double latency() {
+    public double getLatency() {
         return photonCamera.getLatestResult().getLatencyMillis() / 1000;
     }
 }

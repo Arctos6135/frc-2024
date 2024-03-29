@@ -24,8 +24,8 @@ public class Vision extends SubsystemBase {
         Logger.recordOutput("Vision/Filtered Note Distance", dFilter.calculate(inputs.noteDistance));
     }
 
-    public Vision() {
-	    this.io = new VisionIO();
+    public Vision(VisionIO io) {
+	    this.io = io;
     }
 
     public boolean hasTarget() {

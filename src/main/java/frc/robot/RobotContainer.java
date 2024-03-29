@@ -45,8 +45,10 @@ import frc.robot.commands.arm.Climb;
 // import frc.robot.commands.scoring.Score;
 // import frc.robot.commands.arm.Climb;
 import frc.robot.commands.arm.RaiseArm;
+import frc.robot.commands.driving.DrivePosition;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
+import frc.robot.commands.vision.NoteLocalizer;
 import frc.robot.constants.*;
 // import frc.robot.constants.ArmConstants;
 // import frc.robot.constants.ControllerConstants;
@@ -106,6 +108,7 @@ public class RobotContainer {
     private final TeleopDrive teleopDrive;
     private final ArmPID armPID;
     private final DrivingIntake drivingIntake;
+    private final NoteLocalizer noteLocalizer;
 
     // Named Commands (for autos)
     public NamedCommands scoreSpeaker;
@@ -130,7 +133,7 @@ public class RobotContainer {
             arm = new Arm(new ArmIOSim());
             intake = new Intake(new IntakeIOSim());
             shooter = new Shooter(new ShooterIOSim());
-            vision = null;//new Vision();
+            vision = new Vision();
             winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
@@ -144,13 +147,18 @@ public class RobotContainer {
         }
 
         teleopDrive = new TeleopDrive(drivetrain, driverController);
-        //drivetrain.setDefaultCommand(teleopDrive);
+        drivetrain.setDefaultCommand(teleopDrive);
 
         armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
         arm.setDefaultCommand(armPID);
 
         drivingIntake = new DrivingIntake(intake, operatorController);
         intake.setDefaultCommand(drivingIntake);
+
+        noteLocalizer = new NoteLocalizer(vision, drivetrain::getPose);
+        vision.setDefaultCommand(noteLocalizer);
+
+        // noteLocalizer = null;
 
         configureAuto();
         configureBindings();
@@ -176,7 +184,6 @@ public class RobotContainer {
             drivetrain::getSpeeds, 
             drivetrain::resetOdometry, 
             speeds -> {
-                System.out.println("Setting drivetrain speed");
                 drivetrain.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
             }, 
             new GlobalConfig(3, 3, 3, drivetrain.kinematics), 
@@ -300,6 +307,8 @@ public class RobotContainer {
         driverRightBumper.onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)));
         driverRightBumper.onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
+        //driverB.whileTrue(new DrivePosition(drivetrain, noteLocalizer::getNotePosition));
+
         // Binds macros for orienting robot turning to driver's dpad.
         // new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
         // new Trigger(() -> driverController.getPOV() == 45).onTrue(new ProfiledPIDSetAngle(drivetrain, Math.PI / 4));
@@ -328,13 +337,13 @@ public class RobotContainer {
 
         // Left bumper hands off to the shooter, while right bumper reverse-handoffs back to the intake.
         operatorLeftBumper.whileTrue(new RaceFeed(shooter, intake));
-        operatorRightBumper.onTrue(new ReverseFeed(shooter, intake, Units.inchesToMeters(14))); // Meters is a complete guess.
+        operatorRightBumper.whileTrue(new ReverseFeed(shooter, intake, Units.inchesToMeters(14))); // Meters is a complete guess.
 
         // Climbing commands.
-        operatorLeftStickButton.toggleOnTrue(new RaiseArm(arm, operatorController, armPID));
+        // operatorLeftStickButton.toggleOnTrue(new RaiseArm(arm, operatorController, armPID));
         // operatorRightStickButton.onTrue(new Climb(arm, winch, operatorController));
 
-        DPadUp.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION + 1.35)));
+        DPadUp.onTrue(new RaiseArm(arm, operatorController, armPID));
         DPadDown.onTrue(new Climb(arm, winch, operatorController).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
     }
 

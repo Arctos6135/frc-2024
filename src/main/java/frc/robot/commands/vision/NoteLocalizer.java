@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.ejml.simple.SimpleMatrix;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -35,12 +36,12 @@ public class NoteLocalizer extends Command {
     private final Matrix<N2, N2> C = new Matrix<>(Nat.N2(), Nat.N2());
     private final Matrix<N2, N0> D = new Matrix<>(Nat.N2(), Nat.N0());
 
-    private final LinearSystem<N2, N0, N2> system = new LinearSystem<>(A, B, C, D);
+    private final LinearSystem<N2, N0, N2> system;
 
-    private final Matrix<N2, N2> stateStdDevs = new Matrix<>(Nat.N2(), Nat.N2());
-    private final Matrix<N2, N2> measurementStdDevs = new Matrix<>(Nat.N2(), Nat.N2());
+    private final Matrix<N2, N1> stateStdDevs = new Matrix<>(Nat.N2(), Nat.N1());
+    private final Matrix<N2, N1> measurementStdDevs = new Matrix<>(Nat.N2(), Nat.N1());
 
-    private final KalmanFilter<N2, N0, N2> filter = new KalmanFilter<>(Nat.N2(), Nat.N2(), system, null, null, 0.02);
+    private final KalmanFilter<N2, N0, N2> filter;
 
     private Translation2d lastVisionReading = null;
 
@@ -48,17 +49,22 @@ public class NoteLocalizer extends Command {
         this.vision = vision;
         this.odometry = odometry;
 
-        A.set(0, 0, 1);
-        A.set(1, 1, 1);
+        // A.set(0, 0, 1);
+        // A.set(1, 1, 1);
 
         C.set(0, 0, 1);
         C.set(1, 1, 1);
 
         stateStdDevs.set(0, 0, 0.006);
-        stateStdDevs.set(1, 1, 0.006);
+        stateStdDevs.set(1, 0, 0.006);
 
         measurementStdDevs.set(0, 0, 0.1);
-        measurementStdDevs.set(1, 1, 0.1);
+        measurementStdDevs.set(1, 0, 0.1);
+
+        system = new LinearSystem<>(A, B, C, D);
+        filter = new KalmanFilter<N2, N0, N2>(Nat.N2(), Nat.N2(), system, stateStdDevs, measurementStdDevs, 0.02);
+
+        addRequirements(vision);
     }
 
     @Override
@@ -76,11 +82,29 @@ public class NoteLocalizer extends Command {
                     y.set(0, 0, notePosition.getX());
                     y.set(1, 0, notePosition.getY());
                     filter.correct(new Matrix<N0, N1>(Nat.N0(), Nat.N1()), y);
+
+                    Logger.recordOutput("Vision/Old position", oldPosition.get());
+                    Logger.recordOutput("Vision/Note position", notePosition);
                 }
+
+                lastVisionReading = newVisionReading;
+
+                Logger.recordOutput("Vision/New Reading", true);
+            } else {
+                Logger.recordOutput("Vision/New Reading", false);
             }
+        } else {
+            Logger.recordOutput("Vision/New Reading", false);
         }
 
         filter.predict(new Matrix<>(Nat.N0(), Nat.N1()), 0.02);
+
+        Logger.recordOutput("Vision/Kalman filter state", getNotePosition());
+        var uncertaintyMatrix = filter.getP();
+        Logger.recordOutput("Vision/Uncertainty matrix/x", uncertaintyMatrix.get(0, 0));
+        Logger.recordOutput("Vision/Uncertainty matrix/y", uncertaintyMatrix.get(1, 1));
+        Logger.recordOutput("Vision/Uncertainty matrix/xy", uncertaintyMatrix.get(1, 0));
+        Logger.recordOutput("Vision/Uncertainty matrix/yx", uncertaintyMatrix.get(0, 1));
     }
 
     public Translation2d getNotePosition() {

@@ -29,14 +29,14 @@ public class Vision extends SubsystemBase {
     }
 
     public boolean hasTarget() {
-        return io.hasTarget();
+        return inputs.hasTarget;
     }
 
     public Translation2d getTarget() {
-        return new Translation2d(io.getNoteDistance(), Rotation2d.fromRadians(io.getNoteAngle()));
+        return new Translation2d(inputs.noteDistance, Rotation2d.fromRadians(inputs.noteAngle));
     }
 
     public double latency() {
-        return io.latency();
+        return inputs.latencyMillis;
     }
 }

@@ -13,10 +13,10 @@ public class ShooterIOSim extends ShooterIO {
     private final FlywheelSim left = new FlywheelSim(DCMotor.getNEO(1), 1, ShooterConstants.MOMENT_OF_INERTIA);
     private final FlywheelSim right = new FlywheelSim(DCMotor.getNEO(1), 1, ShooterConstants.MOMENT_OF_INERTIA);
 
-    private final PIDController leftPIDController = new PIDController(0, 0, 0);
-    private final PIDController rightPIDController = new PIDController(0, 0, 0);
-    private final SimpleMotorFeedforward leftFeedForward = new SimpleMotorFeedforward(0, 0, 0);
-    private final SimpleMotorFeedforward rightFeedForward = new SimpleMotorFeedforward(0, 0, 0);
+    private final PIDController leftPIDController = new PIDController(0.1, 0, 0);
+    private final PIDController rightPIDController = new PIDController(0.1, 0, 0);
+    private final SimpleMotorFeedforward leftFeedForward = new SimpleMotorFeedforward(0, 0.0019 * 60 * 3.8, 0.001);
+    private final SimpleMotorFeedforward rightFeedForward = new SimpleMotorFeedforward(0, 0.0019 * 60 * 3.8, 0.001);
 
     // private double leftTargetVelocity;
     // private double rightTargetVelocity;
@@ -29,32 +29,33 @@ public class ShooterIOSim extends ShooterIO {
 
     @Override
     public void updateInputs(ShooterInputs inputs) {
-        left.update(0.2);
-        right.update(0.2);
-
-        inputs.leftVelocity = left.getAngularVelocityRPM() / 60;
-        inputs.rightVelocity = right.getAngularVelocityRPM() / 60;
-
-        left.setInputVoltage(leftPIDController.calculate(inputs.leftVelocity) + leftFeedForward.calculate(inputs.leftVelocity));
-        right.setInputVoltage(rightPIDController.calculate(inputs.leftVelocity) + rightFeedForward.calculate(inputs.leftVelocity));
+        
     }
 
+    // @Override
+    // public void updateInputs(ShooterInputs inputs) {
+    //     left.update(0.02);
+    //     right.update(0.02);
 
+    //     inputs.leftVelocity = left.getAngularVelocityRPM() / 60;
+    //     inputs.rightVelocity = right.getAngularVelocityRPM() / 60;
 
-    public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
-        leftPIDController.setSetpoint(leftTargetVelocity);
-        rightPIDController.setSetpoint(rightTargetVelocity);
-    }
+    //     left.setInputVoltage(leftPIDController.calculate(inputs.leftVelocity) + leftFeedForward.calculate(inputs.leftVelocity));
+    //     right.setInputVoltage(rightPIDController.calculate(inputs.leftVelocity) + rightFeedForward.calculate(inputs.leftVelocity));
+    // }
 
-    public void setPIDTargetVelocity(double targetVelocity) {
-        leftPIDController.setSetpoint(targetVelocity);
-        rightPIDController.setSetpoint(targetVelocity);
-    }
+    // public void setPIDTargetVelocities(double leftTargetVelocity, double rightTargetVelocity) {
+    //     leftPIDController.setSetpoint(leftTargetVelocity);
+    //     rightPIDController.setSetpoint(rightTargetVelocity);
+    // }
 
-    public void calibratePIDController(double kP, double kI, double kD) {
-        leftPIDController.setPID(kP, kP, kD);
-        rightPIDController.setPID(kP, kI, kD);
-    }
+    // public void setPIDTargetVelocity(double targetVelocity) {
+    //     leftPIDController.setSetpoint(targetVelocity);
+    //     rightPIDController.setSetpoint(targetVelocity);
+    // }
 
-  
+    // public void calibratePIDController(double kP, double kI, double kD) {
+    //     leftPIDController.setPID(kP, kP, kD);
+    //     rightPIDController.setPID(kP, kI, kD);
+    // }
 }

@@ -80,11 +80,11 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         leftEncoder.setMeasurementPeriod(16);
         rightEncoder.setMeasurementPeriod(16);
 
-        leftController.setP(0.5);
+        leftController.setP(0.3);
         leftController.setI(0);
         leftController.setD(0);
 
-        rightController.setP(0.5);
+        rightController.setP(0.3);
         rightController.setI(0);
         rightController.setD(0);
     }   

@@ -1,5 +1,7 @@
 package frc.robot.commands.shooter;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +33,7 @@ public class ShooterPID extends Command{
 
     @Override
     public void execute(){
+        Logger.recordOutput("Shooter/Setpoint Velocity", targetVelocity);
         shooter.setPIDTargetVelocity(targetVelocity);
     }
 

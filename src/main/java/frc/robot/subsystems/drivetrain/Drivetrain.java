@@ -238,7 +238,7 @@ public class Drivetrain extends SubsystemBase {
             new LoggedMechanism(rightLog, rightMechanism)
         );
 
-        return new VelocityRoutine(group, 5, 0.25, this).finallyDo(() -> {
+        return new VelocityRoutine(group, 2, 0.25, this).finallyDo(() -> {
             leftLog.logCSV("DrivetrainVelocityLeft");
             rightLog.logCSV("DrivetrainVelocityRight");
         });

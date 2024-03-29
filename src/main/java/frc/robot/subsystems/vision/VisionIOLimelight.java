@@ -51,7 +51,7 @@ public class VisionIOLimelight extends VisionIO {
             //     targetPose,
             //     cameraToRobot
             // );
-            return Units.degreesToRadians(result.getBestTarget().getYaw());
+            return Units.degreesToRadians(-result.getBestTarget().getYaw());
         }
         return 0;
     }

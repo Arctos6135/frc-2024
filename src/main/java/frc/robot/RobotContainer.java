@@ -200,19 +200,6 @@ public class RobotContainer {
         AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe Angle Error", error);
         AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe Distance Error", error);
 
-        // autoChooser.addDefaultOption("2 Note Auto", new PathPlannerAuto("2 Note Auto"));
-        //positionChooser.addDefaultOption("Red Amp", PositionConstants.RED_AMP);
-
-        // // Placeholders until autos are coded.
-        // autoChooser.addDefaultOption("2 Note Amp", new PathPlannerAuto("2 Note Amp"));
-        // autoChooser.addOption("2 Note Stage", new PathPlannerAuto("2 Note Stage"));
-        // autoChooser.addOption("2 Note Source", new PathPlannerAuto("2 Note Source"));
-        // autoChooser.addOption("1 Note", new PathPlannerAuto("1 Note"));
-
-        // // Characterization routines.
-        // autoChooser.addOption("Drivetrain Velocity", drivetrain.characterizeVelocity());
-        // autoChooser.addOption("Drivetrain Acceleration", drivetrain.characterizeAcceleration());
-
         autoChooser.addDefaultOption("2 Note Amp", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
@@ -310,7 +297,9 @@ public class RobotContainer {
         driverRightBumper.onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)));
         driverRightBumper.onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
-        //driverB.whileTrue(new DrivePosition(drivetrain, noteLocalizer::getNotePosition));
+        driverB.whileTrue(
+            new InstantCommand(() -> intake.setVoltage(12)).andThen(new DrivePosition(drivetrain, noteLocalizer::getNotePosition)).finallyDo(() -> intake.setVoltage(0))
+        );
 
         // Binds macros for orienting robot turning to driver's dpad.
         // new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
@@ -377,7 +366,6 @@ public class RobotContainer {
         //return new PathPlannerAuto("Forwards Back");
         //return new PathPlannerAuto("1 Meter Forward");
 
-        //return autoChooser.get();
-        return new DrivePosition(drivetrain, noteLocalizer::getNotePosition);
+        return autoChooser.get();
     }
 }

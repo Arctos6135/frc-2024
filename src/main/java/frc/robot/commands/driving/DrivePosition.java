@@ -18,16 +18,18 @@ public class DrivePosition extends Command {
     private final Drivetrain drivetrain;
     private final Supplier<Translation2d> getTargetPosition;
 
-    private final PIDController orientationController = new PIDController(50, 0, 0);
-    private final PIDController translationController = new PIDController(0.3, 0, 0);
+    private final PIDController orientationController = new PIDController(5, 0, 0);
+    private final PIDController translationController = new PIDController(0.1, 0, 0);
 
-    private final Constraints orientationConstarints = new Constraints(2, 2);
+    private final Constraints orientationConstarints = new Constraints(1, 1);
     private final TrapezoidProfile orientationProfile = new TrapezoidProfile(orientationConstarints);
 
-    private final Constraints translationConstarints = new Constraints(2, 2);
+    private final Constraints translationConstarints = new Constraints(1, 1);
     private final TrapezoidProfile translationProfile = new TrapezoidProfile(translationConstarints);
 
     private double startTime;
+
+    private State initialState;
 
     public DrivePosition(Drivetrain drivetrain, Supplier<Translation2d> getTargetPosition) {
         this.drivetrain = drivetrain;
@@ -41,20 +43,52 @@ public class DrivePosition extends Command {
     @Override
     public void initialize() {
         startTime = Timer.getFPGATimestamp();
+        Translation2d currentPosition = drivetrain.getPose().getTranslation();
+
+        Translation2d targetPosition = getTargetPosition.get();
+
+        Logger.recordOutput("DT/Target Position", targetPosition);
+        double currentHeading = drivetrain.getPose().getRotation().getRadians();
+        double targetHeading = targetPosition.minus(currentPosition).getAngle().getRadians();//Math.atan2(targetPosition.getY() - currentPosition.getY(), targetPosition.getX() - currentPosition.getX());
+
+        Logger.recordOutput("DT/Yaw Target", targetHeading);
+
+        double distance = targetPosition.getDistance(currentPosition);    
+
+        initialState = new State(-distance, 0);
     }
 
     @Override
     public void execute() {
         Translation2d currentPosition = drivetrain.getPose().getTranslation();
+
         Translation2d targetPosition = getTargetPosition.get();
-        double currentHeading = drivetrain.getYaw();
+
+        Logger.recordOutput("DT/Target Position", targetPosition);
+        double currentHeading = drivetrain.getPose().getRotation().getRadians();
         double targetHeading = targetPosition.minus(currentPosition).getAngle().getRadians();//Math.atan2(targetPosition.getY() - currentPosition.getY(), targetPosition.getX() - currentPosition.getX());
 
+        Logger.recordOutput("DT/Yaw Target", targetHeading);
 
         double distance = targetPosition.getDistance(currentPosition);
 
+        Logger.recordOutput("DT/Distance to Target", distance);
+
         Logger.recordOutput("DT/Orientation Control", orientationController.calculate(currentHeading, targetHeading));
-        drivetrain.arcadeDrive(translationController.calculate(0, distance), orientationController.calculate(currentHeading, targetHeading));
+
+        State translationSetpoint = translationProfile.calculate(
+            Timer.getFPGATimestamp() - startTime,
+            initialState,
+            new State(0, 0)
+        );
+
+        Logger.recordOutput("DT/Velocity setpoint", translationSetpoint.velocity);
+
+        Logger.recordOutput("DT/Position Setpoint", translationSetpoint.position);
+
+        // translationController.calculate(0, translationSetpoint.position) + 
+        drivetrain.arcadeDrive(translationSetpoint.velocity + translationController.calculate(-distance, 0), orientationController.calculate(currentHeading, targetHeading));
+
 
         // double translationSpeed = 0;
         // double orientationSpeed = 0;

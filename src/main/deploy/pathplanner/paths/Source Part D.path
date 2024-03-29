@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.457363011592118,
-        "y": 1.122638826474236
+        "x": 8.293644849397962,
+        "y": 1.0056972820498358
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.457363011592118,
-        "y": 1.122638826474236
+        "x": 7.293644849397962,
+        "y": 1.0056972820498358
       },
       "isLocked": false,
       "linkedName": "Source Part D Start"
@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 0.6690561529271205,
-        "y": 4.3385312981452175
+        "x": 0.7,
+        "y": 4.38
       },
       "prevControl": {
-        "x": 1.4701697487699517,
-        "y": 2.950961847511233
+        "x": 1.5011135958428312,
+        "y": 2.9924305493660155
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Source Start"
     }
   ],
   "rotationTargets": [],

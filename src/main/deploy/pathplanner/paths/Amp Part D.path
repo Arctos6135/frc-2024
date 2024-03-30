@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7,
-        "y": 5.6
+        "x": 8.293644849397962,
+        "y": 7.3556231442947215
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7000000000000002,
-        "y": 5.6
+        "x": 7.293644849397962,
+        "y": 7.3556231442947215
       },
       "isLocked": false,
-      "linkedName": "Stage Part B Start"
+      "linkedName": "Amp Part C End"
+    },
+    {
+      "anchor": {
+        "x": 4.703539435568899,
+        "y": 6.993104356579084
+      },
+      "prevControl": {
+        "x": 5.870908080741727,
+        "y": 7.440405764002412
+      },
+      "nextControl": {
+        "x": 3.5361707903960715,
+        "y": 6.545802949155757
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
         "x": 1.4,
-        "y": 5.6
+        "y": 5.566417514601411
       },
       "prevControl": {
-        "x": 2.4,
-        "y": 5.6
+        "x": 2.698893691608866,
+        "y": 5.566417514601411
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +59,10 @@
     "rotateFast": false
   },
   "reversed": true,
-  "folder": "Stage",
-  "previewStartingState": null,
+  "folder": "Amp",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

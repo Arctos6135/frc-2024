@@ -16,6 +16,14 @@ import frc.robot.commands.shooter.Launch;
 import frc.robot.commands.shooter.ShooterPID;
 
 
+// to improve auto
+// timing
+// - rev up shooter while driving
+// - shoot while starting to drive to the next note
+// accuracy
+// - move robot on the field-side of the final note to avoid guardrail-robot collisions
+// - run shooter backwards while intaking to avoid intaking too far
+// - run shooter slightly faster
 public class Score {
     public static Command scoreSpeaker(Arm arm, ArmPID armPID, Shooter shooter, Intake intake) {
         ShooterPID shooterPID = new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS);

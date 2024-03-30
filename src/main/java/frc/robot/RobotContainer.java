@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 //import frc.robot.commands.driving.ProfiledPIDSetAngle;
 // import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.Intake.AltImprovedFeed;
+import frc.robot.commands.Intake.AutoIntake;
 import frc.robot.commands.Intake.DrivingIntake;
 import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
@@ -49,6 +51,7 @@ import frc.robot.commands.arm.RaiseArm;
 import frc.robot.commands.driving.DrivePosition;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
+import frc.robot.commands.shooter.ShooterPID;
 import frc.robot.commands.vision.NoteLocalizer;
 import frc.robot.constants.*;
 // import frc.robot.constants.ArmConstants;
@@ -125,7 +128,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
-            vision = new Vision(new VisionIOLimelight());
+            vision = new Vision(new VisionIO());
             winch = new Winch(new WinchIOSparkMax());
         }
         // Creates a simulated robot.
@@ -158,10 +161,10 @@ public class RobotContainer {
         drivingIntake = new DrivingIntake(intake, operatorController);
         intake.setDefaultCommand(drivingIntake);
 
-        noteLocalizer = new NoteLocalizer(vision, drivetrain::getPose);
-        vision.setDefaultCommand(noteLocalizer);
+        // noteLocalizer = new NoteLocalizer(vision, drivetrain::getPose);
+        // vision.setDefaultCommand(noteLocalizer);
 
-        // noteLocalizer = null;
+        noteLocalizer = null;
 
         configureAuto();
         configureBindings();
@@ -243,20 +246,45 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("3 Note Stage", 
+        // autoChooser.addOption("3 Note Stage", 
+        //     Score.scoreSpeaker(arm, armPID, shooter, intake)
+        //         .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+        //         .andThen(new FollowTrajectory("Stage Part A"))
+        //         .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+        //         .andThen(new FollowTrajectory("Stage Part B"))
+        //         .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        //         .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+        //         .andThen(new FollowTrajectory("Stage Part C"))
+        //         .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+        //         .andThen(new FollowTrajectory("Stage Part D"))
+        //         .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        // );
+
+        autoChooser.addOption("3 Note Stage",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
-                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
-                .andThen(new FollowTrajectory("Stage Part A"))
-                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
-                .andThen(new FollowTrajectory("Stage Part B"))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage Part A")))
+                .andThen(new FollowTrajectory("Stage Part B").beforeStarting(() -> shooter.setVoltage(5), shooter))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
-                .andThen(new FollowTrajectory("Stage Part C"))
-                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
-                .andThen(new FollowTrajectory("Stage Part D"))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage Part C")))
+                .andThen(new FollowTrajectory("Stage Part D").beforeStarting(() -> shooter.setVoltage(5), shooter))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
+        autoChooser.addOption("Far Amp",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new WaitCommand(5))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
+                .andThen(new FollowTrajectory("Amp Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("Far Source",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Source Part C")))
+                .andThen(new FollowTrajectory("Source Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+ 
         autoChooser.addOption("1 Note",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
         );
@@ -301,9 +329,9 @@ public class RobotContainer {
         driverRightBumper.onTrue(new InstantCommand(() -> teleopDrive.setPrecisionDrive(true)));
         driverRightBumper.onFalse(new InstantCommand(() -> teleopDrive.setPrecisionDrive(false)));
 
-        driverB.whileTrue(
-            new InstantCommand(() -> intake.setVoltage(12)).andThen(new DrivePosition(drivetrain, noteLocalizer::getNotePosition)).finallyDo(() -> intake.setVoltage(0))
-        );
+        // driverB.whileTrue(
+        //     new InstantCommand(() -> intake.setVoltage(12)).andThen(new DrivePosition(drivetrain, noteLocalizer::getNotePosition)).finallyDo(() -> intake.setVoltage(0))
+        // );
 
         // Binds macros for orienting robot turning to driver's dpad.
         // new Trigger(() -> driverController.getPOV() == 0).onTrue(new ProfiledPIDSetAngle(drivetrain, 0));
@@ -326,7 +354,8 @@ public class RobotContainer {
         Trigger DPadDown = new Trigger(() -> operatorController.getPOV() == 180);
         Trigger DPadUp = new Trigger(() -> operatorController.getPOV() == 0);
 
-        operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
+        //operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
+        operatorA.whileTrue(new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
         operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));

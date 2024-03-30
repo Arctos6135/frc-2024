@@ -257,6 +257,10 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
+        autoChooser.addOption("1 Note",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+        );
+
         // Placeholders until positions are configured.
         positionChooser.addOption("Red Amp", PositionConstants.RED_AMP);
         positionChooser.addOption("Red Stage", PositionConstants.RED_STAGE);

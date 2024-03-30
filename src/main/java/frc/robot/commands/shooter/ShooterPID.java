@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.TunableNumber;
 
@@ -39,6 +40,10 @@ public class ShooterPID extends Command{
 
     public boolean atTarget() {
         return Math.abs(shooter.getVelocity() - targetVelocity) < 0.5;
+    }
+
+    public Command waitUntilAtTarget() {
+        return new WaitUntilCommand(this::atTarget).withTimeout(2);
     }
 
     @Override

@@ -30,6 +30,7 @@ public class Shooter extends SubsystemBase {
     public void setVoltage(double voltage) {
         Logger.recordOutput("Shooter Left Voltage", voltage);
         Logger.recordOutput("Shooter Right Voltage", voltage);
+        
         io.setVoltage(voltage);
     }
 

@@ -4,43 +4,21 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardBoolean;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
-import astrolabe.follow.AutoBuilder;
-import astrolabe.follow.FollowPath;
-import astrolabe.follow.AstrolabeLogger;
-import astrolabe.follow.GlobalConfig;
-import astrolabe.follow.FollowTrajectory;
-import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-// import frc.robot.commands.Intake.ShooterPositionFeed;
-// import frc.robot.commands.arm.ArmPID;
-// import frc.robot.commands.driving.ProfiledPIDSetAngle;
-//import frc.robot.commands.driving.ProfiledPIDSetAngle;
-// import frc.robot.commands.driving.TeleopDrive;
-import frc.robot.commands.Intake.AltImprovedFeed;
-import frc.robot.commands.Intake.AutoIntake;
 import frc.robot.commands.Intake.DrivingIntake;
-import frc.robot.commands.Intake.Feed;
 import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.Intake.ReverseFeed;
 import frc.robot.commands.arm.ArmPID;
@@ -48,23 +26,36 @@ import frc.robot.commands.arm.Climb;
 // import frc.robot.commands.scoring.Score;
 // import frc.robot.commands.arm.Climb;
 import frc.robot.commands.arm.RaiseArm;
-import frc.robot.commands.driving.DrivePosition;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
 import frc.robot.commands.shooter.ShooterPID;
 import frc.robot.commands.vision.NoteLocalizer;
-import frc.robot.constants.*;
+import frc.robot.constants.ArmConstants;
+import frc.robot.constants.ControllerConstants;
+import frc.robot.constants.ShooterConstants;
 // import frc.robot.constants.ArmConstants;
 // import frc.robot.constants.ControllerConstants;
 // // import frc.robot.constants.PositionConstants;
 // import frc.robot.constants.VisionConstants;
-import frc.robot.subsystems.arm.*;
-import frc.robot.subsystems.drivetrain.*;
-import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.shooter.*;
-import frc.robot.subsystems.vision.*;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.arm.ArmIOSparkMax;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainIO;
+import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
+import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOUSB;
 // import frc.robot.subsystems.arm.Arm;
 // import frc.robot.subsystems.arm.ArmIO;
 // import frc.robot.subsystems.arm.ArmIOSim;
@@ -205,7 +196,9 @@ public class RobotContainer {
         AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe Angle Error", error);
         AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe Distance Error", error);
 
-        autoChooser.addDefaultOption("2 Note Amp", 
+        // Amp autos.
+
+        autoChooser.addDefaultOption("Amp Score:[P, 1]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", true))
@@ -216,7 +209,26 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("2 Note Source", 
+        autoChooser.addOption("Amp Score:[P, 4]",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
+                .andThen(new FollowTrajectory("Amp Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("Amp Score:[P, 1] Ferry:[4, 5]",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part A")))
+                .andThen(new FollowTrajectory("Amp Part B"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
+                .andThen(new FollowTrajectory("Amp Part E"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new FollowTrajectory("Amp Part"))
+
+        // Source autos.
+
+        autoChooser.addOption("Source Score:[P, 3]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Source Part A"))
@@ -225,7 +237,7 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("3 Note Source", 
+        autoChooser.addOption("Source Score:[P, 3, 8]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Source Part A"))
@@ -239,7 +251,16 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("2 Note Stage", 
+        autoChooser.addOption("Source Score:[P, 8]",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Source Part C")))
+                .andThen(new FollowTrajectory("Source Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        // Stage autos.
+
+        autoChooser.addOption("Stage Score:[P, 2]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Stage Part A"))
@@ -248,21 +269,7 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        // autoChooser.addOption("3 Note Stage", 
-        //     Score.scoreSpeaker(arm, armPID, shooter, intake)
-        //         .andThen(new InstantCommand(() -> intake.setVoltage(12)))
-        //         .andThen(new FollowTrajectory("Stage Part A"))
-        //         .andThen(new InstantCommand(() -> intake.setVoltage(0)))
-        //         .andThen(new FollowTrajectory("Stage Part B"))
-        //         .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-        //         .andThen(new InstantCommand(() -> intake.setVoltage(12)))
-        //         .andThen(new FollowTrajectory("Stage Part C"))
-        //         .andThen(new InstantCommand(() -> intake.setVoltage(0)))
-        //         .andThen(new FollowTrajectory("Stage Part D"))
-        //         .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-        // );
-
-        autoChooser.addOption("3 Note Stage",
+        autoChooser.addOption("Stage Score:[P, 2, 8]",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage Part A")))
                 .andThen(new FollowTrajectory("Stage Part B").beforeStarting(() -> shooter.setVoltage(5), shooter))
@@ -272,20 +279,7 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("Far Amp",
-            Score.scoreSpeaker(arm, armPID, shooter, intake)
-                .andThen(new WaitCommand(5))
-                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
-                .andThen(new FollowTrajectory("Amp Part D"))
-                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-        );
-
-        autoChooser.addOption("Far Source",
-            Score.scoreSpeaker(arm, armPID, shooter, intake)
-                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Source Part C")))
-                .andThen(new FollowTrajectory("Source Part D"))
-                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-        );
+        // Misc. autos.
  
         autoChooser.addOption("1 Note",
             Score.scoreSpeaker(arm, armPID, shooter, intake)

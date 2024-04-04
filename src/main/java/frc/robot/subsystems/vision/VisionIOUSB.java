@@ -12,6 +12,7 @@ import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.photonvision.PhotonUtils;
 
@@ -36,6 +37,8 @@ public class VisionIOUSB extends VisionIO {
     Mat kernel = new Mat(3, 3, Imgproc.THRESH_BINARY);
     Mat hierarchy = new Mat();
     MatOfPoint2f point = new MatOfPoint2f();
+    Mat mat = new Mat();
+    Mat gray = new Mat();
 
     //UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
     //MjpegServer mjpegServer = new MjpegServer("serve_USB Camera 0", 1181);
@@ -61,11 +64,11 @@ public class VisionIOUSB extends VisionIO {
         camera.setResolution(640, 480);
 
         // Get a CvSink. This will capture Mats from the camera
-        CvSink cvSink = CameraServer.getVideo();
+       // CvSink cvSink = CameraServer.getVideo();
         // Setup a CvSource. This will send images back to the Dashboard
         CvSource outputStream = CameraServer.putVideo("Detected", 640, 480);
         // Mats are very memory expensive. Lets reuse these.
-        var mat = new Mat();
+        mat = Imgcodecs.imread("/Users/armstrong/Documents/Note1.jpg", Imgcodecs.IMREAD_COLOR);//new Mat();
         
         // This cannot be 'true'. The program will never exit if it is. This
         // lets the robot stop this thread when restarting robot code or
@@ -74,30 +77,33 @@ public class VisionIOUSB extends VisionIO {
             System.out.println("Running thread");
             // Tell the CvSink to grab a frame from the camera and put it
             // in the source mat.  If there is an error notify the output.
-            if (cvSink.grabFrame(mat) == 0) {
-                // Send the output the error.
-                outputStream.notifyError(cvSink.getError());
-                // skip the rest of the current iteration
-                continue;
-            }
+            // if (cvSink.grabFrame(mat) == 0) {
+            //     // Send the output the error.
+            //     outputStream.notifyError(cvSink.getError());
+            //     // skip the rest of the current iteration
+            //     continue;
+            // }
 
             System.out.println("Found frame");
             // hsv_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV);
 
-            mat.convertTo(mat, Imgproc.COLOR_BGR2HSV);
+            mat.convertTo(gray, Imgproc.COLOR_BGR2HSV);
 
-            Core.inRange(mat, new Scalar(new double[]{0.0, 0, 0}), new Scalar(new double[]{180, 255, 255}), mat);
-            outputStream.putFrame(mat);
+            Core.inRange(gray, new Scalar(new double[]{0.0, 30.0, 150.0}), new Scalar(new double[]{50.0, 255.0, 255.0}), gray);
+            outputStream.putFrame(gray);
             try {
-                mat.wait(1000, 0);
+                gray.wait(1000, 0);
             } catch (Exception e) {
                 // TODO: handle exception
             }
 
+            Imgcodecs.imwrite("/Users/armstrong/Documents/Note1-5.jpg", gray);
 
-            Imgproc.morphologyEx(mat, mat, Imgproc.MORPH_OPEN, kernel);
+            Imgproc.morphologyEx(gray, gray, Imgproc.MORPH_OPEN, kernel);
             matPoints.clear();
-            Imgproc.findContours(mat, matPoints, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+            Imgproc.findContours(gray, matPoints, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+            
+            Imgcodecs.imwrite("/Users/armstrong/Documents/Note2.jpg", gray);
 
             System.out.println("Did countour processing");
 
@@ -125,11 +131,23 @@ public class VisionIOUSB extends VisionIO {
 
             // these might need to be negative
             // TODO: locking
-            yaw = Math.atan(rect.center.x / fieldLength);
-            pitch = Math.atan(rect.center.y / fieldLength);
+            yaw = Math.atan((mat.size().width / 2 - rect.center.x) / fieldLength);
+            pitch = Math.atan((mat.size().height / 2 - rect.center.y) / fieldLength);
+
+
+            for (int i = 0; i < largest.toArray().length; i++) {
+                Point first = largest.toArray()[i];
+                Point next = largest.toArray()[(i + 1)% largest.toArray().length];
+                System.out.printf("\tpoint %s %s\n", first.x, first.y);
+                Imgproc.line(mat, first, next, new Scalar(new double[]{255, 0, 0}));
+            }
+
+            Imgcodecs.imwrite("/Users/armstrong/Documents/Note3.jpg", mat);
 
             // Give the output stream a new image to display
             outputStream.putFrame(mat);
+
+            break;
         }
     }
 
@@ -145,5 +163,6 @@ public class VisionIOUSB extends VisionIO {
             Units.degreesToRadians(pitch)
         );
         inputs.latencyMillis = 0;
+        inputs.notePitch = pitch;
     }
 }

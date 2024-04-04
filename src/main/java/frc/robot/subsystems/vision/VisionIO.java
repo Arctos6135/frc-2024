@@ -18,6 +18,7 @@ public class VisionIO {
         double noteDistance;
         double noteAngle;
         double noteArea;
+        double notePitch;
         double latencyMillis;
     }
 

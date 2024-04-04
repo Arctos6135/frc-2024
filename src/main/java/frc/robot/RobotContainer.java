@@ -128,7 +128,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
-            vision = new Vision(new VisionIO());//USB());
+            vision = new Vision(new VisionIOUSB());
             winch = new Winch(new WinchIOSparkMax());
         }
         // Creates a simulated robot.
@@ -141,7 +141,7 @@ public class RobotContainer {
             //     return drivetrain.getPose();
             // }));
 
-            vision = new Vision(new VisionIO());
+            vision = new Vision(new VisionIOUSB());
             winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
@@ -168,7 +168,7 @@ public class RobotContainer {
 
         noteLocalizer = null;
 
-        configureAuto();
+        //configureAuto();
         configureBindings();
     }
 

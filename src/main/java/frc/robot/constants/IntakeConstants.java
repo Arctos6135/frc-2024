@@ -20,7 +20,7 @@ public class IntakeConstants { // these numbers are copied from drive constants 
     public static double INTAKE_CURRENT = 18;
 
     // Current limit of the intake motor.
-    public static int CURRENT_LIMIT = 20;
+    public static int CURRENT_LIMIT = 30;
 
     // Constants for Feed Command
     public static double FEED_VOLTAGE = 6;

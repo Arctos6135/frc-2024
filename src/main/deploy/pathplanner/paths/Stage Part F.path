@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.35,
-        "y": 5.6
+        "x": 8.211785768300881,
+        "y": 5.776912294565331
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.350000000000004,
-        "y": 5.6
+        "x": 7.2117857683008815,
+        "y": 5.776912294565331
       },
       "isLocked": false,
-      "linkedName": "Stage Part A Start"
+      "linkedName": "Note 7"
     },
     {
       "anchor": {
-        "x": 2.7,
+        "x": 5.194693922151377,
+        "y": 6.396702480014646
+      },
+      "prevControl": {
+        "x": 6.6915456907836885,
+        "y": 6.431784943341967
+      },
+      "nextControl": {
+        "x": 3.780559687031495,
+        "y": 6.363558708879023
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.35,
         "y": 5.6
       },
       "prevControl": {
-        "x": 1.7000000000000002,
+        "x": 2.35,
         "y": 5.6
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Stage Part B Start"
+      "linkedName": "Stage Part A Start"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +58,7 @@
     "rotation": 0,
     "rotateFast": false
   },
-  "reversed": false,
+  "reversed": true,
   "folder": "Stage",
   "previewStartingState": {
     "rotation": 0,

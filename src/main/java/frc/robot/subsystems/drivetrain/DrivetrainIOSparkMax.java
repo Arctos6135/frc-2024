@@ -87,6 +87,12 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         rightController.setP(0.3);
         rightController.setI(0);
         rightController.setD(0);
+
+        leftMaster.burnFlash();
+        leftFollower.burnFlash();
+
+        rightMaster.burnFlash();
+        rightFollower.burnFlash();
     }   
 
     @Override

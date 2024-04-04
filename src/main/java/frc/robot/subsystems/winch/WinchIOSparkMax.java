@@ -27,6 +27,8 @@ public class WinchIOSparkMax extends WinchIO {
 
         encoder.setPositionConversionFactor(WinchConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(WinchConstants.VELOCITY_CONVERSION_FACTOR);
+
+        motor.burnFlash();
     }
 
     @Override
@@ -35,7 +37,7 @@ public class WinchIOSparkMax extends WinchIO {
     }
 
     public void setIdleMode(IdleMode idleMode) {
-        motor.setIdleMode(idleMode);
+        //motor.setIdleMode(idleMode);
     }
 
     public void setVoltage(double voltage) {

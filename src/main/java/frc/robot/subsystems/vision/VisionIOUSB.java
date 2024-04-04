@@ -66,47 +66,47 @@ public class VisionIOUSB extends VisionIO {
         // Get a CvSink. This will capture Mats from the camera
        // CvSink cvSink = CameraServer.getVideo();
         // Setup a CvSource. This will send images back to the Dashboard
-        CvSource outputStream = CameraServer.putVideo("Detected", 640, 480);
+        CvSource contourStream = CameraServer.putVideo("Contours", 640, 480);
+        CvSource thresholdStream = CameraServer.putVideo("Threshold", 640, 480);
         // Mats are very memory expensive. Lets reuse these.
-        mat = Imgcodecs.imread("/Users/armstrong/Documents/Note1.jpg", Imgcodecs.IMREAD_COLOR);//new Mat();
+        //mat = Imgcodecs.imread("/Users/armstrong/Documents/Note1.jpg", Imgcodecs.IMREAD_COLOR);//new Mat();
         
         // This cannot be 'true'. The program will never exit if it is. This
         // lets the robot stop this thread when restarting robot code or
         // deploying.
         while (!Thread.interrupted()) {
-            System.out.println("Running thread");
+            Logger.recordOutput("Vision/Thread Running", true);
             // Tell the CvSink to grab a frame from the camera and put it
             // in the source mat.  If there is an error notify the output.
-            // if (cvSink.grabFrame(mat) == 0) {
-            //     // Send the output the error.
-            //     outputStream.notifyError(cvSink.getError());
-            //     // skip the rest of the current iteration
-            //     continue;
-            // }
+            if (cvSink.grabFrame(mat) == 0) {
+                // Send the output the error.
+                contourStream.notifyError(cvSink.getError());
+                thresholdStream.notifyError(cvSink.getError());
+                
+                Logger.recordOutput("Vision/New Frame", false);
 
-            System.out.println("Found frame");
+                // skip the rest of the current iteration
+                continue;
+            } else {
+                Logger.recordOutput("Vision/New Frame", true);
+            }
+
             // hsv_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV);
 
             mat.convertTo(gray, Imgproc.COLOR_BGR2HSV);
 
             Core.inRange(gray, new Scalar(new double[]{0.0, 30.0, 150.0}), new Scalar(new double[]{50.0, 255.0, 255.0}), gray);
-            outputStream.putFrame(gray);
+            thresholdStream.putFrame(gray);
             try {
                 gray.wait(1000, 0);
             } catch (Exception e) {
                 // TODO: handle exception
             }
 
-            Imgcodecs.imwrite("/Users/armstrong/Documents/Note1-5.jpg", gray);
-
             Imgproc.morphologyEx(gray, gray, Imgproc.MORPH_OPEN, kernel);
             matPoints.clear();
             Imgproc.findContours(gray, matPoints, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
             
-            Imgcodecs.imwrite("/Users/armstrong/Documents/Note2.jpg", gray);
-
-            System.out.println("Did countour processing");
-
             if (matPoints.isEmpty()) {
                 hasTarget = false;
                 continue;
@@ -114,14 +114,16 @@ public class VisionIOUSB extends VisionIO {
                 hasTarget = true;
             }
 
-            System.out.println("Found target");
-
             MatOfPoint largest = matPoints.get(0);
             for (MatOfPoint matOfPoint : matPoints) {
                 if (Imgproc.contourArea(matOfPoint) > Imgproc.contourArea(largest)) {
                     largest = matOfPoint;
                 }
             }
+
+            Logger.recordOutput("Vision/Contours", matPoints.size());
+            Logger.recordOutput("Vision/Largest Contour Points", largest.toArray().length);
+            Logger.recordOutput("Vision/Largest Contour Area", Imgproc.contourArea(largest));
 
             largest.convertTo(point, CvType.CV_32FC2);
             RotatedRect rect = Imgproc.minAreaRect(point);
@@ -138,17 +140,14 @@ public class VisionIOUSB extends VisionIO {
             for (int i = 0; i < largest.toArray().length; i++) {
                 Point first = largest.toArray()[i];
                 Point next = largest.toArray()[(i + 1)% largest.toArray().length];
-                System.out.printf("\tpoint %s %s\n", first.x, first.y);
                 Imgproc.line(mat, first, next, new Scalar(new double[]{255, 0, 0}));
             }
 
-            Imgcodecs.imwrite("/Users/armstrong/Documents/Note3.jpg", mat);
-
             // Give the output stream a new image to display
-            outputStream.putFrame(mat);
-
-            break;
+            contourStream.putFrame(mat);
         }
+
+        Logger.recordOutput("Vision/Thread Running", false);
     }
 
     @Override

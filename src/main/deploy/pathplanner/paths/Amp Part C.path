@@ -12,16 +12,16 @@
         "y": 7.618752436997175
       },
       "isLocked": false,
-      "linkedName": "2 Note Start"
+      "linkedName": "Amp Start"
     },
     {
       "anchor": {
         "x": 8.293644849397962,
-        "y": 7.3556231442947215
+        "y": 7.425788070949362
       },
       "prevControl": {
         "x": 7.293644849397962,
-        "y": 7.3556231442947215
+        "y": 7.425788070949362
       },
       "nextControl": null,
       "isLocked": false,

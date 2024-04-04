@@ -53,6 +53,9 @@ public class ShooterIOSparkMax extends ShooterIO {
     
         rightEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
         leftEncoder.setVelocityConversionFactor(ShooterConstants.VELOCITY_CONVERSION_FACTOR);
+
+        left.burnFlash();
+        right.burnFlash();
     }
     
     public void setVoltage(double shooterVoltage) {

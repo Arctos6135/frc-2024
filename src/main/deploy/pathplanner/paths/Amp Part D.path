@@ -4,44 +4,28 @@
     {
       "anchor": {
         "x": 8.293644849397962,
-        "y": 7.3556231442947215
+        "y": 7.425788070949362
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.293644849397962,
-        "y": 7.3556231442947215
+        "y": 7.425788070949362
       },
       "isLocked": false,
       "linkedName": "Amp Part C End"
     },
     {
       "anchor": {
-        "x": 4.703539435568899,
-        "y": 6.993104356579084
+        "x": 0.7041386162544403,
+        "y": 6.712444649960525
       },
       "prevControl": {
-        "x": 5.870908080741727,
-        "y": 7.440405764002412
-      },
-      "nextControl": {
-        "x": 3.5361707903960715,
-        "y": 6.545802949155757
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.4,
-        "y": 5.566417514601411
-      },
-      "prevControl": {
-        "x": 2.698893691608866,
-        "y": 5.566417514601411
+        "x": 1.3535854620588732,
+        "y": 7.837319583709154
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Amp Start"
     }
   ],
   "rotationTargets": [],

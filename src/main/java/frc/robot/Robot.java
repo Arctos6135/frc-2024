@@ -24,7 +24,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     if (isReal()) {
-      //Logger.addDataReceiver(new WPILOGWriter());
+      Logger.addDataReceiver(new WPILOGWriter());
       Logger.addDataReceiver(new NT4Publisher());
     } else if (isSimulation()) {
       Logger.addDataReceiver(new WPILOGWriter());

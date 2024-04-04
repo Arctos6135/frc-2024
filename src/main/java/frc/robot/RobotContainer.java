@@ -128,7 +128,7 @@ public class RobotContainer {
             intake = new Intake(new IntakeIOSparkMax());
             arm = new Arm(new ArmIOSparkMax());
             shooter = new Shooter(new ShooterIOSparkMax());
-            vision = new Vision(new VisionIOUSB());
+            vision = new Vision(new VisionIO());//USB());
             winch = new Winch(new WinchIOSparkMax());
         }
         // Creates a simulated robot.
@@ -163,10 +163,10 @@ public class RobotContainer {
         drivingIntake = new DrivingIntake(intake, operatorController);
         intake.setDefaultCommand(drivingIntake);
 
-        // noteLocalizer = new NoteLocalizer(vision, drivetrain::getPose);
-        // vision.setDefaultCommand(noteLocalizer);
+        noteLocalizer = new NoteLocalizer(vision, drivetrain::getPose);
+        vision.setDefaultCommand(noteLocalizer);
 
-        noteLocalizer = null;
+        //noteLocalizer = null;
 
         configureAuto();
         configureBindings();
@@ -207,7 +207,7 @@ public class RobotContainer {
 
         // Amp autos.
 
-        autoChooser.addDefaultOption("Amp Score:[P, 3]", 
+        autoChooser.addOption("Amp Score:[P, 3]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", true))
@@ -218,8 +218,15 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("Amp Score:[P, 8]",
+        autoChooser.addOption("Amp Score:[P, 3, 8]",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new InstantCommand(() -> intake.setVoltage(12)))
+                .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", true))
+                .andThen(new FollowTrajectory("2 Note Forward A"))
+                .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", false))
+                .andThen(new InstantCommand(() -> intake.setVoltage(0)))
+                .andThen(new FollowTrajectory("2 Note B Forward"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
                 .andThen(new FollowTrajectory("Amp Part D"))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
@@ -291,9 +298,19 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
+        autoChooser.addOption("Stage Score:[P, 2, 7]",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage Part A")))
+                .andThen(new FollowTrajectory("Stage Part B").beforeStarting(() -> shooter.setVoltage(5), shooter))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage Part E")))
+                .andThen(new FollowTrajectory("Stage Part F").beforeStarting(() -> shooter.setVoltage(5), shooter))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
         // Misc. autos.
  
-        autoChooser.addOption("Score:[P]",
+        autoChooser.addDefaultOption("Score:[P]",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
         );
 
@@ -372,8 +389,8 @@ public class RobotContainer {
         Trigger operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
-        Trigger DPadDown = new Trigger(() -> operatorController.getPOV() == 180);
-        Trigger DPadUp = new Trigger(() -> operatorController.getPOV() == 0);
+        Trigger DPadDown = new Trigger(() -> operatorController.getPOV() == 180 || operatorController.getPOV() == 135 || operatorController.getPOV() == 225);
+        Trigger DPadUp = new Trigger(() -> operatorController.getPOV() == 0 || operatorController.getPOV() == 45 || operatorController.getPOV() == 315);
 
         //operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
         operatorA.whileTrue(new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS));
@@ -383,7 +400,7 @@ public class RobotContainer {
 
         // Left bumper hands off to the shooter, while right bumper reverse-handoffs back to the intake.
         operatorLeftBumper.whileTrue(new RaceFeed(shooter, intake));
-        operatorRightBumper.whileTrue(new ReverseFeed(shooter, intake, Units.inchesToMeters(14))); // Meters is a complete guess.
+        //operatorRightBumper.whileTrue(new ReverseFeed(shooter, intake, Units.inchesToMeters(14))); // Meters is a complete guess.
 
         // Climbing commands.
         // operatorLeftStickButton.toggleOnTrue(new RaiseArm(arm, operatorController, armPID));
@@ -415,11 +432,12 @@ public class RobotContainer {
         //     .andThen(new FollowTrajectory("2 Note Forward A"))
         //     .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", false))
         //     .andThen(new InstantCommand(() -> intake.setVoltage(0)))
-        //     .andThen(new FollowTrajectory("2 Note B Forward"))
+        //     .andThen(new FollowTrajectory("2 Nddrrrrrrrrrrrrrrrrrrrrrrrrrrrre43444444444444444eeeerrrrrrrrrrrrrrrrrrre433vdote B Forward"))
         //     .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake));
         //return new PathPlannerAuto("Forwards Back");
         //return new PathPlannerAuto("1 Meter Forward");
 
         return autoChooser.get();
+        // return drivetrain.characterizeAcceleration();
     }
 }

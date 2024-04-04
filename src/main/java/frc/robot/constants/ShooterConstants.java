@@ -13,8 +13,8 @@ public class ShooterConstants {
     public static final double CONTROLLER_DEADZONE = 0.15;
 
     // This is a placeholder, need to be tuned.
-    public static final double SPEAKER_RPS = 20;
-    public static final double AMP_RPS = 20;
+    public static final double SPEAKER_RPS = 25;
+    public static final double AMP_RPS = 25;
     public static final double FERRY_RPS = 10; // random choice, needs tuning.
 
     // Limits current through motor to limit brownouts.

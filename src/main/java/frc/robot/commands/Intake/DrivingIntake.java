@@ -19,4 +19,9 @@ public class DrivingIntake extends Command {
     public void execute() {
         intake.setVoltage((controller.getRightTriggerAxis() - controller.getLeftTriggerAxis())*12);
     }
+
+    @Override
+    public void end(boolean i) {
+        intake.setVoltage(0);
+    }
 }

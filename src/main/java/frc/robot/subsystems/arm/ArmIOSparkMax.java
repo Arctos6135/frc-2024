@@ -63,6 +63,9 @@ public class ArmIOSparkMax extends ArmIO {
         //     leftEncoder.setPosition(-ArmConstants.STARTING_POSITION);
         //     rightEncoder.setPosition(-ArmConstants.STARTING_POSITION);
         // }));
+
+        armLeft.burnFlash();
+        armRight.burnFlash();
     }
 
     @Override

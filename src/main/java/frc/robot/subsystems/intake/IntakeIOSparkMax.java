@@ -20,7 +20,7 @@ public class IntakeIOSparkMax extends IntakeIO{
         // Sets current limits.
         motor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
 
-        motor.setInverted(true); // should this still be inverted
+        motor.setInverted(false); // should this still be inverted
 
         motor.setIdleMode(IdleMode.kBrake);
 
@@ -29,11 +29,13 @@ public class IntakeIOSparkMax extends IntakeIO{
         // meters of belt
         encoder.setPositionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(IntakeConstants.VELOCITY_CONVERSION_FACTOR);
+
+        motor.burnFlash();
     }
     
     public void setVoltage(double voltage) {
         Logger.recordOutput("Intake/Voltage", voltage);
-        motor.setVoltage(voltage);
+        motor.setVoltage(-voltage);
     }
 
     public void updateInputs(IntakeInputs inputs) {

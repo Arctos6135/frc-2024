@@ -297,6 +297,19 @@ public class RobotContainer {
             Score.scoreSpeaker(arm, armPID, shooter, intake)
         );
 
+        autoChooser.addOption("Stage 2 Ferry 7 & 6", 
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage Part A")))
+                .andThen(new FollowTrajectory("Stage Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage to 7")))
+                .andThen(new FollowTrajectory("7 to ferry"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("7.5 to 6")))
+                .andThen(new FollowTrajectory("6 to ferry"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
         // Placeholders until positions are configured.
         positionChooser.addOption("Red Amp", PositionConstants.RED_AMP);
         positionChooser.addOption("Red Stage", PositionConstants.RED_STAGE);

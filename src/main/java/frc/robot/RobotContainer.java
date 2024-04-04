@@ -141,7 +141,7 @@ public class RobotContainer {
             //     return drivetrain.getPose();
             // }));
 
-            vision = new Vision(new VisionIOUSB());
+            vision = new Vision(new VisionIO());
             winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
@@ -168,7 +168,7 @@ public class RobotContainer {
 
         noteLocalizer = null;
 
-        //configureAuto();
+        configureAuto();
         configureBindings();
     }
 
@@ -305,7 +305,7 @@ public class RobotContainer {
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage to 7")))
                 .andThen(new FollowTrajectory("7 to ferry"))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("7.5 to 6")))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("75 to 6")))
                 .andThen(new FollowTrajectory("6 to ferry"))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );

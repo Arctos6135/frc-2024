@@ -207,7 +207,7 @@ public class RobotContainer {
 
         // Amp autos.
 
-        autoChooser.addDefaultOption("Amp Score:[P, 1]", 
+        autoChooser.addDefaultOption("Amp Score:[P, 3]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", true))
@@ -218,14 +218,14 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("Amp Score:[P, 4]",
+        autoChooser.addOption("Amp Score:[P, 8]",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
                 .andThen(new FollowTrajectory("Amp Part D"))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("Amp Score:[P, 1] Ferry:[4, 5]",
+        autoChooser.addOption("Amp Score:[P, 3] Ferry:[8, 7]",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("2 Note Forward A")))
                 .andThen(new FollowTrajectory("2 Note B Forward"))
@@ -240,7 +240,7 @@ public class RobotContainer {
 
         // Source autos.
 
-        autoChooser.addOption("Source Score:[P, 3]", 
+        autoChooser.addOption("Source Score:[P, 1]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Source Part A"))
@@ -249,7 +249,7 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("Source Score:[P, 3, 8]", 
+        autoChooser.addOption("Source Score:[P, 1, 4]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Source Part A"))
@@ -263,7 +263,7 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("Source Score:[P, 8]",
+        autoChooser.addOption("Source Score:[P, 4]",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Source Part C")))
                 .andThen(new FollowTrajectory("Source Part D"))
@@ -293,7 +293,7 @@ public class RobotContainer {
 
         // Misc. autos.
  
-        autoChooser.addOption("1 Note",
+        autoChooser.addOption("Score:[P]",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
         );
 

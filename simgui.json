@@ -21,6 +21,11 @@
     }
   },
   "NetworkTables": {
+    "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
     "transitory": {
       "AdvantageKit": {
         "Drivetrain": {
@@ -29,6 +34,21 @@
         "Shooter": {
           "open": false
         }
+      },
+      "CameraPublisher": {
+        "Detected": {
+          "open": true,
+          "string[]##v_/CameraPublisher/Detected/streams": {
+            "open": true
+          }
+        },
+        "USB Camera 0": {
+          "open": true,
+          "string[]##v_/CameraPublisher/USB Camera 0/streams": {
+            "open": true
+          }
+        },
+        "open": true
       },
       "SmartDashboard": {
         "Shooter": {

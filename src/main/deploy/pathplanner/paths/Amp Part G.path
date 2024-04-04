@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.204955319001547,
+        "y": 5.793151222666083
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 9.16581614981412,
+        "y": 5.998383633130903
+      },
+      "isLocked": false,
+      "linkedName": "Amp Part F End"
+    },
+    {
+      "anchor": {
+        "x": 8.27025654051308,
+        "y": 5.783822476735862
+      },
+      "prevControl": {
+        "x": 7.2702565405130795,
+        "y": 5.783822476735862
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Amp",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

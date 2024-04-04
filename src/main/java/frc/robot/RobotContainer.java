@@ -141,7 +141,7 @@ public class RobotContainer {
             //     return drivetrain.getPose();
             // }));
 
-            vision = new Vision(new VisionIOUSB());
+            vision = new Vision(new VisionIO());
             winch = new Winch(new WinchIO());
         } 
         // Creates a replay robot.
@@ -205,7 +205,9 @@ public class RobotContainer {
         AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe Angle Error", error);
         AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe Distance Error", error);
 
-        autoChooser.addDefaultOption("2 Note Amp", 
+        // Amp autos.
+
+        autoChooser.addDefaultOption("Amp Score:[P, 1]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .finallyDo(() -> Logger.recordOutput("Astrolabe Pathing", true))
@@ -216,7 +218,28 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("2 Note Source", 
+        autoChooser.addOption("Amp Score:[P, 4]",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
+                .andThen(new FollowTrajectory("Amp Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("Amp Score:[P, 1] Ferry:[4, 5]",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("2 Note Forward A")))
+                .andThen(new FollowTrajectory("2 Note B Forward"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("2 Note B Forward")))
+                .andThen(new FollowTrajectory("Amp Part E"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part F")))
+                .andThen(new FollowTrajectory("Amp Part G"))
+        );
+
+        // Source autos.
+
+        autoChooser.addOption("Source Score:[P, 3]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Source Part A"))
@@ -225,7 +248,7 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("3 Note Source", 
+        autoChooser.addOption("Source Score:[P, 3, 8]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Source Part A"))
@@ -239,7 +262,16 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("2 Note Stage", 
+        autoChooser.addOption("Source Score:[P, 8]",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Source Part C")))
+                .andThen(new FollowTrajectory("Source Part D"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        // Stage autos.
+
+        autoChooser.addOption("Stage Score:[P, 2]", 
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new InstantCommand(() -> intake.setVoltage(12)))
                 .andThen(new FollowTrajectory("Stage Part A"))
@@ -248,21 +280,7 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        // autoChooser.addOption("3 Note Stage", 
-        //     Score.scoreSpeaker(arm, armPID, shooter, intake)
-        //         .andThen(new InstantCommand(() -> intake.setVoltage(12)))
-        //         .andThen(new FollowTrajectory("Stage Part A"))
-        //         .andThen(new InstantCommand(() -> intake.setVoltage(0)))
-        //         .andThen(new FollowTrajectory("Stage Part B"))
-        //         .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-        //         .andThen(new InstantCommand(() -> intake.setVoltage(12)))
-        //         .andThen(new FollowTrajectory("Stage Part C"))
-        //         .andThen(new InstantCommand(() -> intake.setVoltage(0)))
-        //         .andThen(new FollowTrajectory("Stage Part D"))
-        //         .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-        // );
-
-        autoChooser.addOption("3 Note Stage",
+        autoChooser.addOption("Stage Score:[P, 2, 8]",
             Score.scoreSpeaker(arm, armPID, shooter, intake)
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Stage Part A")))
                 .andThen(new FollowTrajectory("Stage Part B").beforeStarting(() -> shooter.setVoltage(5), shooter))
@@ -272,20 +290,7 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
-        autoChooser.addOption("Far Amp",
-            Score.scoreSpeaker(arm, armPID, shooter, intake)
-                .andThen(new WaitCommand(5))
-                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
-                .andThen(new FollowTrajectory("Amp Part D"))
-                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-        );
-
-        autoChooser.addOption("Far Source",
-            Score.scoreSpeaker(arm, armPID, shooter, intake)
-                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Source Part C")))
-                .andThen(new FollowTrajectory("Source Part D"))
-                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-        );
+        // Misc. autos.
  
         autoChooser.addOption("1 Note",
             Score.scoreSpeaker(arm, armPID, shooter, intake)

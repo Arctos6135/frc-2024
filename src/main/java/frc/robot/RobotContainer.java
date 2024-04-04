@@ -230,11 +230,12 @@ public class RobotContainer {
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("2 Note Forward A")))
                 .andThen(new FollowTrajectory("2 Note B Forward"))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
-                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("2 Note B Forward")))
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
                 .andThen(new FollowTrajectory("Amp Part E"))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part F")))
                 .andThen(new FollowTrajectory("Amp Part G"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
         // Source autos.

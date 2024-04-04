@@ -11,20 +11,20 @@
         "x": 7.861922266562928,
         "y": 6.595423372664927
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Amp Part E End"
     },
     {
       "anchor": {
-        "x": 8.204955319001547,
-        "y": 5.793151222666083
+        "x": 8.19682812889776,
+        "y": 5.7567874706411315
       },
       "prevControl": {
-        "x": 6.945574618421964,
-        "y": 5.8397949523171775
+        "x": 6.937447428318177,
+        "y": 5.803431200292226
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Amp Part F End"
     }
   ],

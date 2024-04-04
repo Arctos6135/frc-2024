@@ -32,7 +32,7 @@ public class Score {
             .andThen(new WaitUntilCommand(armPID::atTarget))
             .andThen(shooterPID)
             .raceWith(
-                shooterPID.waitUntilAtTarget().andThen(new Feed(intake).withTimeout(1))
+                shooterPID.waitUntilAtTarget().andThen(new Feed(intake).withTimeout(0.75))
             );
     }
 

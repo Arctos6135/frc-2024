@@ -199,11 +199,15 @@ public class RobotContainer {
             drivetrain
         );
 
-        AstrolabeLogger.targetPoseLogger = pose -> Logger.recordOutput("Target Pose", pose);
-        AstrolabeLogger.stateLogger = state -> Logger.recordOutput("Pathing State", state);
-        AstrolabeLogger.trajectoryLogger = t -> Logger.recordOutput("Astrolabe Trajectory", t);
-        AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe Angle Error", error);
-        AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe Distance Error", error);
+        AstrolabeLogger.targetPoseLogger = pose -> Logger.recordOutput("Astrolabe/Target/Pose", pose);
+        AstrolabeLogger.stateLogger = state -> Logger.recordOutput("Astrolabe/Pathing State", state);
+        AstrolabeLogger.trajectoryLogger = t -> Logger.recordOutput("Astrolabe/Trajectory", t);
+        AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe/Error/Angle", error);
+        AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe/Error/Distance", error);
+        AstrolabeLogger.targetVelocityLogger = velocity -> Logger.recordOutput("Astrolabe/Target/Velocity", velocity);
+        AstrolabeLogger.targetAccelerationLogger = acceleration -> Logger.recordOutput("Astrolabe/Target/Acceleration", acceleration);
+        AstrolabeLogger.targetCurvatureLogger = curvature -> Logger.recordOutput("Astrolabe/Target/Curvature", curvature);
+        AstrolabeLogger.targetYawRateLogger = yawRate -> Logger.recordOutput("Astrolabe/Target/Yaw Rate", yawRate);
 
         // Amp autos.
 

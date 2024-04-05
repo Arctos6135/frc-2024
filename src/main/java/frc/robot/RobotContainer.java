@@ -22,9 +22,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -45,6 +47,7 @@ import frc.robot.commands.Intake.RaceFeed;
 import frc.robot.commands.Intake.ReverseFeed;
 import frc.robot.commands.arm.ArmPID;
 import frc.robot.commands.arm.Climb;
+import frc.robot.commands.Intake.AutoIntake;
 // import frc.robot.commands.scoring.Score;
 // import frc.robot.commands.arm.Climb;
 import frc.robot.commands.arm.RaiseArm;
@@ -53,18 +56,32 @@ import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.scoring.Score;
 import frc.robot.commands.shooter.ShooterPID;
 import frc.robot.commands.vision.NoteLocalizer;
-import frc.robot.constants.*;
+import frc.robot.constants.ArmConstants;
+import frc.robot.constants.ControllerConstants;
+import frc.robot.constants.ShooterConstants;
 // import frc.robot.constants.ArmConstants;
 // import frc.robot.constants.ControllerConstants;
 // // import frc.robot.constants.PositionConstants;
 // import frc.robot.constants.VisionConstants;
-import frc.robot.subsystems.arm.*;
-import frc.robot.subsystems.drivetrain.*;
-import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.shooter.*;
-import frc.robot.subsystems.vision.*;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.arm.ArmIOSparkMax;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainIO;
+import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
+import frc.robot.subsystems.drivetrain.DrivetrainIOSparkMax;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSparkMax;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
 // import frc.robot.subsystems.arm.Arm;
 // import frc.robot.subsystems.arm.ArmIO;
 // import frc.robot.subsystems.arm.ArmIOSim;
@@ -85,6 +102,10 @@ import frc.robot.subsystems.winch.Winch;
 import frc.robot.subsystems.winch.WinchIO;
 import frc.robot.subsystems.winch.WinchIOSparkMax;
 // import frc.robot.subsystems.vision.Vision;
+import astrolabe.follow.*;
+import astrolabe.generate.*;
+import astrolabe.generate.spline.*;
+import frc.robot.constants.PositionConstants;
 
 public class RobotContainer {
     // Xbox controllers
@@ -204,11 +225,6 @@ public class RobotContainer {
         AstrolabeLogger.trajectoryLogger = t -> Logger.recordOutput("Astrolabe/Trajectory", t);
         AstrolabeLogger.angleErrorDegreesLogger = error -> Logger.recordOutput("Astrolabe/Error/Angle", error);
         AstrolabeLogger.distanceErrorLogger = error -> Logger.recordOutput("Astrolabe/Error/Distance", error);
-        AstrolabeLogger.targetVelocityLogger = velocity -> Logger.recordOutput("Astrolabe/Target/Velocity", velocity);
-        AstrolabeLogger.targetAccelerationLogger = acceleration -> Logger.recordOutput("Astrolabe/Target/Acceleration", acceleration);
-        AstrolabeLogger.targetCurvatureLogger = curvature -> Logger.recordOutput("Astrolabe/Target/Curvature", curvature);
-        AstrolabeLogger.targetYawRateLogger = yawRate -> Logger.recordOutput("Astrolabe/Target/Yaw Rate", yawRate);
-
         // Amp autos.
 
         autoChooser.addOption("Amp Score:[P, 3]", 
@@ -246,6 +262,13 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
                 .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part F")))
                 .andThen(new FollowTrajectory("Amp Part G"))
+                .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("Amp Score:[P, 8]",
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .andThen(new AutoIntake(intake, shooter).raceWith(new FollowTrajectory("Amp Part C")))
+                .andThen(new FollowTrajectory("Amp Part D"))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 

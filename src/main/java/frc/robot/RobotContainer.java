@@ -181,7 +181,7 @@ public class RobotContainer {
         armPID = new ArmPID(arm, ArmConstants.STARTING_POSITION);
         arm.setDefaultCommand(armPID);
 
-        drivingIntake = new DrivingIntake(intake, operatorController);
+        drivingIntake = new DrivingIntake(intake, driverController);
         intake.setDefaultCommand(drivingIntake);
 
         noteLocalizer = new NoteLocalizer(vision, drivetrain::getPose);
@@ -272,6 +272,8 @@ public class RobotContainer {
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
         );
 
+        
+
         // Source autos.
 
         autoChooser.addOption("Source Score:[P, 1]", 
@@ -295,6 +297,12 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> intake.setVoltage(0)))
                 .andThen(new FollowTrajectory("Source Part D"))
                 .andThen(Score.scoreSpeaker(arm, armPID, shooter, intake))
+        );
+
+        autoChooser.addOption("Source Leave", 
+            Score.scoreSpeaker(arm, armPID, shooter, intake)
+                .finallyDo(() -> System.out.println("started pathing"))
+                .andThen(new FollowTrajectory("Source Leave"))
         );
 
         autoChooser.addOption("Source Score:[P, 4]",
@@ -416,14 +424,14 @@ public class RobotContainer {
         Trigger operatorB = new JoystickButton(operatorController, XboxController.Button.kB.value);
         Trigger operatorX = new JoystickButton(operatorController, XboxController.Button.kX.value);
         Trigger operatorY = new JoystickButton(operatorController, XboxController.Button.kY.value);
-        Trigger DPadDown = new Trigger(() -> operatorController.getPOV() == 180 || operatorController.getPOV() == 135 || operatorController.getPOV() == 225);
-        Trigger DPadUp = new Trigger(() -> operatorController.getPOV() == 0 || operatorController.getPOV() == 45 || operatorController.getPOV() == 315);
+        Trigger DPadDown = new Trigger(() -> driverController.getPOV() == 180 || operatorController.getPOV() == 135 || operatorController.getPOV() == 225);
+        Trigger DPadUp = new Trigger(() -> driverController.getPOV() == 0 || operatorController.getPOV() == 45 || operatorController.getPOV() == 315);
 
         //operatorA.onTrue(Score.ferryNote(arm, armPID, shooter, intake));
         operatorA.whileTrue(new ShooterPID(shooter, ShooterConstants.SPEAKER_RPS));
         operatorB.whileTrue(Score.scoreAmp(arm, armPID, shooter, intake));
         operatorX.onTrue(new InstantCommand(() -> armPID.setTarget(ArmConstants.STARTING_POSITION)));
-        operatorY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
+        driverY.whileTrue(Score.scoreSpeaker(arm, armPID, shooter, intake));
 
         // Left bumper hands off to the shooter, while right bumper reverse-handoffs back to the intake.
         operatorLeftBumper.whileTrue(new RaceFeed(shooter, intake));
@@ -465,6 +473,5 @@ public class RobotContainer {
         //return new PathPlannerAuto("1 Meter Forward");
 
         return autoChooser.get();
-        // return drivetrain.characterizeAcceleration();
     }
 }

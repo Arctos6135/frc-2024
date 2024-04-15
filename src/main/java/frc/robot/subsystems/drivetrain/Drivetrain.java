@@ -47,7 +47,7 @@ public class Drivetrain extends SubsystemBase {
     private final DrivetrainInputsAutoLogged inputs = new DrivetrainInputsAutoLogged();
 
     // PIDControllers that control the drivetrain motor voltage output
-    private final PIDController leftController = new PIDController(5, 0, 0.0);
+    private final PIDController leftController = new PIDController(10, 0, 0.0);
     //private final PIDController leftController = new PIDController(0, 0, 0.0);
     private final PIDController rightController = new PIDController(5, 0, 0.0);
     //private final PIDController rightController = new PIDController(10, 0, 0.0);
@@ -57,8 +57,11 @@ public class Drivetrain extends SubsystemBase {
     //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.18, 2.264, 0.533);
     //private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.0, 2.2, 0.5);
     //private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.0, 2.2, 0.5);
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.207, 2.223, 0.473);
-    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.207, 2.223, 0.473);
+    // private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.207, 2.223, 0.473);
+    // private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.207, 2.223, 0.473);
+
+    private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.228, 2.291, 0.473);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.228, 2.351, 0.533);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -132,7 +135,7 @@ public class Drivetrain extends SubsystemBase {
         rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
 
         leftAcceleration = MathUtils.clamp(leftAcceleration, -2, 2);
-        rightAcceleration = MathUtils.clamp(rightAcceleration, -2, 2);
+        rightAcceleration = MathUtils.clamp(rightAcceleration, -1, 1);
 
         previousTargetVelocityLeft = targetVelocityLeft;
         previousTargetVelocityRight = targetVelocityRight;
@@ -239,7 +242,7 @@ public class Drivetrain extends SubsystemBase {
             new LoggedMechanism(rightLog, rightMechanism)
         );
 
-        return new VelocityRoutine(group, 2, 0.25, this).finallyDo(() -> {
+        return new VelocityRoutine(group, 5, 0.25, this).finallyDo(() -> {
             leftLog.logCSV("DrivetrainVelocityLeft");
             rightLog.logCSV("DrivetrainVelocityRight");
         });
@@ -258,7 +261,7 @@ public class Drivetrain extends SubsystemBase {
             new LoggedMechanism(rightLog, rightMechanism)
         );
 
-        return new AccelerationRoutine(group, 5, 5, this).finallyDo(() -> {
+        return new AccelerationRoutine(group, 3, 5, this).finallyDo(() -> {
             leftLog.logCSV("DrivetrainAccelerationLeft");
             rightLog.logCSV("DrivetrainAccelerationRight");
         });

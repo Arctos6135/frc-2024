@@ -41,9 +41,9 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
     
     public DrivetrainIOSparkMax() {
         // Set current limits to limit brownouts.
-        rightMaster.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
+        rightMaster.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT - 10);
         leftMaster.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
-        rightFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
+        rightFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT - 10);
         leftFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
 
         rightFollower.follow(rightMaster);
@@ -56,7 +56,7 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         rightMaster.setIdleMode(IdleMode.kBrake);
 
 
-        leftFollower.setIdleMode(IdleMode.kBrake);
+        leftFollower.setIdleMode(IdleMode.kCoast);
         rightFollower.setIdleMode(IdleMode.kBrake);
 
         leftMaster.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
@@ -80,7 +80,7 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
         leftEncoder.setMeasurementPeriod(16);
         rightEncoder.setMeasurementPeriod(16);
 
-        leftController.setP(0.3);
+        leftController.setP(0.5);
         leftController.setI(0);
         leftController.setD(0);
 

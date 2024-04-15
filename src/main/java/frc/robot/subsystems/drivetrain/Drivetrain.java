@@ -61,7 +61,7 @@ public class Drivetrain extends SubsystemBase {
     // private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.207, 2.223, 0.473);
 
     private final SimpleMotorFeedforward rightForward = new SimpleMotorFeedforward(0.228, 2.291, 0.473);
-    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.228, 2.351, 0.533);
+    private final SimpleMotorFeedforward leftForward = new SimpleMotorFeedforward(0.228, 2.291, 0.473);
 
     // The target speed of the drivetrain. In m/s
     private double targetVelocityLeft = 0; 
@@ -134,7 +134,7 @@ public class Drivetrain extends SubsystemBase {
         leftAcceleration = (targetVelocityLeft - previousTargetVelocityLeft) / 0.02;
         rightAcceleration = (targetVelocityRight - previousTargetVelocityRight) / 0.02;
 
-        leftAcceleration = MathUtils.clamp(leftAcceleration, -2, 2);
+        leftAcceleration = MathUtils.clamp(leftAcceleration, -1, 1);
         rightAcceleration = MathUtils.clamp(rightAcceleration, -1, 1);
 
         previousTargetVelocityLeft = targetVelocityLeft;

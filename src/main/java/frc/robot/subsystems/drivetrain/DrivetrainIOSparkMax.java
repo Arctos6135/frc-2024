@@ -41,9 +41,9 @@ public class DrivetrainIOSparkMax extends DrivetrainIO {
     
     public DrivetrainIOSparkMax() {
         // Set current limits to limit brownouts.
-        rightMaster.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT - 10);
+        rightMaster.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
         leftMaster.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
-        rightFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT - 10);
+        rightFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
         leftFollower.setSmartCurrentLimit(DriveConstants.CURRENT_LIMIT);
 
         rightFollower.follow(rightMaster);
